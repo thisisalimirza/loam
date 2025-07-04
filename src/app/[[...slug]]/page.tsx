@@ -25,7 +25,7 @@ function extractHeadings(markdown: string) {
 }
 
 export default async function CatchAllPage({ params }: { params: { slug?: string[] } }) {
-  const { slug } = await params;
+  const { slug } = params;
   const slugArr = slug || [];
   const { sections, topLevelPages } = getSiteStructure();
 
