@@ -1,92 +1,134 @@
 # Ali Mirza – Personal Website
 
-This is the codebase for Ali Mirza's living archive: essays, meditations, memos, and more.
+## 🧠 Project Purpose
+A living notebook and philosophical archive for essays, meditations, memos, vignettes, and projects.  
+Built for minimalism, longevity, and ease of content management.
 
-## Content Management
+---
 
-- **Add a new essay, memo, vignette, etc.:**
-  - Drop a new `.mdx` or `.md` file into the appropriate folder in `/content/` (e.g., `/content/essays/`, `/content/memos/`).
-  - Each file = one publication. Use YAML frontmatter for metadata (see below).
-- **Update a living list (e.g., Meditations):**
-  - Edit the single Markdown file (e.g., `/content/meditations.md`).
-- **Legacy archive:**
-  - The `/content/CONTNET.md` file is a full export of your old content. It is parsed and rendered in the appropriate sections.
-
-## Content Structure
+## 📁 Project Structure
 
 ```
-/content/
-  /essays/         # New essays (one file per essay)
-  /memos/          # New memos (one file per memo)
-  /vignettes/      # New vignettes (one file per vignette)
-  meditations.md   # Living list of meditations
-  CONTNET.md       # Legacy archive (imported at build time)
-  ...other sections as needed
+/content/         # All your writing, organized by section (essays, memos, etc.)
+  essays/
+    my-essay.mdx
+  meditations.mdx # Living list
+  ...
+/public/          # Static assets (profilepic.jpg, images, etc.)
+/src/
+  app/            # Next.js app directory (routing, components)
+  lib/            # Content utilities
 ```
 
-## Frontmatter Example
+---
 
-```
+## ✍️ Adding & Managing Content
+
+- **All content lives in `/content/`** as Markdown/MDX files.
+- **Sections** (essays, memos, vignettes, projects) are folders. Each new `.mdx` file is a new post.
+- **Living lists** (like meditations) are single `.mdx` files.
+- **Frontmatter** at the top of each file controls metadata and visibility.
+
+### Example frontmatter:
+```yaml
 ---
 title: "The Difficulty Is the Point"
-type: "essay"
-section: "philosophy"
 date: "2022-08-25"
 summary: "How I came to understand struggle as the cornerstone of my identity."
 tags: ["discipline", "freedom", "stoicism"]
 readTime: "7 min"
+published: true   # Set to false to hide from navigation/search (draft mode)
 ---
 ```
 
-## Development
+- **To add a new post:**  
+  1. Create a new `.mdx` file in the appropriate section folder.
+  2. Fill in the frontmatter.
+  3. Write your content below the frontmatter.
 
-- `npm run dev` – Start local dev server
-- `npm run build` – Build static site
-- `npm run start` – Start production server
+- **To hide a post (draft):**  
+  Set `published: false` in the frontmatter.  
+  Drafts are only accessible by direct URL and do not appear in navigation, search, or lists.
 
-## Features
-- Minimal, text-centered, responsive design
-- Full-text search (Flexsearch)
-- Dynamic /library index with filtering and hover previews
-- Featured block on homepage
-- Table of Contents for long posts
-- Related content suggestions
+- **To add images:**  
+  Place images in `/public/` and reference them as `/yourimage.jpg` in your MDX.
+
+- **To update the profile photo:**  
+  Replace `/public/profilepic.jpg` with your new image (keep the filename).
 
 ---
 
-For any new content, just add a Markdown/MDX file to the right folder. For living lists, update the single file. For legacy, update `CONTNET.md`.
+## 🌐 Navigation & Structure
 
-## Getting Started
+- **Navigation and section pages are fully dynamic.**  
+  The site reads the `/content` folder structure—no manual updates needed for new sections or posts.
+- **Breadcrumbs navbar** is always up-to-date and supports external links.
+- **Featured/Recently Added** content is shown on the homepage.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🔍 Search
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Powered by Flexsearch.
+- Searches all published content by title, summary, tags, and section.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🏷️ Metadata & SEO
 
-## Learn More
+- **SEO and Open Graph meta tags** are generated from frontmatter (title, summary).
+- **Sitemap** is auto-generated at `/sitemap.xml` (only published content).
+- **Canonical URLs** and social previews are handled automatically.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🛠️ Running & Deploying
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Local development:**  
+  ```bash
+  npm install
+  npm run dev
+  ```
+- **Build for production:**  
+  ```bash
+  npm run build
+  npm start
+  ```
+- **Deploy:**  
+  Deploy to Vercel, Netlify, or any platform that supports Next.js.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🧩 Extending the Site
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Add new sections by creating new folders in `/content`.
+- Add new top-level pages by adding `.mdx` files directly in `/content`.
+- Add external links to the navbar in `src/app/components/BreadcrumbsServer.tsx`.
+- Customize homepage, featured content, or add new features as needed.
+
+---
+
+## 📝 Best Practices & Gotchas
+
+- **Always use valid frontmatter.** Missing or malformed frontmatter can break navigation or search.
+- **Keep filenames and slugs simple.** Use lowercase and hyphens.
+- **Drafts:** Use `published: false` to hide content until ready.
+- **Images:** Place in `/public/` and use root-relative paths.
+- **Profile photo:** `/public/profilepic.jpg` (120x120px recommended).
+- **SEO:** Use meaningful titles and summaries for best results.
+
+---
+
+## 🤝 For Future Maintainers
+
+- The codebase is minimal and content-driven.  
+- All navigation, search, and lists are generated from the actual content structure.
+- No manual updates needed for navigation or section pages.
+- If you add new features, keep the content-driven philosophy in mind.
+
+---
+
+**Welcome to your Library of a Mind.**  
+If you're picking this up years later:  
+- Start by looking in `/content/` and reading this README.
+- Everything else will follow naturally.
