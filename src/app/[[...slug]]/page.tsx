@@ -194,8 +194,10 @@ export default async function CatchAllPage({ params }: { params: Promise<{ slug?
         const file = fs.readFileSync(page.filePath, "utf8");
         const { content, data } = matter(file);
         const stats = fs.statSync(page.filePath);
-        const publishedDate = data.date || stats.birthtime.toISOString().slice(0, 10);
-        const lastEditedDate = stats.mtime.toISOString().slice(0, 10);
+        const publishedDate = data.date || (stats.birthtime && stats.birthtime.getFullYear() > 2000
+          ? stats.birthtime.toISOString().slice(0, 10)
+          : stats.mtime.toISOString().slice(0, 10));
+        const lastEditedDate = data.lastEdited || stats.mtime.toISOString().slice(0, 10);
         // Always calculate reading time
         const readTime = readingTime(content).text;
         // TOC
