@@ -1,4 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Ali Mirza – Personal Website
+
+This is the codebase for Ali Mirza's living archive: essays, meditations, memos, and more.
+
+## Content Management
+
+- **Add a new essay, memo, vignette, etc.:**
+  - Drop a new `.mdx` or `.md` file into the appropriate folder in `/content/` (e.g., `/content/essays/`, `/content/memos/`).
+  - Each file = one publication. Use YAML frontmatter for metadata (see below).
+- **Update a living list (e.g., Meditations):**
+  - Edit the single Markdown file (e.g., `/content/meditations.md`).
+- **Legacy archive:**
+  - The `/content/CONTNET.md` file is a full export of your old content. It is parsed and rendered in the appropriate sections.
+
+## Content Structure
+
+```
+/content/
+  /essays/         # New essays (one file per essay)
+  /memos/          # New memos (one file per memo)
+  /vignettes/      # New vignettes (one file per vignette)
+  meditations.md   # Living list of meditations
+  CONTNET.md       # Legacy archive (imported at build time)
+  ...other sections as needed
+```
+
+## Frontmatter Example
+
+```
+---
+title: "The Difficulty Is the Point"
+type: "essay"
+section: "philosophy"
+date: "2022-08-25"
+summary: "How I came to understand struggle as the cornerstone of my identity."
+tags: ["discipline", "freedom", "stoicism"]
+readTime: "7 min"
+---
+```
+
+## Development
+
+- `npm run dev` – Start local dev server
+- `npm run build` – Build static site
+- `npm run start` – Start production server
+
+## Features
+- Minimal, text-centered, responsive design
+- Full-text search (Flexsearch)
+- Dynamic /library index with filtering and hover previews
+- Featured block on homepage
+- Table of Contents for long posts
+- Related content suggestions
+
+---
+
+For any new content, just add a Markdown/MDX file to the right folder. For living lists, update the single file. For legacy, update `CONTNET.md`.
 
 ## Getting Started
 
