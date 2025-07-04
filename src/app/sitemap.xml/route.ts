@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { getAllContent } from "@/lib/getAllContent";
 import { getSiteStructure } from "@/lib/getSiteStructure";
 import { NextResponse } from "next/server";
