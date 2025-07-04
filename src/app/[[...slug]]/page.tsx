@@ -8,6 +8,7 @@ import { getSiteStructure } from "@/lib/getSiteStructure";
 import { getAllContent } from "@/lib/getAllContent";
 import readingTime from "reading-time";
 import Head from "next/head";
+import SubstackEmbed from "@/app/components/SubstackEmbed";
 
 function extractHeadings(markdown: string) {
   // Only h2/h3 for TOC
@@ -131,7 +132,7 @@ export default async function CatchAllPage({ params }: { params: Promise<{ slug?
                 {data.summary && <blockquote style={{ color: "#888", fontStyle: "italic", margin: "0 0 1.2rem 0" }}>{data.summary}</blockquote>}
               </header>
               <div className="prose">
-                <MDXRemote source={content} />
+                <MDXRemote source={content} components={{ SubstackEmbed }} />
               </div>
               <Footer />
             </div>
@@ -258,7 +259,7 @@ export default async function CatchAllPage({ params }: { params: Promise<{ slug?
                 </nav>
               )}
               <div className="prose" style={{ fontSize: "1.1rem", lineHeight: 1.7 }}>
-                <MDXRemote source={contentWithAnchors} />
+                <MDXRemote source={contentWithAnchors} components={{ SubstackEmbed }} />
               </div>
               {related.length > 0 && (
                 <aside style={{ marginTop: 48, borderTop: "1px solid #eee", paddingTop: 24 }}>
