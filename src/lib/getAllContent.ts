@@ -16,30 +16,15 @@ export type ContentItem = {
   published?: boolean;
 };
 
-const sections = ["essays", "memos", "vignettes", "projects", "meditations"];
-
 export function getAllContent(): ContentItem[] {
   const content: ContentItem[] = [];
-  for (const section of sections) {
-    if (section === "meditations") {
-      // Only one file for meditations
-      const filePath = path.join(process.cwd(), "content", "meditations.md");
-      if (fs.existsSync(filePath)) {
-        const file = fs.readFileSync(filePath, "utf8");
-        const { content: mdContent, data } = matter(file);
-        content.push({
-          ...data,
-          section,
-          slug: "meditations",
-          url: "/meditations",
-          readTime: data.readTime || readingTime(mdContent).text,
-          filePath,
-          published: data.published !== false,
-        } as ContentItem);
-      }
-    } else {
-      const dir = path.join(process.cwd(), "content", section);
-      if (!fs.existsSync(dir)) continue;
+  const contentDir = path.join(process.cwd(), "content");
+  const entries = fs.readdirSync(contentDir, { withFileTypes: true });
+
+  for (const entry of entries) {
+    if (entry.isDirectory()) {
+      const section = entry.name;
+      const dir = path.join(contentDir, section);
       const files = fs.readdirSync(dir).filter(f => f.endsWith(".mdx"));
       for (const filename of files) {
         const file = fs.readFileSync(path.join(dir, filename), "utf8");
@@ -54,6 +39,34 @@ export function getAllContent(): ContentItem[] {
           published: data.published !== false,
         } as ContentItem);
       }
+    } else if (entry.isFile() && entry.name.endsWith(".mdx")) {
+      // Top-level .mdx file
+      const filePath = path.join(contentDir, entry.name);
+      const file = fs.readFileSync(filePath, "utf8");
+      const { content: mdContent, data } = matter(file);
+      content.push({
+        ...data,
+        section: "",
+        slug: entry.name.replace(/\.mdx$/, ""),
+        url: `/${entry.name.replace(/\.mdx$/, "")}`,
+        readTime: data.readTime || readingTime(mdContent).text,
+        filePath,
+        published: data.published !== false,
+      } as ContentItem);
+    } else if (entry.isFile() && entry.name === "meditations.md") {
+      // Special case for meditations.md
+      const filePath = path.join(contentDir, entry.name);
+      const file = fs.readFileSync(filePath, "utf8");
+      const { content: mdContent, data } = matter(file);
+      content.push({
+        ...data,
+        section: "meditations",
+        slug: "meditations",
+        url: "/meditations",
+        readTime: data.readTime || readingTime(mdContent).text,
+        filePath,
+        published: data.published !== false,
+      } as ContentItem);
     }
   }
   return content;
