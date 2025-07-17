@@ -16,6 +16,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Ali Mirza – Personal Website",
   description: "Essays, meditations, memos, vignettes, and projects by Ali Mirza.",
+  icons: {
+    icon: "/favicon.jpeg",
+  },
 };
 
 export default function RootLayout({
