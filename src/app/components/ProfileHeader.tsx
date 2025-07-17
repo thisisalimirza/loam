@@ -1,4 +1,5 @@
 import Image from "next/image"
+import Link from "next/link"
 import { siteConfig } from "@/config/site"
 
 export default function ProfileHeader() {
@@ -23,26 +24,26 @@ export default function ProfileHeader() {
         <div className="visitor-grid">
           <div className="visitor-section">
             <h3>🧠 You want to read how I think?</h3>
-            <p>→ <a href="/meditations">Read My Meditations</a><br />
+            <p>→ <Link href="/meditations">Read My Meditations</Link><br />
             Short, raw reflections on life, self-discipline, ambition, and meaning — a living notebook in the spirit of Marcus Aurelius.</p>
             <p>→ <a href="https://thisisalimirza.substack.com/" target="_blank" rel="noopener noreferrer">Subscribe to Thinking in Public</a><br />
             Deeper essays on systems, society, and how to build a principled life.</p>
           </div>
 
           <div className="visitor-section">
-            <h3>🚀 You're a founder, builder, or just someone who wants to create more than you consume?</h3>
+            <h3>🚀 You&apos;re a founder, builder, or just someone who wants to create more than you consume?</h3>
             <p>→ <a href="https://braskgroup.com/" target="_blank" rel="noopener noreferrer">Join Brask</a><br />
             A private network of ambitious early-stage entrepreneurs. We build together, support each other, and grow in public and private.</p>
           </div>
 
           <div className="visitor-section">
-            <h3>📬 You're a mentor, investor, or just someone a few steps ahead of me?</h3>
+            <h3>📬 You&apos;re a mentor, investor, or just someone a few steps ahead of me?</h3>
             <p>→ <a href="https://tally.so/r/mRqJDd" target="_blank" rel="noopener noreferrer">Join My Advisor List</a><br />
-            One concise update per month on what I'm building, how things are going, and how you can support if you'd like.</p>
+            One concise update per month on what I&apos;m building, how things are going, and how you can support if you&apos;d like.</p>
           </div>
 
           <div className="visitor-section">
-            <h3>🎓 You're a student or premed who looks up to me?</h3>
+            <h3>🎓 You&apos;re a student or premed who looks up to me?</h3>
             <p>→ <a href="https://almostmed.com" target="_blank" rel="noopener noreferrer">Get My Premed Resources</a><br />
             Advice, templates, and encouragement I wish I had earlier. Join a list or access a resource hub.</p>
           </div>
@@ -54,9 +55,9 @@ export default function ProfileHeader() {
           </div>
 
           <div className="visitor-section">
-            <h3>🔎 You're just curious what I'm working on?</h3>
-            <p>→ <a href="/notebooks">See My Live Project Log</a><br />
-            A public record of what I'm building, prioritizing, and committing to each week. Real-time updates on JANUS, Brask, writing, and beyond.</p>
+            <h3>🔎 You&apos;re just curious what I&apos;m working on?</h3>
+            <p>→ <Link href="/notebooks">See My Live Project Log</Link><br />
+            A public record of what I&apos;m building, prioritizing, and committing to each week. Real-time updates on JANUS, Brask, writing, and beyond.</p>
           </div>
         </div>
         
