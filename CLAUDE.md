@@ -63,6 +63,23 @@ When adding new content:
 
 External navigation links are added in `src/app/components/BreadcrumbsServer.tsx:19` (currently includes Newsletter link).
 
+## Design Philosophy
+
+This site follows a **primarily text-based design philosophy**:
+
+- **Minimal Visual Elements**: Avoid unnecessary cards, boxes, gradients, or heavy styling
+- **Text-First Approach**: Use typography, spacing, and simple borders for hierarchy
+- **Clean Typography**: Rely on font weights, sizes, and color contrast for visual distinction
+- **Subtle Interactions**: Simple hover effects and minimal animations only
+- **Semantic HTML**: Use proper heading structure and semantic elements
+- **Responsive Text**: Ensure readability across all devices without complex layouts
+
+When making design changes:
+- Prefer well-structured text over visual components
+- Use CSS for spacing and typography, not decorative elements
+- Keep interfaces scannable and uncluttered
+- Maintain consistency with existing minimal aesthetic
+
 ## Testing
 
 No specific test framework is configured - check with the user before assuming testing approach.
