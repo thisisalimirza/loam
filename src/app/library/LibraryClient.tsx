@@ -2,7 +2,7 @@
 import { useState, useMemo, useEffect } from "react";
 import FlexSearch from "flexsearch";
 import Link from "next/link";
-import type { ContentItem } from "@/lib/getAllContent";
+import type { ContentItem } from "@/types";
 
 const sections = ["essays", "memos", "vignettes", "projects", "meditations"];
 
@@ -25,7 +25,8 @@ export default function LibraryClient({ allContent }: Props) {
 
   // Flexsearch Document index
   const index = useMemo(() => {
-    const idx = new FlexSearch.Document<ContentItem, true>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const idx = new FlexSearch.Document<any, true>({
       tokenize: "forward",
       cache: true,
       document: {

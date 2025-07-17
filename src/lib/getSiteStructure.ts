@@ -1,25 +1,7 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
-
-export type SitePage = {
-  title: string;
-  slug: string;
-  section?: string;
-  filePath: string;
-  published?: boolean;
-};
-
-export type SiteSection = {
-  name: string;
-  slug: string;
-  pages: SitePage[];
-};
-
-export type SiteStructure = {
-  sections: SiteSection[];
-  topLevelPages: SitePage[];
-};
+import { SitePage, SiteSection, SiteStructure } from "@/types";
 
 export function getSiteStructure(): SiteStructure {
   const contentDir = path.join(process.cwd(), "content");

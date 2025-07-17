@@ -1,5 +1,5 @@
 import { getSiteStructure } from "@/lib/getSiteStructure";
-// import { usePathname } from "next/navigation";
+import { NavLink } from "@/types";
 import BreadcrumbsClient from "./BreadcrumbsClient";
 
 export default function BreadcrumbsServer() {
@@ -8,15 +8,15 @@ export default function BreadcrumbsServer() {
   // For now, we'll just pass navLinks.
   const { sections, topLevelPages } = getSiteStructure();
 
-  const navLinks = [
-    { name: "Home", href: "/" }, // this is the home page
+  const navLinks: NavLink[] = [
+    { name: "Home", href: "/" },
     ...sections
-      .filter(s => s.pages.some(p => p.published !== false)) // Only include sections with at least one published page
+      .filter(s => s.pages.some(p => p.published !== false))
       .map(s => ({ name: s.name, href: `/${s.slug}` })),
     ...topLevelPages
       .filter(p => p.published !== false)
       .map(p => ({ name: p.title, href: `/${p.slug}` })),
-    { name: "Newsletter", href: "https://thisisalimirza.substack.com" } // this is how to add an external link
+    { name: "Newsletter", href: "https://thisisalimirza.substack.com", external: true }
   ];
   return <BreadcrumbsClient navLinks={navLinks} />;
 } 

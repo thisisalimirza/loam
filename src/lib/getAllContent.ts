@@ -2,19 +2,7 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import readingTime from "reading-time";
-
-export type ContentItem = {
-  title?: string;
-  section: string;
-  date?: string;
-  summary?: string;
-  tags?: string[];
-  slug: string;
-  url: string;
-  readTime?: string;
-  filePath: string;
-  published?: boolean;
-};
+import { ContentItem } from "@/types";
 
 export function getAllContent(): ContentItem[] {
   const content: ContentItem[] = [];

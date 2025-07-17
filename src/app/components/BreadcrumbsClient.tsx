@@ -2,8 +2,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
+import { NavLink } from "@/types";
 
-export default function BreadcrumbsClient({ navLinks }: { navLinks: { name: string; href: string }[] }) {
+export default function BreadcrumbsClient({ navLinks }: { navLinks: NavLink[] }) {
   const pathname = usePathname();
   const segments = pathname.split("/").filter(Boolean);
   const [switcher, setSwitcher] = useState(false);
