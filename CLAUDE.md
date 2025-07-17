@@ -26,7 +26,7 @@ This is a Next.js 15 personal website built with TypeScript, using the App Route
 ### Content Structure
 
 - `/content/` - All content as MDX files
-  - `/essays/`, `/memos/`, `/vignettes/`, `/journals/` - Section folders containing individual posts
+  - `/essays/`, `/memos/`, `/vignettes/`, `/notebooks/` - Section folders containing individual posts
   - Top-level `.mdx` files become standalone pages
   - `meditations.mdx` - Special handling as living list
 - Dynamic sections: Any new folder in `/content` automatically becomes a navigable section
