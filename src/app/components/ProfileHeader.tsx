@@ -53,25 +53,21 @@ export default function ProfileHeader() {
       <section className="profile-section">
         <h2 className="profile-section-label">Apps & Tools</h2>
         <div className="apps-grid">
-          <a href="https://bullet-journal-app-zeta.vercel.app" target="_blank" rel="noopener noreferrer" className="app-item">
+          <a href="https://bullet-journal-app-zeta.vercel.app" target="_blank" rel="noopener noreferrer" className="app-card">
             <span className="app-name">Bullet Journal</span>
-            <span className="app-desc">(local analog journaling)</span>
-            <span className="app-arrow">→</span>
+            <span className="app-desc">Local analog journaling</span>
           </a>
-          <a href="https://www.getraiseready.com" target="_blank" rel="noopener noreferrer" className="app-item">
+          <a href="https://www.getraiseready.com" target="_blank" rel="noopener noreferrer" className="app-card">
             <span className="app-name">Raise Ready</span>
-            <span className="app-desc">(salary negotiation practice)</span>
-            <span className="app-arrow">→</span>
+            <span className="app-desc">Salary negotiation practice</span>
           </a>
-          <a href="https://things-importer.vercel.app" target="_blank" rel="noopener noreferrer" className="app-item">
+          <a href="https://things-importer.vercel.app" target="_blank" rel="noopener noreferrer" className="app-card">
             <span className="app-name">Better Tasks</span>
-            <span className="app-desc">(capture tasks to Things 3)</span>
-            <span className="app-arrow">→</span>
+            <span className="app-desc">Capture tasks to Things 3</span>
           </a>
-          <a href="https://timer.thisisalimirza.com" target="_blank" rel="noopener noreferrer" className="app-item">
+          <a href="https://timer.thisisalimirza.com" target="_blank" rel="noopener noreferrer" className="app-card">
             <span className="app-name">Focus Timer</span>
-            <span className="app-desc">(deep work timer)</span>
-            <span className="app-arrow">→</span>
+            <span className="app-desc">Deep work timer</span>
           </a>
         </div>
       </section>

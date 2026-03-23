@@ -278,58 +278,46 @@ a.project-name:hover {
 }
 
 .apps-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
-  border-top: 1px solid var(--border);
-}
-
-.app-item {
   display: flex;
-  align-items: baseline;
-  gap: 0.25rem;
-  padding: 0.45rem 0;
-  border-bottom: 1px solid var(--border);
-  padding-right: 1rem;
-  text-decoration: none;
-  color: var(--foreground);
-  transition: color 0.15s ease;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
-.app-item:hover {
-  color: var(--accent);
+.app-card {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: var(--foreground);
+  background: transparent;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+  cursor: pointer;
+}
+
+.app-card:hover {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+  color: var(--foreground);
   text-decoration: none;
 }
 
-.app-item:hover .app-desc {
-  color: var(--foreground);
+.app-card:hover .app-desc {
+  color: var(--muted);
 }
 
 .app-name {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 500;
-  white-space: nowrap;
-  flex-shrink: 0;
+  line-height: 1.3;
 }
 
 .app-desc {
-  font-size: 0.82rem;
+  font-size: 0.75rem;
   color: var(--muted);
-  transition: color 0.15s ease;
-}
-
-.app-arrow {
-  font-size: 0.82rem;
-  color: var(--muted);
-  margin-left: auto;
-  flex-shrink: 0;
-  padding-right: 0;
-}
-
-@media (max-width: 480px) {
-  .apps-grid {
-    grid-template-columns: 1fr;
-  }
+  line-height: 1.3;
 }
 
 .profile-writing-note {
