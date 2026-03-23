@@ -66,18 +66,27 @@ export default function ProfileHeader() {
 
       <section className="profile-section">
         <h2 className="profile-section-label">Books</h2>
-        <ul className="project-list">
-          <li className="project-item">
-            <a href="https://www.amazon.com/World-That-Works-Prosperity-Capitalism-ebook/dp/B0G5LV6F2G" target="_blank" rel="noopener noreferrer" className="project-name">A World That Works</a>
-            <span className="project-desc">Freedom, prosperity, and the honest case for capitalism</span>
+        <ul className="book-list">
+          <li className="book-item">
+            <div className="book-cover-placeholder" />
+            <div className="book-info">
+              <a href="https://www.amazon.com/World-That-Works-Prosperity-Capitalism-ebook/dp/B0G5LV6F2G" target="_blank" rel="noopener noreferrer" className="book-name">A World That Works</a>
+              <span className="book-desc">Freedom, prosperity, and the honest case for capitalism</span>
+            </div>
           </li>
-          <li className="project-item">
-            <a href="https://www.amazon.com/Reveries-Through-Others-Stories-traveler-ebook/dp/B0CJ99H7DL" target="_blank" rel="noopener noreferrer" className="project-name">Reveries</a>
-            <span className="project-desc">Through the eyes of others</span>
+          <li className="book-item">
+            <div className="book-cover-placeholder" />
+            <div className="book-info">
+              <a href="https://www.amazon.com/Reveries-Through-Others-Stories-traveler-ebook/dp/B0CJ99H7DL" target="_blank" rel="noopener noreferrer" className="book-name">Reveries</a>
+              <span className="book-desc">Through the eyes of others</span>
+            </div>
           </li>
-          <li className="project-item">
-            <a href="https://www.amazon.com/Wealth-At-20-Financial-Graduates-ebook/dp/B0CJBBSXW5" target="_blank" rel="noopener noreferrer" className="project-name">Wealth At 20</a>
-            <span className="project-desc">Financial planning for fresh college graduates</span>
+          <li className="book-item">
+            <div className="book-cover-placeholder" />
+            <div className="book-info">
+              <a href="https://www.amazon.com/Wealth-At-20-Financial-Graduates-ebook/dp/B0CJBBSXW5" target="_blank" rel="noopener noreferrer" className="book-name">Wealth At 20</a>
+              <span className="book-desc">Financial planning for fresh college graduates</span>
+            </div>
           </li>
         </ul>
       </section>

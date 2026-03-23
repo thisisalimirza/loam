@@ -247,6 +247,65 @@ a.project-name:hover {
   text-underline-offset: 2px;
 }
 
+/* -----------------------------------------------
+   Book list
+----------------------------------------------- */
+.book-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.book-item {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 1rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+}
+
+.book-cover {
+  width: 48px;
+  height: 68px;
+  object-fit: cover;
+  display: block;
+  border-radius: 2px;
+}
+
+.book-cover-placeholder {
+  width: 48px;
+  height: 68px;
+  background: var(--border);
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.book-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.book-name {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--foreground);
+  text-decoration: none;
+}
+
+a.book-name:hover {
+  color: var(--accent);
+}
+
+.book-desc {
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
 @media (max-width: 480px) {
   .project-item {
     grid-template-columns: 145px 1fr;
