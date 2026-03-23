@@ -4,7 +4,7 @@ export default function ProfileHeader() {
   return (
     <header className="profile-header">
       <p className="profile-intro">
-        Born in Pakistan, raised across four countries. After college I spent time at Epic Systems before realizing the problems I cared most about required building my own things. Now I&apos;m in medical school and shipping software.
+        After college I spent time at Epic Systems before realizing the problems I cared most about required building my own things. Now I&apos;m in medical school and shipping software.
       </p>
 
       <section className="profile-section">
