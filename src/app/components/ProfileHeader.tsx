@@ -5,7 +5,7 @@ import { siteConfig } from "@/config/site"
 export default function ProfileHeader() {
   return (
     <header className="profile-header">
-      <div className="profile-identity">
+      <Link href="/" className="profile-identity">
         <Image
           src={siteConfig.images.profile}
           alt={`${siteConfig.author.name} profile photo`}
@@ -18,7 +18,7 @@ export default function ProfileHeader() {
           <h1 className="profile-name">Ali Mirza</h1>
           <p className="profile-tagline">Medical student. Builder. Writer.</p>
         </div>
-      </div>
+      </Link>
 
       <p className="profile-intro">
         Born in Pakistan, raised across four countries. After college I spent time at Epic Systems before realizing the problems I cared most about required building my own things. Now I&apos;m in medical school and shipping software.
