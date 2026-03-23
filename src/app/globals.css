@@ -162,25 +162,87 @@ button, input, select, textarea {
   margin: 0;
 }
 
-.profile-bio {
-  max-width: 100%;
+.profile-intro {
+  font-size: 0.97rem;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 2rem;
 }
 
-.profile-bio p {
-  margin-bottom: 1rem;
-  line-height: 1.75;
+.profile-section {
+  margin-bottom: 2rem;
+}
+
+.profile-section-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+
+.project-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid var(--border);
+}
+
+.project-item {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 1rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--border);
+  align-items: baseline;
+}
+
+.project-item--past .project-name,
+.project-item--past .project-desc {
+  color: var(--muted);
+}
+
+.project-name {
+  font-size: 0.95rem;
+  font-weight: 500;
   color: var(--foreground);
-  font-size: 1rem;
+  text-decoration: none;
+  white-space: nowrap;
 }
 
-.profile-bio p:last-child {
-  margin-bottom: 0;
+.project-name--plain {
+  color: var(--foreground);
 }
 
-.profile-bio a {
+a.project-name:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.project-desc {
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.profile-writing-note {
+  font-size: 0.95rem;
+  color: var(--foreground);
+  line-height: 1.7;
+}
+
+.profile-writing-note a {
   color: var(--accent);
   text-decoration: underline;
   text-underline-offset: 2px;
+}
+
+@media (max-width: 480px) {
+  .project-item {
+    grid-template-columns: 110px 1fr;
+    gap: 0.75rem;
+  }
 }
 
 /* -----------------------------------------------
