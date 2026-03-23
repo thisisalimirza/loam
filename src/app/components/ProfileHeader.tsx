@@ -1,25 +1,8 @@
-import Image from "next/image"
 import Link from "next/link"
-import { siteConfig } from "@/config/site"
 
 export default function ProfileHeader() {
   return (
     <header className="profile-header">
-      <Link href="/" className="profile-identity">
-        <Image
-          src={siteConfig.images.profile}
-          alt={`${siteConfig.author.name} profile photo`}
-          width={72}
-          height={72}
-          priority
-          className="profile-image"
-        />
-        <div>
-          <h1 className="profile-name">Ali Mirza</h1>
-          <p className="profile-tagline">Medical student. Builder. Writer.</p>
-        </div>
-      </Link>
-
       <p className="profile-intro">
         Born in Pakistan, raised across four countries. After college I spent time at Epic Systems before realizing the problems I cared most about required building my own things. Now I&apos;m in medical school and shipping software.
       </p>
