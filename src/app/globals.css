@@ -515,6 +515,57 @@ a.book-name:hover {
   margin-bottom: 2rem;
 }
 
+.filter-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.filter-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.filter-label {
+  font-size: 0.78rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-right: 0.2rem;
+  user-select: none;
+}
+
+.filter-chip {
+  font-size: 0.8rem;
+  padding: 0.15rem 0.55rem;
+  border: 1px solid var(--border);
+  background: none;
+  cursor: pointer;
+  color: var(--muted);
+  border-radius: 3px;
+  font-family: inherit;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.filter-chip:hover {
+  color: var(--foreground);
+  border-color: var(--foreground);
+}
+
+.filter-chip--active {
+  color: var(--foreground);
+  border-color: var(--foreground);
+}
+
+.filter-empty {
+  color: var(--muted);
+  font-size: 0.92rem;
+  padding: 1rem 0;
+}
+
 .content-list {
   list-style: none;
   padding: 0;

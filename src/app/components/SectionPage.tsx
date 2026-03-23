@@ -1,8 +1,8 @@
-import Link from "next/link"
 import { SectionPageProps } from "@/types"
 import BreadcrumbsServer from "./BreadcrumbsServer"
 import Footer from "./Footer"
 import MetaHead from "./MetaHead"
+import SectionListClient from "./SectionListClient"
 
 export default function SectionPage({ section, items }: SectionPageProps) {
   return (
@@ -12,29 +12,14 @@ export default function SectionPage({ section, items }: SectionPageProps) {
         description={`${section.name} by Ali Mirza`}
         canonical={`/${section.slug}`}
       />
-      
+
       <div className="page-layout">
         <BreadcrumbsServer />
 
         <h1 className="page-title">{section.name}</h1>
-        
-        <ul className="content-list">
-          {items.map(item => (
-            <li key={item.url} className="content-item">
-              <Link href={item.url} className="content-item-title">
-                {item.title}
-              </Link>
-              <span className="content-item-meta">
-                {item.effectiveDate && <> · {item.effectiveDate}</>}
-                {item.readTime && <> · {item.readTime}</>}
-              </span>
-              {item.summary && (
-                <div className="content-item-summary">{item.summary}</div>
-              )}
-            </li>
-          ))}
-        </ul>
-        
+
+        <SectionListClient items={items} />
+
         <Footer />
       </div>
     </>
