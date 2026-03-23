@@ -1,7 +1,7 @@
 export const siteConfig = {
   name: "Ali Mirza",
   title: "Ali Mirza – Personal Website",
-  description: "Essays, meditations, memos, vignettes, and projects by Ali Mirza.",
+  description: "Ali Mirza is a medical student, builder, and writer. Essays on medicine, systems, and building software — plus Side Effects, a newsletter.",
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://alimirza.com",
   author: {
     name: "Ali Mirza",
