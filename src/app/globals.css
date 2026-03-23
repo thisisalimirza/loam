@@ -44,7 +44,7 @@ body {
 a {
   color: var(--accent);
   text-decoration: none;
-  transition: color 0.1s;
+  transition: color 0.15s ease;
 }
 a:hover {
   text-decoration: underline;
@@ -113,7 +113,7 @@ button, input, select, textarea {
   font-size: 0.95rem;
   color: var(--muted);
   text-decoration: none;
-  transition: color 0.1s;
+  transition: color 0.15s ease;
 }
 
 .site-nav-link:hover {
@@ -124,6 +124,18 @@ button, input, select, textarea {
 .site-nav-active {
   color: var(--foreground);
   font-weight: 500;
+  position: relative;
+}
+
+.site-nav-active::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  right: 0;
+  height: 1.5px;
+  background: var(--foreground);
+  border-radius: 1px;
 }
 
 /* -----------------------------------------------
@@ -147,6 +159,11 @@ button, input, select, textarea {
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
+  transition: box-shadow 0.2s ease;
+}
+
+.profile-image:hover {
+  box-shadow: 0 0 0 2.5px var(--accent);
 }
 
 .profile-name {
@@ -195,7 +212,7 @@ button, input, select, textarea {
   gap: 1rem;
   padding: 0.55rem 0;
   border-bottom: 1px solid var(--border);
-  align-items: baseline;
+  align-items: start;
 }
 
 .project-item--past .project-name,
@@ -208,7 +225,8 @@ button, input, select, textarea {
   font-weight: 500;
   color: var(--foreground);
   text-decoration: none;
-  white-space: nowrap;
+  transition: color 0.15s ease;
+  line-height: 1.5;
 }
 
 .project-name--plain {
@@ -233,6 +251,11 @@ a.project-name:hover {
   font-size: 0.9rem;
   color: var(--muted);
   line-height: 1.5;
+  transition: color 0.15s ease;
+}
+
+.project-item:hover .project-desc {
+  color: var(--foreground);
 }
 
 .profile-writing-note {
@@ -271,6 +294,12 @@ a.project-name:hover {
   object-fit: cover;
   display: block;
   border-radius: 3px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.book-item a:hover .book-cover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
 }
 
 .book-cover-placeholder {
@@ -292,6 +321,7 @@ a.project-name:hover {
   color: var(--foreground);
   text-decoration: none;
   line-height: 1.3;
+  transition: color 0.15s ease;
 }
 
 a.book-name:hover {
