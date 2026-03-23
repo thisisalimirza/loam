@@ -855,6 +855,30 @@ a.book-name:hover {
   border-color: var(--foreground);
 }
 
+.admin-tab {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 1rem;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.admin-tab:hover {
+  color: var(--foreground);
+}
+
+.admin-tab-active {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--foreground);
+  cursor: default;
+}
+
 /* -----------------------------------------------
    Error / Not Found
 ----------------------------------------------- */
