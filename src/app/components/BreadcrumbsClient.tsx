@@ -20,6 +20,7 @@ export default function BreadcrumbsClient({ navLinks }: { navLinks: NavLink[] })
         <div className="site-nav-profile-text">
           <span className="site-nav-profile-name">Ali Mirza</span>
           <span className="site-nav-profile-tagline">Medical student. Builder. Writer.</span>
+          <span className="site-nav-profile-origin">Pakistan → Lebanon → Kenya → United States</span>
         </div>
       </Link>
 
