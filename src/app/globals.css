@@ -201,7 +201,7 @@ button, input, select, textarea {
 
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 0.45rem;
 }
 
@@ -268,17 +268,6 @@ button, input, select, textarea {
   line-height: 1.4;
 }
 
-@media (max-width: 540px) {
-  .card-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 340px) {
-  .card-grid {
-    grid-template-columns: 1fr;
-  }
-}
 
 .profile-writing-note {
   font-size: 0.95rem;
