@@ -215,6 +215,15 @@ button, input, select, textarea {
   color: var(--foreground);
 }
 
+.project-name--active {
+  color: var(--accent);
+}
+
+.project-item--secondary .project-name,
+.project-item--secondary .project-desc {
+  color: var(--muted);
+}
+
 a.project-name:hover {
   color: var(--accent);
   text-decoration: none;
