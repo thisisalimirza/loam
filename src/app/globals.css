@@ -277,6 +277,61 @@ a.project-name:hover {
   color: var(--foreground);
 }
 
+.apps-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border-top: 1px solid var(--border);
+}
+
+.app-item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--border);
+  padding-right: 1rem;
+  text-decoration: none;
+  color: var(--foreground);
+  transition: color 0.15s ease;
+}
+
+.app-item:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.app-item:hover .app-desc {
+  color: var(--foreground);
+}
+
+.app-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.app-desc {
+  font-size: 0.82rem;
+  color: var(--muted);
+  transition: color 0.15s ease;
+}
+
+.app-arrow {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-left: auto;
+  flex-shrink: 0;
+  padding-right: 0;
+}
+
+@media (max-width: 480px) {
+  .apps-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .profile-writing-note {
   font-size: 0.95rem;
   color: var(--foreground);

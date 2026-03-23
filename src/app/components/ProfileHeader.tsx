@@ -40,7 +40,7 @@ export default function ProfileHeader() {
             <span className="project-desc">Automated blog pipeline for product-led SEO</span>
           </li>
           <li className="project-item project-item--secondary">
-            <span className="project-name project-name--plain">MedAtlas</span>
+            <a href="https://medatlas-omega.vercel.app" target="_blank" rel="noopener noreferrer" className="project-name project-name--plain">MedAtlas</a>
             <span className="project-desc">Medical school discovery and comparison platform for pre-meds</span>
           </li>
           <li className="project-item project-item--past">
@@ -48,6 +48,32 @@ export default function ProfileHeader() {
             <span className="project-desc">Motion design studio for businesses — launched, ran, closed</span>
           </li>
         </ul>
+      </section>
+
+      <section className="profile-section">
+        <h2 className="profile-section-label">Apps & Tools</h2>
+        <div className="apps-grid">
+          <a href="https://bullet-journal-app-zeta.vercel.app" target="_blank" rel="noopener noreferrer" className="app-item">
+            <span className="app-name">Bullet Journal</span>
+            <span className="app-desc">(local analog journaling)</span>
+            <span className="app-arrow">→</span>
+          </a>
+          <a href="https://www.getraiseready.com" target="_blank" rel="noopener noreferrer" className="app-item">
+            <span className="app-name">Raise Ready</span>
+            <span className="app-desc">(salary negotiation practice)</span>
+            <span className="app-arrow">→</span>
+          </a>
+          <a href="https://things-importer.vercel.app" target="_blank" rel="noopener noreferrer" className="app-item">
+            <span className="app-name">Better Tasks</span>
+            <span className="app-desc">(capture tasks to Things 3)</span>
+            <span className="app-arrow">→</span>
+          </a>
+          <a href="https://timer.thisisalimirza.com" target="_blank" rel="noopener noreferrer" className="app-item">
+            <span className="app-name">Focus Timer</span>
+            <span className="app-desc">(deep work timer)</span>
+            <span className="app-arrow">→</span>
+          </a>
+        </div>
       </section>
 
       <section className="profile-section">

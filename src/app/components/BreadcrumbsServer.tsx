@@ -6,8 +6,7 @@ export default function BreadcrumbsServer() {
     { name: "Ali Mirza", href: "/" },
     { name: "Writing", href: "/writing" },
     { name: "Meditations", href: "/meditations" },
-    { name: "Projects", href: "/projects" },
-    { name: "Side Effects", href: "https://thisisalimirza.substack.com", external: true },
+{ name: "Side Effects", href: "https://thisisalimirza.substack.com", external: true },
   ];
   return <BreadcrumbsClient navLinks={navLinks} />;
 }
