@@ -79,21 +79,16 @@ export default function WritingListClient({ items }: WritingListClientProps) {
           {allTags.length > 0 && (
             <div className="filter-group">
               <span className="filter-label">Tags</span>
-              <button
-                className={`filter-chip${activeTag === null ? " filter-chip--active" : ""}`}
-                onClick={() => setActiveTag(null)}
+              <select
+                className="filter-select"
+                value={activeTag ?? ""}
+                onChange={e => setActiveTag(e.target.value || null)}
               >
-                All
-              </button>
-              {allTags.map(tag => (
-                <button
-                  key={tag}
-                  className={`filter-chip${activeTag === tag ? " filter-chip--active" : ""}`}
-                  onClick={() => setActiveTag(activeTag === tag ? null : tag)}
-                >
-                  {tag}
-                </button>
-              ))}
+                <option value="">All</option>
+                {allTags.map(tag => (
+                  <option key={tag} value={tag}>{tag}</option>
+                ))}
+              </select>
             </div>
           )}
         </div>
