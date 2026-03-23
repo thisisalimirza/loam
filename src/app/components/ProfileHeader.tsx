@@ -28,11 +28,13 @@ export default function ProfileHeader() {
         <p>
           The day after I submitted my medical school applications, I started cold-calling local businesses. That became{" "}
           <a href="https://www.janusny.com" target="_blank" rel="noopener noreferrer">JANUS</a>{" "}
-          — a motion design studio making launch videos for businesses that wanted to look more modern than their peers. It grew fast enough to matter, then fell apart when I handed it off too quickly to the wrong people as medical school started. I shut it down and pivoted to something that would compound inside medicine. Since then I&apos;ve been doing machine learning research in clinical outcomes and building software:{" "}
-          <a href="https://getrounds.app" target="_blank" rel="noopener noreferrer">Rounds</a>,{" "}
-          <a href="https://usesitr.com" target="_blank" rel="noopener noreferrer">Sitr</a>, and{" "}
+          — a motion design studio making launch videos for businesses that wanted to look more modern than their peers. It grew fast enough to matter, then fell apart when I handed it off too quickly as medical school started. I shut it down and pivoted to building things that compound in medicine. Since then I&apos;ve been doing machine learning research in clinical outcomes and shipping software:{" "}
+          <a href="https://getrounds.app" target="_blank" rel="noopener noreferrer">Rounds</a>{" "}
+          (a daily clinical case game for medical students),{" "}
+          <a href="https://usesitr.com" target="_blank" rel="noopener noreferrer">Sitr</a>,{" "}
+          MedAtlas (a discovery and comparison platform for pre-meds researching schools), and{" "}
           <a href="https://bylineblogs.com" target="_blank" rel="noopener noreferrer">Byline</a>{" "}
-          — a blog pipeline I built after noticing that hastily-written product pages were driving more organic users than I expected.
+          — a blog pipeline I built after noticing that hastily-written product pages were driving more organic traffic than I expected.
         </p>
         <p>
           I write a newsletter called{" "}
