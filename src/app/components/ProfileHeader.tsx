@@ -16,28 +16,28 @@ export default function ProfileHeader() {
         />
         <div>
           <h1 className="profile-name">Ali Mirza</h1>
-          <p className="profile-tagline">Entrepreneur, writer</p>
+          <p className="profile-tagline">Medical student. Builder. Writer.</p>
         </div>
       </div>
 
       <div className="profile-bio">
         <p>
-          I build companies and write about what I learn along the way. Right now I&apos;m
-          focused on <a href="https://www.janusny.com" target="_blank" rel="noopener noreferrer">JANUS</a>,
-          a growth firm that increases revenue for businesses, and{" "}
-          <a href="https://braskgroup.com" target="_blank" rel="noopener noreferrer">Brask</a>,
-          a private network for early-stage entrepreneurs who want to build together.
+          I grew up across four countries — Pakistan, Lebanon, Kenya, and eventually the United States — before college and a stint at Epic Systems, the world&apos;s dominant health IT company.
+          I loved what I was learning. But I kept feeling like I was doing more before graduation than after, and that the hardest problems I wanted to solve weren&apos;t going to get solved from inside a large organization.
         </p>
         <p>
-          I also run <a href="https://almostmed.com" target="_blank" rel="noopener noreferrer">AlmostMed</a>,
-          a resource hub with advice and templates I wish I had when I was applying to medical school.
-          And I write a newsletter called{" "}
-          <a href="https://thisisalimirza.substack.com" target="_blank" rel="noopener noreferrer">Thinking in Public</a>{" "}
-          on systems, society, and how to build a principled life.
+          The day after I submitted my medical school applications, I started cold-calling local businesses. That became{" "}
+          <a href="https://www.janusny.com" target="_blank" rel="noopener noreferrer">JANUS</a>{" "}
+          — a motion design studio making launch videos for businesses that wanted to look more modern than their peers. It grew fast enough to matter, then fell apart when I handed it off too quickly to the wrong people as medical school started. I shut it down and pivoted to something that would compound inside medicine. Since then I&apos;ve been doing machine learning research in clinical outcomes and building software:{" "}
+          <a href="https://getrounds.app" target="_blank" rel="noopener noreferrer">Rounds</a>,{" "}
+          <a href="https://usesitr.com" target="_blank" rel="noopener noreferrer">Sitr</a>, and{" "}
+          <a href="https://bylineblogs.com" target="_blank" rel="noopener noreferrer">Byline</a>{" "}
+          — a blog pipeline I built after noticing that hastily-written product pages were driving more organic users than I expected.
         </p>
         <p>
-          In 2020 I decided to consume less and create more. This site is a record of that effort —
-          essays and notes made public. <Link href="/writing">Read my writing.</Link>
+          I write a newsletter called{" "}
+          <a href="https://thisisalimirza.substack.com" target="_blank" rel="noopener noreferrer">Side Effects</a>.
+          This site is the rest — essays, notes, and thinking made public. <Link href="/writing">Read my writing.</Link>
         </p>
       </div>
     </header>
