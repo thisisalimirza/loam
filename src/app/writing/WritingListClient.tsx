@@ -11,6 +11,7 @@ interface WritingListClientProps {
 export default function WritingListClient({ items }: WritingListClientProps) {
   const [activeSection, setActiveSection] = useState<string | null>(null)
   const [activeTag, setActiveTag] = useState<string | null>(null)
+  const [activeYear, setActiveYear] = useState<string | null>(null)
 
   const allSections = useMemo(() => {
     const set = new Set<string>()
@@ -24,13 +25,20 @@ export default function WritingListClient({ items }: WritingListClientProps) {
     return Array.from(set).sort()
   }, [items])
 
+  const allYears = useMemo(() => {
+    const set = new Set<string>()
+    items.forEach(item => { if (item.date) set.add(item.date.slice(0, 4)) })
+    return Array.from(set).sort((a, b) => b.localeCompare(a))
+  }, [items])
+
   const filtered = useMemo(() => {
     return items.filter(item => {
       if (activeSection && item.section !== activeSection) return false
       if (activeTag && !item.tags?.includes(activeTag)) return false
+      if (activeYear && item.date?.slice(0, 4) !== activeYear) return false
       return true
     })
-  }, [items, activeSection, activeTag])
+  }, [items, activeSection, activeTag, activeYear])
 
   // Group filtered items by year
   const byYear = useMemo(() => {
@@ -49,7 +57,7 @@ export default function WritingListClient({ items }: WritingListClientProps) {
     return b.localeCompare(a)
   })
 
-  const hasFilters = allSections.length > 1 || allTags.length > 0
+  const hasFilters = allSections.length > 1 || allTags.length > 0 || allYears.length > 1
 
   return (
     <>
@@ -76,24 +84,35 @@ export default function WritingListClient({ items }: WritingListClientProps) {
             </div>
           )}
 
+          {allYears.length > 1 && (
+            <div className="filter-group">
+              <span className="filter-label">Year</span>
+              <select
+                className="filter-select"
+                value={activeYear ?? ""}
+                onChange={e => setActiveYear(e.target.value || null)}
+              >
+                <option value="">All</option>
+                {allYears.map(year => (
+                  <option key={year} value={year}>{year}</option>
+                ))}
+              </select>
+            </div>
+          )}
+
           {allTags.length > 0 && (
             <div className="filter-group">
               <span className="filter-label">Tags</span>
-              <button
-                className={`filter-chip${activeTag === null ? " filter-chip--active" : ""}`}
-                onClick={() => setActiveTag(null)}
+              <select
+                className="filter-select"
+                value={activeTag ?? ""}
+                onChange={e => setActiveTag(e.target.value || null)}
               >
-                All
-              </button>
-              {allTags.map(tag => (
-                <button
-                  key={tag}
-                  className={`filter-chip${activeTag === tag ? " filter-chip--active" : ""}`}
-                  onClick={() => setActiveTag(activeTag === tag ? null : tag)}
-                >
-                  {tag}
-                </button>
-              ))}
+                <option value="">All</option>
+                {allTags.map(tag => (
+                  <option key={tag} value={tag}>{tag}</option>
+                ))}
+              </select>
             </div>
           )}
         </div>

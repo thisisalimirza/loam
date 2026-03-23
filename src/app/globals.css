@@ -560,6 +560,34 @@ a.book-name:hover {
   border-color: var(--foreground);
 }
 
+.filter-select {
+  font-size: 0.8rem;
+  padding: 0.15rem 1.6rem 0.15rem 0.55rem;
+  border: 1px solid var(--border);
+  background: none;
+  cursor: pointer;
+  color: var(--muted);
+  border-radius: 3px;
+  font-family: inherit;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.filter-select:hover,
+.filter-select:focus {
+  color: var(--foreground);
+  border-color: var(--foreground);
+  outline: none;
+}
+
+.filter-select option {
+  background: var(--background);
+  color: var(--foreground);
+}
+
 .filter-empty {
   color: var(--muted);
   font-size: 0.92rem;
