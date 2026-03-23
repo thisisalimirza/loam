@@ -13,10 +13,10 @@ export default function SectionPage({ section, items }: SectionPageProps) {
         canonical={`/${section.slug}`}
       />
       
-      <div className="container">
+      <div className="page-layout">
         <BreadcrumbsServer />
-        
-        <h1 className="section-header">{section.name}</h1>
+
+        <h1 className="page-title">{section.name}</h1>
         
         <ul className="content-list">
           {items.map(item => (

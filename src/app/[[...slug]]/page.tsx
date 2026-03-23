@@ -31,12 +31,7 @@ export default async function CatchAllPage({ params }: { params: Promise<PagePar
 
   // Homepage
   if (slugArr.length === 0) {
-    const allContent = getAllContent();
-    const recent = allContent
-      .filter(item => item.published !== false && item.date)
-      .sort((a, b) => (b.date! > a.date! ? 1 : -1))
-      .slice(0, 2);
-    return <HomePage recent={recent} />;
+    return <HomePage />;
   }
 
   // Top-level .mdx page
