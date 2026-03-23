@@ -99,12 +99,16 @@ export default function ProfileHeader() {
 
       <section className="profile-section">
         <h2 className="profile-section-label">Writing</h2>
-        <p className="profile-writing-note">
-          I write{" "}
-          <a href="https://thisisalimirza.substack.com" target="_blank" rel="noopener noreferrer">Side Effects</a>
-          , a newsletter on medicine, systems, and building.{" "}
-          <Link href="/writing">Read my essays and notes.</Link>
-        </p>
+        <ul className="project-list">
+          <li className="project-item">
+            <a href="https://thisisalimirza.substack.com" target="_blank" rel="noopener noreferrer" className="project-name">Side Effects</a>
+            <span className="project-desc">Newsletter on medicine, systems, and building</span>
+          </li>
+          <li className="project-item">
+            <Link href="/writing" className="project-name">Essays & Memos</Link>
+            <span className="project-desc">Longform writing, short memos, and observations on this site</span>
+          </li>
+        </ul>
       </section>
     </header>
   )

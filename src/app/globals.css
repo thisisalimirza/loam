@@ -237,6 +237,25 @@ button, input, select, textarea {
   color: var(--accent);
 }
 
+.project-name--active::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  margin-right: 0.45em;
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
+  animation: live-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
 .project-item--secondary .project-name,
 .project-item--secondary .project-desc {
   color: var(--muted);
