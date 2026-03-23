@@ -72,11 +72,11 @@ export default function ProfileHeader() {
             <span className="project-desc">Freedom, prosperity, and the honest case for capitalism</span>
           </li>
           <li className="project-item">
-            <a href="https://www.amazon.com/stores/author/B0BPZ2PF18" target="_blank" rel="noopener noreferrer" className="project-name">Reveries</a>
+            <a href="https://www.amazon.com/Reveries-Through-Others-Stories-traveler-ebook/dp/B0CJ99H7DL" target="_blank" rel="noopener noreferrer" className="project-name">Reveries</a>
             <span className="project-desc">Through the eyes of others</span>
           </li>
           <li className="project-item">
-            <a href="https://www.amazon.com/stores/author/B0BPZ2PF18" target="_blank" rel="noopener noreferrer" className="project-name">Wealth At 20</a>
+            <a href="https://www.amazon.com/Wealth-At-20-Financial-Graduates-ebook/dp/B0CJBBSXW5" target="_blank" rel="noopener noreferrer" className="project-name">Wealth At 20</a>
             <span className="project-desc">Financial planning for fresh college graduates</span>
           </li>
         </ul>
