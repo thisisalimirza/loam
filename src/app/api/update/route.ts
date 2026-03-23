@@ -24,10 +24,13 @@ export async function POST(request: NextRequest) {
     ? tags.split(',').map((t: string) => t.trim()).filter(Boolean)
     : [];
 
+  const today = new Date().toISOString().split('T')[0];
+
   const lines = [
     '---',
     `title: "${title.replace(/"/g, '\\"')}"`,
-    `date: "${date || new Date().toISOString().split('T')[0]}"`,
+    `date: "${date || today}"`,
+    `lastEdited: "${today}"`,
     ...(summary ? [`summary: "${summary.replace(/"/g, '\\"')}"`] : []),
     ...(tagsArray.length > 0 ? [`tags: [${tagsArray.map(t => `"${t}"`).join(', ')}]`] : []),
     `published: ${published !== false ? 'true' : 'false'}`,
