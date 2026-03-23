@@ -26,7 +26,6 @@ export default function ProfileHeader() {
             <span className="card-name">MedAtlas</span>
             <span className="card-desc">Medical school discovery and comparison platform</span>
           </a>
-
         </div>
       </section>
 
@@ -54,16 +53,16 @@ export default function ProfileHeader() {
 
       <section className="profile-section">
         <h2 className="profile-section-label">Research</h2>
-        <div className="card-grid">
-          <a href="https://www.researchgate.net/publication/392475117_Predicting_Inpatient_Risk_of_Mortality_in_Diabetic_Patients_Using_Administrative_Data_and_Machine_Learning_An_External_Validation_Study_Using_SPARCS" target="_blank" rel="noopener noreferrer" className="project-card">
-            <span className="card-name">ML & Clinical Outcomes</span>
-            <span className="card-desc">Predicting inpatient mortality using administrative data and machine learning</span>
-          </a>
-          <a href="https://philarchive.org/rec/MIROSB" target="_blank" rel="noopener noreferrer" className="project-card">
-            <span className="card-name">Philosophy</span>
-            <span className="card-desc">Published work in philosophy</span>
-          </a>
-        </div>
+        <ul className="project-list">
+          <li className="project-item">
+            <a href="https://www.researchgate.net/publication/392475117_Predicting_Inpatient_Risk_of_Mortality_in_Diabetic_Patients_Using_Administrative_Data_and_Machine_Learning_An_External_Validation_Study_Using_SPARCS" target="_blank" rel="noopener noreferrer" className="project-name">ML & Clinical Outcomes</a>
+            <span className="project-desc">Predicting inpatient mortality in diabetic patients using administrative data and machine learning</span>
+          </li>
+          <li className="project-item">
+            <a href="https://philarchive.org/rec/MIROSB" target="_blank" rel="noopener noreferrer" className="project-name">Philosophy</a>
+            <span className="project-desc">Published work in philosophy</span>
+          </li>
+        </ul>
       </section>
 
       <section className="profile-section">
@@ -101,16 +100,16 @@ export default function ProfileHeader() {
 
       <section className="profile-section">
         <h2 className="profile-section-label">Writing</h2>
-        <div className="card-grid">
-          <a href="https://thisisalimirza.substack.com" target="_blank" rel="noopener noreferrer" className="project-card">
-            <span className="card-name">Side Effects</span>
-            <span className="card-desc">Newsletter on medicine, systems, and building</span>
-          </a>
-          <Link href="/writing" className="project-card">
-            <span className="card-name">Essays & Memos</span>
-            <span className="card-desc">Longform writing, short memos, and observations</span>
-          </Link>
-        </div>
+        <ul className="project-list">
+          <li className="project-item">
+            <a href="https://thisisalimirza.substack.com" target="_blank" rel="noopener noreferrer" className="project-name">Newsletter (Side Effects)</a>
+            <span className="project-desc">Newsletter on medicine, systems, and building</span>
+          </li>
+          <li className="project-item">
+            <Link href="/writing" className="project-name">Scratch Notes</Link>
+            <span className="project-desc">Quick jots, and unpolished thoughts</span>
+          </li>
+        </ul>
       </section>
     </header>
   )
