@@ -47,9 +47,9 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: [{ url: "/profilepic.jpg", type: "image/jpeg" }],
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
     apple: [{ url: "/profilepic.jpg", type: "image/jpeg" }],
-    shortcut: "/profilepic.jpg",
+    shortcut: "/favicon.svg",
   },
 };
 
