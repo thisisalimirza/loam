@@ -61,10 +61,6 @@ export interface SectionPageProps {
   items: ContentItem[]
 }
 
-export interface HomePageProps {
-  recent: ContentItem[]
-}
-
 export interface PageParams {
   slug?: string[]
 }
