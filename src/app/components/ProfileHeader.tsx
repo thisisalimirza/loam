@@ -74,16 +74,16 @@ export default function ProfileHeader() {
 
       <section className="profile-section">
         <h2 className="profile-section-label">Research</h2>
-        <ul className="project-list">
-          <li className="project-item">
-            <a href="https://www.researchgate.net/publication/392475117_Predicting_Inpatient_Risk_of_Mortality_in_Diabetic_Patients_Using_Administrative_Data_and_Machine_Learning_An_External_Validation_Study_Using_SPARCS" target="_blank" rel="noopener noreferrer" className="project-name">ML &amp; Clinical Outcomes</a>
-            <span className="project-desc">Predicting inpatient mortality in diabetic patients using administrative data and machine learning</span>
-          </li>
-          <li className="project-item">
-            <a href="https://philarchive.org/rec/MIROSB" target="_blank" rel="noopener noreferrer" className="project-name">Philosophy</a>
-            <span className="project-desc">Published work in philosophy</span>
-          </li>
-        </ul>
+        <div className="card-grid">
+          <a href="https://www.researchgate.net/publication/392475117_Predicting_Inpatient_Risk_of_Mortality_in_Diabetic_Patients_Using_Administrative_Data_and_Machine_Learning_An_External_Validation_Study_Using_SPARCS" target="_blank" rel="noopener noreferrer" className="project-card">
+            <span className="card-name">ML & Clinical Outcomes</span>
+            <span className="card-desc">Predicting inpatient mortality using administrative data and machine learning</span>
+          </a>
+          <a href="https://philarchive.org/rec/MIROSB" target="_blank" rel="noopener noreferrer" className="project-card">
+            <span className="card-name">Philosophy</span>
+            <span className="card-desc">Published work in philosophy</span>
+          </a>
+        </div>
       </section>
 
       <section className="profile-section">
@@ -121,16 +121,16 @@ export default function ProfileHeader() {
 
       <section className="profile-section">
         <h2 className="profile-section-label">Writing</h2>
-        <ul className="project-list">
-          <li className="project-item">
-            <a href="https://thisisalimirza.substack.com" target="_blank" rel="noopener noreferrer" className="project-name">Side Effects</a>
-            <span className="project-desc">Newsletter on medicine, systems, and building</span>
-          </li>
-          <li className="project-item">
-            <Link href="/writing" className="project-name">Essays & Memos</Link>
-            <span className="project-desc">Longform writing, short memos, and observations on this site</span>
-          </li>
-        </ul>
+        <div className="card-grid">
+          <a href="https://thisisalimirza.substack.com" target="_blank" rel="noopener noreferrer" className="project-card">
+            <span className="card-name">Side Effects</span>
+            <span className="card-desc">Newsletter on medicine, systems, and building</span>
+          </a>
+          <Link href="/writing" className="project-card">
+            <span className="card-name">Essays & Memos</span>
+            <span className="card-desc">Longform writing, short memos, and observations</span>
+          </Link>
+        </div>
       </section>
     </header>
   )
