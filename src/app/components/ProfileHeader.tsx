@@ -26,48 +26,48 @@ export default function ProfileHeader() {
 
       <section className="profile-section">
         <h2 className="profile-section-label">Building</h2>
-        <ul className="project-list">
-          <li className="project-item">
-            <a href="https://getrounds.app" target="_blank" rel="noopener noreferrer" className="project-name project-name--active">Rounds</a>
-            <span className="project-desc">Daily clinical case game for medical students</span>
-          </li>
-          <li className="project-item">
-            <a href="https://usesitr.com" target="_blank" rel="noopener noreferrer" className="project-name project-name--active">Sitr</a>
-            <span className="project-desc">Event ticketing and seating management</span>
-          </li>
-          <li className="project-item">
-            <a href="https://bylineblogs.com" target="_blank" rel="noopener noreferrer" className="project-name project-name--active">Byline</a>
-            <span className="project-desc">Automated blog pipeline for product-led SEO</span>
-          </li>
-          <li className="project-item project-item--secondary">
-            <a href="https://medatlas-omega.vercel.app" target="_blank" rel="noopener noreferrer" className="project-name project-name--plain">MedAtlas</a>
-            <span className="project-desc">Medical school discovery and comparison platform for pre-meds</span>
-          </li>
-          <li className="project-item project-item--past">
-            <span className="project-name project-name--plain">JANUS</span>
-            <span className="project-desc">Motion design studio for businesses — launched, ran, closed</span>
-          </li>
-        </ul>
+        <div className="card-grid">
+          <a href="https://getrounds.app" target="_blank" rel="noopener noreferrer" className="project-card">
+            <span className="card-name card-name--active">Rounds</span>
+            <span className="card-desc">Daily clinical case game for medical students</span>
+          </a>
+          <a href="https://usesitr.com" target="_blank" rel="noopener noreferrer" className="project-card">
+            <span className="card-name card-name--active">Sitr</span>
+            <span className="card-desc">Event ticketing and seating management</span>
+          </a>
+          <a href="https://bylineblogs.com" target="_blank" rel="noopener noreferrer" className="project-card">
+            <span className="card-name card-name--active">Byline</span>
+            <span className="card-desc">Automated blog pipeline for product-led SEO</span>
+          </a>
+          <a href="https://medatlas-omega.vercel.app" target="_blank" rel="noopener noreferrer" className="project-card project-card--muted">
+            <span className="card-name">MedAtlas</span>
+            <span className="card-desc">Medical school discovery and comparison platform</span>
+          </a>
+          <div className="project-card project-card--muted">
+            <span className="card-name">JANUS</span>
+            <span className="card-desc">Motion design studio — launched, ran, closed</span>
+          </div>
+        </div>
       </section>
 
       <section className="profile-section">
         <h2 className="profile-section-label">Apps & Tools</h2>
-        <div className="apps-grid">
-          <a href="https://bullet-journal-app-zeta.vercel.app" target="_blank" rel="noopener noreferrer" className="app-card">
-            <span className="app-name">Bullet Journal</span>
-            <span className="app-desc">Local analog journaling</span>
+        <div className="card-grid">
+          <a href="https://bullet-journal-app-zeta.vercel.app" target="_blank" rel="noopener noreferrer" className="project-card">
+            <span className="card-name">Bullet Journal</span>
+            <span className="card-desc">Local analog journaling</span>
           </a>
-          <a href="https://www.getraiseready.com" target="_blank" rel="noopener noreferrer" className="app-card">
-            <span className="app-name">Raise Ready</span>
-            <span className="app-desc">Salary negotiation practice</span>
+          <a href="https://www.getraiseready.com" target="_blank" rel="noopener noreferrer" className="project-card">
+            <span className="card-name">Raise Ready</span>
+            <span className="card-desc">Salary negotiation practice</span>
           </a>
-          <a href="https://things-importer.vercel.app" target="_blank" rel="noopener noreferrer" className="app-card">
-            <span className="app-name">Better Tasks</span>
-            <span className="app-desc">Capture tasks to Things 3</span>
+          <a href="https://things-importer.vercel.app" target="_blank" rel="noopener noreferrer" className="project-card">
+            <span className="card-name">Better Tasks</span>
+            <span className="card-desc">Capture tasks to Things 3</span>
           </a>
-          <a href="https://timer.thisisalimirza.com" target="_blank" rel="noopener noreferrer" className="app-card">
-            <span className="app-name">Focus Timer</span>
-            <span className="app-desc">Deep work timer</span>
+          <a href="https://timer.thisisalimirza.com" target="_blank" rel="noopener noreferrer" className="project-card">
+            <span className="card-name">Focus Timer</span>
+            <span className="card-desc">Deep work timer</span>
           </a>
         </div>
       </section>

@@ -199,52 +199,58 @@ button, input, select, textarea {
   margin-bottom: 0.5rem;
 }
 
-.project-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  border-top: 1px solid var(--border);
-}
-
-.project-item {
+.card-grid {
   display: grid;
-  grid-template-columns: 165px 1fr;
-  gap: 1rem;
-  padding: 0.55rem 0;
-  border-bottom: 1px solid var(--border);
-  align-items: start;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.45rem;
 }
 
-.project-item--past .project-name,
-.project-item--past .project-desc {
-  color: var(--muted);
-}
-
-.project-name {
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: var(--foreground);
+.project-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   text-decoration: none;
-  transition: color 0.15s ease;
-  line-height: 1.5;
+  color: var(--foreground);
+  background: transparent;
+  transition: border-color 0.15s ease, background 0.15s ease;
 }
 
-.project-name--plain {
+.project-card:hover {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+  text-decoration: none;
+}
+
+.project-card--muted {
+  opacity: 0.55;
+}
+
+.project-card--muted:hover {
+  opacity: 1;
+}
+
+.card-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1.3;
   color: var(--foreground);
 }
 
-.project-name--active {
+.card-name--active {
   color: var(--accent);
 }
 
-.project-name--active::before {
+.card-name--active::before {
   content: '';
   display: inline-block;
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background: #22c55e;
-  margin-right: 0.45em;
+  margin-right: 0.4em;
   vertical-align: middle;
   position: relative;
   top: -1px;
@@ -256,68 +262,22 @@ button, input, select, textarea {
   50% { opacity: 0.35; }
 }
 
-.project-item--secondary .project-name,
-.project-item--secondary .project-desc {
-  color: var(--muted);
-}
-
-a.project-name:hover {
-  color: var(--accent);
-  text-decoration: none;
-}
-
-.project-desc {
-  font-size: 0.9rem;
-  color: var(--muted);
-  line-height: 1.5;
-  transition: color 0.15s ease;
-}
-
-.project-item:hover .project-desc {
-  color: var(--foreground);
-}
-
-.apps-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.app-card {
-  display: inline-flex;
-  flex-direction: column;
-  gap: 0.1rem;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  text-decoration: none;
-  color: var(--foreground);
-  background: transparent;
-  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
-  cursor: pointer;
-}
-
-.app-card:hover {
-  border-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 6%, transparent);
-  color: var(--foreground);
-  text-decoration: none;
-}
-
-.app-card:hover .app-desc {
-  color: var(--muted);
-}
-
-.app-name {
-  font-size: 0.85rem;
-  font-weight: 500;
-  line-height: 1.3;
-}
-
-.app-desc {
+.card-desc {
   font-size: 0.75rem;
   color: var(--muted);
-  line-height: 1.3;
+  line-height: 1.4;
+}
+
+@media (max-width: 540px) {
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 340px) {
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .profile-writing-note {
