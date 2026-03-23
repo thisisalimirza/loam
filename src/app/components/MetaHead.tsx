@@ -37,11 +37,18 @@ export default function MetaHead({
       <meta property="og:site_name" content={siteConfig.name} />
       <meta property="og:locale" content={siteConfig.meta.locale} />
       
+      {/* Open Graph image */}
+      <meta property="og:image" content={`${siteConfig.url}/profilepic.jpg`} />
+      <meta property="og:image:width" content="120" />
+      <meta property="og:image:height" content="120" />
+      <meta property="og:image:alt" content={siteConfig.name} />
+
       {/* Twitter Card */}
-      <meta name="twitter:card" content="summary" />
+      <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={pageTitle} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:creator" content={siteConfig.author.twitter} />
+      <meta name="twitter:image" content={`${siteConfig.url}/profilepic.jpg`} />
       
       {/* Article specific */}
       {type === "article" && (

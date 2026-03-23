@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Head from "next/head";
+import { siteConfig } from "@/config/site";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,10 +14,42 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ali Mirza – Personal Website",
-  description: "Essays, meditations, memos, vignettes, and projects by Ali Mirza.",
+  metadataBase: new URL(siteConfig.url),
+  title: {
+    default: siteConfig.title,
+    template: `%s – ${siteConfig.name}`,
+  },
+  description: siteConfig.description,
+  openGraph: {
+    title: siteConfig.title,
+    description: siteConfig.description,
+    url: siteConfig.url,
+    siteName: siteConfig.name,
+    locale: siteConfig.meta.locale,
+    type: "website",
+    images: [{ url: "/profilepic.jpg", width: 120, height: 120, alt: siteConfig.name }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteConfig.title,
+    description: siteConfig.description,
+    creator: siteConfig.author.twitter,
+    images: ["/profilepic.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   icons: {
-    icon: "/favicon.jpeg",
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/profilepic.jpg", type: "image/jpeg" }],
+    shortcut: "/favicon.svg",
   },
 };
 
@@ -28,28 +60,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <Head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#2563eb" />
-        <meta name="author" content="Ali Mirza" />
-        <meta property="og:title" content="Ali Mirza – Personal Website" />
-        <meta property="og:description" content="Essays, meditations, memos, vignettes, and projects by Ali Mirza." />
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="en_US" />
-        <meta property="og:url" content="https://alimirza.com/" />
-        <meta property="og:site_name" content="Ali Mirza" />
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:title" content="Ali Mirza – Personal Website" />
-        <meta name="twitter:description" content="Essays, meditations, memos, vignettes, and projects by Ali Mirza." />
-        <link rel="canonical" href="https://alimirza.com/" />
-      </Head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <header role="banner" aria-label="Site header" />
         <main id="main-content" role="main" tabIndex={-1}>
           {children}
         </main>
-        <footer role="contentinfo" aria-label="Site footer" />
       </body>
     </html>
   );
