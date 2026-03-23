@@ -31,8 +31,8 @@ export default function ProfileHeader() {
           — a motion design studio making launch videos for businesses that wanted to look more modern than their peers. It grew fast enough to matter, then fell apart when I handed it off too quickly as medical school started. I shut it down and pivoted to building things that compound in medicine. Since then I&apos;ve been doing machine learning research in clinical outcomes and shipping software:{" "}
           <a href="https://getrounds.app" target="_blank" rel="noopener noreferrer">Rounds</a>{" "}
           (a daily clinical case game for medical students),{" "}
-          <a href="https://usesitr.com" target="_blank" rel="noopener noreferrer">Sitr</a>,{" "}
-          MedAtlas (a discovery and comparison platform for pre-meds researching schools), and{" "}
+          <a href="https://usesitr.com" target="_blank" rel="noopener noreferrer">Sitr</a>{" "}
+          (event ticketing and seating management, originally prototyped for inpatient bed planning), MedAtlas (a discovery and comparison platform for pre-meds researching schools), and{" "}
           <a href="https://bylineblogs.com" target="_blank" rel="noopener noreferrer">Byline</a>{" "}
           — a blog pipeline I built after noticing that hastily-written product pages were driving more organic traffic than I expected.
         </p>
