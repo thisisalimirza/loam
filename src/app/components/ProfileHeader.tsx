@@ -26,10 +26,7 @@ export default function ProfileHeader() {
             <span className="card-name">MedAtlas</span>
             <span className="card-desc">Medical school discovery and comparison platform</span>
           </a>
-          <div className="project-card project-card--muted">
-            <span className="card-name">JANUS</span>
-            <span className="card-desc">Motion design studio — launched, ran, closed</span>
-          </div>
+
         </div>
       </section>
 
