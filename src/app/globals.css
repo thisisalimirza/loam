@@ -191,7 +191,7 @@ button, input, select, textarea {
 
 .project-item {
   display: grid;
-  grid-template-columns: 130px 1fr;
+  grid-template-columns: 165px 1fr;
   gap: 1rem;
   padding: 0.55rem 0;
   border-bottom: 1px solid var(--border);
@@ -240,7 +240,7 @@ a.project-name:hover {
 
 @media (max-width: 480px) {
   .project-item {
-    grid-template-columns: 110px 1fr;
+    grid-template-columns: 145px 1fr;
     gap: 0.75rem;
   }
 }
