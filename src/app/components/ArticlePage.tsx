@@ -52,7 +52,7 @@ export default function ArticlePage({
           )}
           
           <div className="article-metadata">
-            <div>Published: {publishedDate}</div>
+            {publishedDate && <div>Published: {publishedDate}</div>}
             {lastEditedDate && <div>Last edited: {lastEditedDate}</div>}
             {readTime && <div>{readTime}</div>}
           </div>

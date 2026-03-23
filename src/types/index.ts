@@ -50,7 +50,7 @@ export interface ArticlePageProps {
   data: Record<string, unknown>
   headings: Heading[]
   related: ContentItem[]
-  publishedDate: string
+  publishedDate?: string
   lastEditedDate?: string
   readTime: string
   canonicalUrl: string
