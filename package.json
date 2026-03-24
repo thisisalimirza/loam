@@ -10,6 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "flexsearch": "^0.8.205",
     "gray-matter": "^4.0.3",
     "next": "15.3.8",
