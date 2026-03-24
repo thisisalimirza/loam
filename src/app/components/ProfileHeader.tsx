@@ -22,9 +22,9 @@ export default function ProfileHeader() {
             <span className="card-name card-name--active">Byline</span>
             <span className="card-desc">Automated blog pipeline for product-led SEO</span>
           </a>
-          <a href="https://medatlas-omega.vercel.app" target="_blank" rel="noopener noreferrer" className="project-card project-card--muted">
-            <span className="card-name">MedAtlas</span>
-            <span className="card-desc">Medical school discovery and comparison platform</span>
+          <a href="https://mymedstack.com" target="_blank" rel="noopener noreferrer" className="project-card project-card--muted">
+            <span className="card-name">MedStack</span>
+            <span className="card-desc">All-in-one toolkit for the physician pipeline</span>
           </a>
         </div>
       </section>
