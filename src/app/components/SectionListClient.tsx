@@ -15,7 +15,7 @@ export default function SectionListClient({ items, showSectionFilter = false }: 
 
   const allTags = useMemo(() => {
     const tagSet = new Set<string>()
-    items.forEach(item => item.tags?.forEach(t => tagSet.add(t)))
+    items.forEach(item => item.tags?.forEach(t => tagSet.add(t.toLowerCase())))
     return Array.from(tagSet).sort()
   }, [items])
 
@@ -28,7 +28,7 @@ export default function SectionListClient({ items, showSectionFilter = false }: 
   const filtered = useMemo(() => {
     return items.filter(item => {
       if (activeSection && item.section !== activeSection) return false
-      if (activeTag && !item.tags?.includes(activeTag)) return false
+      if (activeTag && !item.tags?.some(t => t.toLowerCase() === activeTag)) return false
       return true
     })
   }, [items, activeTag, activeSection])

@@ -21,7 +21,7 @@ export default function WritingListClient({ items }: WritingListClientProps) {
 
   const allTags = useMemo(() => {
     const set = new Set<string>()
-    items.forEach(item => item.tags?.forEach(t => set.add(t)))
+    items.forEach(item => item.tags?.forEach(t => set.add(t.toLowerCase())))
     return Array.from(set).sort()
   }, [items])
 
@@ -34,7 +34,7 @@ export default function WritingListClient({ items }: WritingListClientProps) {
   const filtered = useMemo(() => {
     return items.filter(item => {
       if (activeSection && item.section !== activeSection) return false
-      if (activeTag && !item.tags?.includes(activeTag)) return false
+      if (activeTag && !item.tags?.some(t => t.toLowerCase() === activeTag)) return false
       if (activeYear && item.date?.slice(0, 4) !== activeYear) return false
       return true
     })
