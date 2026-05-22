@@ -93,7 +93,7 @@ export default function ProfileHeader() {
         <ul className="book-list">
           <li className="book-item">
             <a href="https://www.amazon.com/World-That-Works-Prosperity-Capitalism-ebook/dp/B0G5LV6F2G" target="_blank" rel="noopener noreferrer">
-              <img src="https://m.media-amazon.com/images/I/61t9YX0iMVL._SL1500_.jpg" alt="A World That Works cover" className="book-cover" />
+              <Image src="https://m.media-amazon.com/images/I/61t9YX0iMVL._SL1500_.jpg" alt="A World That Works cover" width={90} height={128} className="book-cover" />
             </a>
             <div className="book-info">
               <a href="https://www.amazon.com/World-That-Works-Prosperity-Capitalism-ebook/dp/B0G5LV6F2G" target="_blank" rel="noopener noreferrer" className="book-name">A World That Works</a>
@@ -102,7 +102,7 @@ export default function ProfileHeader() {
           </li>
           <li className="book-item">
             <a href="https://www.amazon.com/Reveries-Through-Others-Stories-traveler-ebook/dp/B0CJ99H7DL" target="_blank" rel="noopener noreferrer">
-              <img src="https://m.media-amazon.com/images/I/71u8Vthq34L._SL1500_.jpg" alt="Reveries cover" className="book-cover" />
+              <Image src="https://m.media-amazon.com/images/I/71u8Vthq34L._SL1500_.jpg" alt="Reveries cover" width={90} height={128} className="book-cover" />
             </a>
             <div className="book-info">
               <a href="https://www.amazon.com/Reveries-Through-Others-Stories-traveler-ebook/dp/B0CJ99H7DL" target="_blank" rel="noopener noreferrer" className="book-name">Reveries</a>
@@ -111,7 +111,7 @@ export default function ProfileHeader() {
           </li>
           <li className="book-item">
             <a href="https://www.amazon.com/Wealth-At-20-Financial-Graduates-ebook/dp/B0CJBBSXW5" target="_blank" rel="noopener noreferrer">
-              <img src="https://m.media-amazon.com/images/I/61fombI3cZL._SL1500_.jpg" alt="Wealth At 20 cover" className="book-cover" />
+              <Image src="https://m.media-amazon.com/images/I/61fombI3cZL._SL1500_.jpg" alt="Wealth At 20 cover" width={90} height={128} className="book-cover" />
             </a>
             <div className="book-info">
               <a href="https://www.amazon.com/Wealth-At-20-Financial-Graduates-ebook/dp/B0CJBBSXW5" target="_blank" rel="noopener noreferrer" className="book-name">Wealth At 20</a>
