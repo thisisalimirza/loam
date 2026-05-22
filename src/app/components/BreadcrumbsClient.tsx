@@ -1,6 +1,5 @@
 "use client";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { NavLink } from "@/types";
 
@@ -8,25 +7,14 @@ export default function BreadcrumbsClient({ navLinks }: { navLinks: NavLink[] })
   const pathname = usePathname();
 
   return (
-    <nav aria-label="Site navigation" className="site-nav">
-      <Link href="/" className="site-nav-profile">
-        <Image
-          src="/profilepic.jpg"
-          alt="Ali Mirza"
-          width={40}
-          height={40}
-          className="site-nav-avatar"
-        />
-        <div className="site-nav-profile-text">
-          <span className="site-nav-profile-name">Ali Mirza</span>
-          <span className="site-nav-profile-tagline">Medical student. Builder. Writer.</span>
-          <span className="site-nav-profile-origin">Pakistan → Lebanon → Kenya → United States</span>
-        </div>
-      </Link>
-
-      <div className="site-nav-links">
+    <header className="site-header">
+      <div className="site-header-name">
+        <Link href="/" className="site-header-name-link">Ali Mirza</Link>
+      </div>
+      <hr className="site-header-hr" />
+      <nav aria-label="Site navigation" className="site-header-nav">
         {navLinks.map((link) => {
-          const isActive = pathname === link.href || (!link.external && link.href !== "/" && pathname.startsWith(link.href));
+          const isActive = !link.external && (pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href)));
 
           if (link.external) {
             return (
@@ -35,7 +23,7 @@ export default function BreadcrumbsClient({ navLinks }: { navLinks: NavLink[] })
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="site-nav-link"
+                className="site-header-link"
               >
                 {link.name}
               </a>
@@ -46,13 +34,14 @@ export default function BreadcrumbsClient({ navLinks }: { navLinks: NavLink[] })
             <Link
               key={link.href}
               href={link.href}
-              className={`site-nav-link${isActive ? " site-nav-active" : ""}`}
+              className={`site-header-link${isActive ? " site-header-link--active" : ""}`}
             >
               {link.name}
             </Link>
           );
         })}
-      </div>
-    </nav>
+      </nav>
+      <hr className="site-header-hr" />
+    </header>
   );
 }

@@ -92,14 +92,23 @@ export default function SectionListClient({ items, showSectionFilter = false }: 
               <Link href={item.url} className="content-item-title">
                 {item.title}
               </Link>
-              <span className="content-item-meta">
-                {showSectionFilter && <>{item.section.charAt(0).toUpperCase() + item.section.slice(1)} · </>}
-                {item.effectiveDate && <>{item.effectiveDate}</>}
-                {item.readTime && <> · {item.readTime}</>}
-              </span>
               {item.summary && (
                 <div className="content-item-summary">{item.summary}</div>
               )}
+              <div className="content-item-footer">
+                {showSectionFilter && (
+                  <span className="content-item-section">
+                    {item.section.charAt(0).toUpperCase() + item.section.slice(1)}
+                    {(item.effectiveDate || item.readTime) && " · "}
+                  </span>
+                )}
+                {item.effectiveDate && (
+                  <span className="content-item-date">{item.effectiveDate}</span>
+                )}
+                {item.readTime && (
+                  <span className="content-item-readtime"> · {item.readTime}</span>
+                )}
+              </div>
             </li>
           ))}
         </ul>

@@ -1,11 +1,34 @@
+import Image from "next/image"
 import Link from "next/link"
 
 export default function ProfileHeader() {
   return (
     <header className="profile-header">
-      <p className="profile-intro">
-        After college I spent time at Epic Systems before realizing the problems I cared most about required building my own things. Now I&apos;m in medical school and shipping software.
-      </p>
+      <div className="profile-top">
+        <div className="profile-top-bio">
+          <Image
+            src="/profilepic.jpg"
+            alt="Ali Mirza"
+            width={72}
+            height={72}
+            className="profile-photo"
+          />
+          <p className="profile-intro">
+            After college I spent time at Epic Systems before realizing the problems I cared most about required building my own things. Now I&apos;m in medical school and shipping software.
+          </p>
+        </div>
+        <div className="profile-top-contact">
+          <h3 className="profile-contact-title">Get in touch</h3>
+          <p className="profile-contact-text">
+            The easiest way to reach me is{" "}
+            <a href="https://twitter.com/thisisalimirza" target="_blank" rel="noopener noreferrer">
+              @thisisalimirza
+            </a>{" "}
+            on Twitter. Feel free to send an email at{" "}
+            <a href="mailto:ali@janusny.com">ali@janusny.com</a>. I try to respond to every message I get.
+          </p>
+        </div>
+      </div>
 
       <section className="profile-section">
         <h2 className="profile-section-label">Building</h2>
