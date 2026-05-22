@@ -32,46 +32,41 @@ export default function ProfileHeader() {
 
       <section className="profile-section">
         <h2 className="profile-section-label">Building</h2>
-        <div className="card-grid">
-          <a href="https://getrounds.app" target="_blank" rel="noopener noreferrer" className="project-card">
-            <span className="card-name card-name--active">Rounds</span>
-            <span className="card-desc">Daily clinical case game for medical students</span>
+        <div>
+          <a href="https://getrounds.app" target="_blank" rel="noopener noreferrer" className="project-row">
+            <span className="project-row-name project-row-name--active">Rounds</span>
+            <span className="project-row-sep">—</span>
+            <span className="project-row-desc">Daily clinical case game for medical students</span>
           </a>
-          <a href="https://usesitr.com" target="_blank" rel="noopener noreferrer" className="project-card">
-            <span className="card-name card-name--active">Sitr</span>
-            <span className="card-desc">Event ticketing and seating management</span>
+          <a href="https://usesitr.com" target="_blank" rel="noopener noreferrer" className="project-row">
+            <span className="project-row-name project-row-name--active">Sitr</span>
+            <span className="project-row-sep">—</span>
+            <span className="project-row-desc">Event ticketing and seating management</span>
           </a>
-          <a href="https://bylineblogs.com" target="_blank" rel="noopener noreferrer" className="project-card">
-            <span className="card-name card-name--active">Byline</span>
-            <span className="card-desc">Automated blog pipeline for product-led SEO</span>
+          <a href="https://bylineblogs.com" target="_blank" rel="noopener noreferrer" className="project-row">
+            <span className="project-row-name project-row-name--active">Byline</span>
+            <span className="project-row-sep">—</span>
+            <span className="project-row-desc">Automated blog pipeline for product-led SEO</span>
           </a>
-          <a href="https://mymedstack.com" target="_blank" rel="noopener noreferrer" className="project-card project-card--muted">
-            <span className="card-name">MedStack</span>
-            <span className="card-desc">All-in-one toolkit for the physician pipeline</span>
+          <a href="https://mymedstack.com" target="_blank" rel="noopener noreferrer" className="project-row project-row--muted">
+            <span className="project-row-name">MedStack</span>
+            <span className="project-row-sep">—</span>
+            <span className="project-row-desc">All-in-one toolkit for the physician pipeline</span>
           </a>
         </div>
       </section>
 
       <section className="profile-section">
         <h2 className="profile-section-label">Apps & Tools</h2>
-        <div className="card-grid">
-          <a href="https://bullet-journal-app-zeta.vercel.app" target="_blank" rel="noopener noreferrer" className="project-card">
-            <span className="card-name">Bullet Journal</span>
-            <span className="card-desc">Local analog journaling</span>
-          </a>
-          <a href="https://www.getraiseready.com" target="_blank" rel="noopener noreferrer" className="project-card">
-            <span className="card-name">Raise Ready</span>
-            <span className="card-desc">Salary negotiation practice</span>
-          </a>
-          <a href="https://things-importer.vercel.app" target="_blank" rel="noopener noreferrer" className="project-card">
-            <span className="card-name">Better Tasks</span>
-            <span className="card-desc">Capture tasks to Things 3</span>
-          </a>
-          <a href="https://timer.thisisalimirza.com" target="_blank" rel="noopener noreferrer" className="project-card">
-            <span className="card-name">Focus Timer</span>
-            <span className="card-desc">Deep work timer</span>
-          </a>
-        </div>
+        <p className="tools-inline">
+          <a href="https://bullet-journal-app-zeta.vercel.app" target="_blank" rel="noopener noreferrer">Bullet Journal</a>
+          <span className="tools-sep">·</span>
+          <a href="https://www.getraiseready.com" target="_blank" rel="noopener noreferrer">Raise Ready</a>
+          <span className="tools-sep">·</span>
+          <a href="https://things-importer.vercel.app" target="_blank" rel="noopener noreferrer">Better Tasks</a>
+          <span className="tools-sep">·</span>
+          <a href="https://timer.thisisalimirza.com" target="_blank" rel="noopener noreferrer">Focus Timer</a>
+        </p>
       </section>
 
       <section className="profile-section">

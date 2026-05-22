@@ -612,6 +612,88 @@ a.book-name:hover {
   color: var(--muted);
 }
 
+/* -----------------------------------------------
+   Project row (single-line name — desc entries)
+----------------------------------------------- */
+
+.project-row {
+  display: flex;
+  align-items: baseline;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+  color: var(--foreground);
+}
+
+.project-row:first-child {
+  border-top: 1px solid var(--border);
+}
+
+.project-row:hover .project-row-name {
+  color: var(--accent);
+}
+
+.project-row-name {
+  font-size: 0.92rem;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: color 0.15s;
+}
+
+.project-row-name--active::before {
+  content: '';
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #22c55e;
+  margin-right: 0.4em;
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
+  animation: live-pulse 2.5s ease-in-out infinite;
+}
+
+.project-row-sep {
+  color: var(--muted);
+  margin: 0 0.55rem;
+  flex-shrink: 0;
+}
+
+.project-row-desc {
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.project-row--muted {
+  opacity: 0.45;
+}
+
+/* Compact inline tools list */
+.tools-inline {
+  font-size: 0.92rem;
+  line-height: 1.9;
+  color: var(--foreground);
+}
+
+.tools-inline a {
+  color: var(--foreground);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.tools-inline a:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.tools-sep {
+  color: var(--muted);
+  margin: 0 0.45rem;
+  user-select: none;
+}
+
 /* keep old meta class for backwards compat */
 .content-item-meta {
   color: var(--muted);
