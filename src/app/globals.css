@@ -328,6 +328,7 @@ button, input, select, textarea {
   justify-content: center;
   gap: 3.5rem;
   padding: 0.7rem 0;
+  flex-wrap: wrap;
 }
 
 .site-header-link {
@@ -1264,6 +1265,15 @@ a.book-name:hover {
 
   .site-header {
     padding-top: 1.25rem;
+  }
+
+  .site-header-nav {
+    gap: 1.25rem;
+    justify-content: space-evenly;
+  }
+
+  .site-header-link {
+    font-size: 0.82rem;
   }
 
   .card-grid {

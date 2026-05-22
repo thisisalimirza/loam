@@ -22,6 +22,7 @@ export default function FuturePage() {
             correctly, or what the people in my field tend to say. What I actually think, as of
             right now.
           </p>
+          {/* tl;dr — hidden for now
           <div className="future-tldr">
             <span className="future-tldr-label">tl;dr</span>
             <p className="future-tldr-theme">The recurring theme is inversion:</p>
@@ -33,6 +34,7 @@ export default function FuturePage() {
               <li>writing is for discovering truth, not branding</li>
             </ul>
           </div>
+          */}
         </div>
 
         <div className="future-grid">
