@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 export default function Footer() {
   return (
@@ -18,6 +19,9 @@ export default function Footer() {
         <a href="https://twitter.com/thisisalimirza" target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)", marginRight: 12 }}>Twitter</a>
         <a href="https://github.com/thisisalimirza" target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)", marginRight: 12 }}>GitHub</a>
         <a href="https://www.linkedin.com/in/thisisalimirza/" target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)" }}>LinkedIn</a>
+      </div>
+      <div style={{ marginTop: 12 }}>
+        <Link href="/admin" style={{ color: "#555", fontSize: "0.75rem" }}>admin</Link>
       </div>
     </footer>
   );
