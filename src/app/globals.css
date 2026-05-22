@@ -105,6 +105,50 @@ button, input, select, textarea {
   color: var(--foreground);
 }
 
+.future-tldr {
+  margin-top: 1.75rem;
+  padding: 1.1rem 1.25rem;
+  border-left: 2px solid var(--border);
+  background: #f0ece4;
+}
+
+.future-tldr-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.future-tldr-theme {
+  font-size: 0.9rem;
+  color: var(--foreground);
+  margin-bottom: 0.5rem;
+}
+
+.future-tldr-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.future-tldr-list li {
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.7;
+  padding-left: 1em;
+  position: relative;
+}
+
+.future-tldr-list li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+}
+
 .future-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

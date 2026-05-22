@@ -22,6 +22,17 @@ export default function FuturePage() {
             correctly, or what the people in my field tend to say. What I actually think, as of
             right now.
           </p>
+          <div className="future-tldr">
+            <span className="future-tldr-label">tl;dr</span>
+            <p className="future-tldr-theme">The recurring theme is inversion:</p>
+            <ul className="future-tldr-list">
+              <li>outsiders understand systems better than insiders</li>
+              <li>weak positions can become strong</li>
+              <li>medicine trains compliance rather than creation</li>
+              <li>wealth matters because it creates freedom, not status</li>
+              <li>writing is for discovering truth, not branding</li>
+            </ul>
+          </div>
         </div>
 
         <div className="future-grid">
