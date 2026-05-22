@@ -3,6 +3,7 @@ import ProfileHeader from "./ProfileHeader"
 import Footer from "./Footer"
 import MetaHead from "./MetaHead"
 import StructuredData from "./StructuredData"
+import Image from "next/image"
 
 export default function HomePage() {
   return (
@@ -10,9 +11,39 @@ export default function HomePage() {
       <MetaHead />
       <StructuredData type="website" />
 
-      <div className="page-layout">
+      <div className="home-wrap">
         <BreadcrumbsServer />
-        <ProfileHeader />
+
+        <div className="home-grid">
+          <aside className="home-aside">
+            <Image
+              src="/profilepic.jpg"
+              alt="Ali Mirza"
+              width={80}
+              height={80}
+              className="home-aside-photo"
+            />
+            <p className="home-aside-bio">
+              After college I spent time at Epic Systems before realizing the problems I cared most about required building my own things. Now I&apos;m in medical school and shipping software.
+            </p>
+            <hr className="home-aside-rule" />
+            <h3 className="home-aside-contact-title">Get in touch</h3>
+            <p className="home-aside-contact-text">
+              Find me on{" "}
+              <a href="https://twitter.com/thisisalimirza" target="_blank" rel="noopener noreferrer">
+                Twitter
+              </a>
+              {" "}or email{" "}
+              <a href="mailto:ali@janusny.com">ali@janusny.com</a>.
+              I try to respond to everything.
+            </p>
+          </aside>
+
+          <main className="home-main">
+            <ProfileHeader />
+          </main>
+        </div>
+
         <Footer />
       </div>
     </>

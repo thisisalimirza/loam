@@ -69,6 +69,92 @@ button, input, select, textarea {
 }
 
 /* -----------------------------------------------
+   Home page layout (sidebar + main)
+----------------------------------------------- */
+
+.home-wrap {
+  max-width: 1020px;
+  margin: 0 auto;
+  padding: 0 2.5rem 5rem;
+}
+
+.home-grid {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 5rem;
+  align-items: start;
+}
+
+.home-aside {
+  position: sticky;
+  top: 2.5rem;
+}
+
+.home-aside-photo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin-bottom: 1.1rem;
+}
+
+.home-aside-bio {
+  font-size: 0.875rem;
+  line-height: 1.8;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+}
+
+.home-aside-rule {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 0 0 1.5rem;
+}
+
+.home-aside-contact-title {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: 0.45rem;
+}
+
+.home-aside-contact-text {
+  font-size: 0.83rem;
+  line-height: 1.75;
+  color: var(--muted);
+}
+
+.home-aside-contact-text a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.home-aside-contact-text a:hover {
+  text-decoration: underline;
+}
+
+.home-main {
+  min-width: 0;
+}
+
+@media (max-width: 720px) {
+  .home-wrap {
+    padding: 0 1.25rem 4rem;
+  }
+
+  .home-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .home-aside {
+    position: static;
+  }
+}
+
+/* -----------------------------------------------
    Site Header / Navigation
 ----------------------------------------------- */
 
@@ -104,7 +190,8 @@ button, input, select, textarea {
 
 .site-header-nav {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
+  gap: 3.5rem;
   padding: 0.7rem 0;
 }
 
