@@ -24,7 +24,7 @@ export default function HomePage() {
               className="home-aside-photo"
             />
             <p className="home-aside-bio">
-              I quit my job at Epic to build a marketing agency from scratch — that experience locked in the self-agency I needed for life. Once the business hit its stride, I went to med school. The goal: see patients, and spend the rest of my time fixing the biggest problems in healthcare and technology.
+              I quit my job at Epic to build a marketing agency. That experience showed me that I already had the self-agency I needed to build real things. Once the business hit a healthy profit, I went to med school. The goal: see patients, and spend the rest of my time fixing challenging problems in healthcare and technology.
             </p>
             <hr className="home-aside-rule" />
             <h3 className="home-aside-contact-title">Get in touch</h3>
