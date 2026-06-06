@@ -53,8 +53,8 @@ export default function ProfileHeader() {
             <span className="project-desc">Newsletter on medicine, systems, and building</span>
           </li>
           <li className="project-item">
-            <Link href="/writing" className="project-name">Scratch Notes</Link>
-            <span className="project-desc">Quick jots, and unpolished thoughts</span>
+            <Link href="/writing" className="project-name">Essays & Notes</Link>
+            <span className="project-desc">Essays, memos, and vignettes going back to 2015</span>
           </li>
         </ul>
       </section>

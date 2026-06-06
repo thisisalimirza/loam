@@ -241,6 +241,19 @@ button, input, select, textarea {
   margin-bottom: 1.5rem;
 }
 
+.home-aside-start-link {
+  display: inline-block;
+  font-size: 0.78rem;
+  color: var(--accent);
+  text-decoration: none;
+  margin-top: -0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.home-aside-start-link:hover {
+  text-decoration: underline;
+}
+
 .home-aside-rule {
   border: none;
   border-top: 1px solid var(--border);
