@@ -22,10 +22,10 @@ export default function ProfileHeader() {
             <span className="project-row-sep">—</span>
             <span className="project-row-desc">Automated blog pipeline for product-led SEO</span>
           </a>
-          <a href="https://mymedstack.com" target="_blank" rel="noopener noreferrer" className="project-row project-row--muted">
-            <span className="project-row-name">MedStack</span>
+          <a href="https://mymedstack.com" target="_blank" rel="noopener noreferrer" className="project-row">
+            <span className="project-row-name project-row-name--active">MedStack</span>
             <span className="project-row-sep">—</span>
-            <span className="project-row-desc">All-in-one toolkit for the physician pipeline</span>
+            <span className="project-row-desc">Programmatic SEO for the physician pathway — 700+ pages, 1,000+ organic visitors in 5 days</span>
           </a>
         </div>
       </section>
@@ -33,7 +33,9 @@ export default function ProfileHeader() {
       <section className="profile-section">
         <h2 className="profile-section-label">Apps & Tools</h2>
         <p className="tools-inline">
-          <a href="https://bullet-journal-app-zeta.vercel.app" target="_blank" rel="noopener noreferrer">Bullet Journal</a>
+          <a href="https://supertasks-app.vercel.app" target="_blank" rel="noopener noreferrer">SuperTasks</a>
+          <span className="tools-sep">·</span>
+          <a href="https://bullet-journal-app-zeta.vercel.app" target="_blank" rel="noopener noreferrer">BuJo</a>
           <span className="tools-sep">·</span>
           <a href="https://www.getraiseready.com" target="_blank" rel="noopener noreferrer">Raise Ready</a>
           <span className="tools-sep">·</span>
