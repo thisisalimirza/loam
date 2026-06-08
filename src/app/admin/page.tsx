@@ -103,14 +103,16 @@ export default function AdminPage() {
     e.preventDefault();
     setIsPublishing(true); setNewStatus(null);
     try {
+      const publishSection = section === '__root__' ? '' : section;
       const res = await fetch('/api/publish', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password, section, slug, title, summary, tags, content }),
+        body: JSON.stringify({ password, section: publishSection, slug, title, summary, tags, content }),
       });
       const data = await res.json();
       if (res.ok) {
-        setNewStatus({ type: 'success', message: `Published! Vercel will deploy /${section}/${slug} in ~60 seconds.` });
+        const url = section === '__root__' ? `/${slug}` : `/${section}/${slug}`;
+        setNewStatus({ type: 'success', message: `Published! Vercel will deploy ${url} in ~60 seconds.` });
         resetNewForm();
       } else {
         setNewStatus({ type: 'error', message: data.error ?? 'Unknown error' });
@@ -268,6 +270,7 @@ export default function AdminPage() {
             <select value={section} onChange={e => setSection(e.target.value)} required
               style={{ padding: '0.5rem 0.75rem', minWidth: 160 }}>
               <option value="">Select…</option>
+              <option value="__root__">— top-level page</option>
               {sections.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
           </div>
@@ -282,7 +285,7 @@ export default function AdminPage() {
             <label className="admin-label">
               Slug
               <span style={{ color: 'var(--muted)', fontWeight: 400, marginLeft: '0.5rem', fontSize: '0.8rem' }}>
-                → /{section || 'section'}/{slug || 'slug'}
+                → {section === '__root__' ? `/${slug || 'slug'}` : `/${section || 'section'}/${slug || 'slug'}`}
               </span>
             </label>
             <input type="text" value={slug} onChange={e => { setSlug(e.target.value); setSlugManuallyEdited(true); }}
@@ -324,10 +327,14 @@ export default function AdminPage() {
           ) : files.length === 0 ? (
             <p style={{ color: 'var(--muted)' }}>No content files found.</p>
           ) : (
-            Object.entries(grouped).map(([sec, items]) => (
+            Object.entries(grouped).sort(([a], [b]) => {
+              if (a === '_pages') return -1;
+              if (b === '_pages') return 1;
+              return a.localeCompare(b);
+            }).map(([sec, items]) => (
               <div key={sec} style={{ marginBottom: '1.5rem' }}>
                 <div style={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--muted)', marginBottom: '0.5rem' }}>
-                  {sec}
+                  {sec === '_pages' ? 'pages (top-level)' : sec}
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
                   {items.map(f => (

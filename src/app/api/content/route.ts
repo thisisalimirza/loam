@@ -56,10 +56,13 @@ export async function GET(request: NextRequest) {
         item.type === 'blob' &&
         item.path.startsWith('content/') &&
         item.path.endsWith('.mdx') &&
-        item.path.split('/').length === 3
+        (item.path.split('/').length === 3 || item.path.split('/').length === 2)
     )
     .map(item => {
       const parts = item.path.split('/');
+      if (parts.length === 2) {
+        return { path: item.path, section: '_pages', slug: parts[1].replace('.mdx', '') };
+      }
       return { path: item.path, section: parts[1], slug: parts[2].replace('.mdx', '') };
     })
     .sort((a, b) => a.section.localeCompare(b.section) || a.slug.localeCompare(b.slug));

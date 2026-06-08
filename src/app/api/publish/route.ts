@@ -8,9 +8,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  if (!section || !slug || !title || !content) {
+  if (section === undefined || section === null || !slug || !title || !content) {
     return NextResponse.json(
-      { error: 'Missing required fields: section, slug, title, content' },
+      { error: 'Missing required fields: slug, title, content' },
       { status: 400 }
     );
   }
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
   ];
 
   const fileContent = lines.join('\n');
-  const filePath = `content/${section}/${slug}.mdx`;
+  const filePath = section ? `content/${section}/${slug}.mdx` : `content/${slug}.mdx`;
   const encodedContent = Buffer.from(fileContent).toString('base64');
 
   const apiUrl = `https://api.github.com/repos/${repo}/contents/${filePath}`;
