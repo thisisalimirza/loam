@@ -1,12 +1,16 @@
 import BreadcrumbsServer from "./BreadcrumbsServer"
 import ProfileHeader from "./ProfileHeader"
+import TagCloud from "./TagCloud"
 import Footer from "./Footer"
 import MetaHead from "./MetaHead"
 import StructuredData from "./StructuredData"
+import { getAllTags } from "@/lib/getAllTags"
 import Image from "next/image"
 import Link from "next/link"
 
 export default function HomePage() {
+  const tags = getAllTags()
+
   return (
     <>
       <MetaHead />
@@ -42,7 +46,20 @@ export default function HomePage() {
           </aside>
 
           <main className="home-main">
-            <ProfileHeader />
+            <section className="home-topics">
+              <h1 className="home-topics-title">What I write about</h1>
+              <p className="home-topics-intro">
+                A decade of essays, memos, and vignettes — explore by theme, or{" "}
+                <Link href="/writing">browse everything</Link>.
+              </p>
+              <TagCloud tags={tags} />
+            </section>
+
+            <hr className="home-secondary-rule" />
+
+            <section className="home-secondary">
+              <ProfileHeader />
+            </section>
           </main>
         </div>
 
