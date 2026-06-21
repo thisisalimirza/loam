@@ -3,7 +3,8 @@ import BreadcrumbsClient from "./BreadcrumbsClient";
 
 export default function BreadcrumbsServer() {
   const navLinks: NavLink[] = [
-    { name: "Writing", href: "/writing" },
+    // Temporarily hidden — writing is reachable via "browse everything" on the home page.
+    // { name: "Writing", href: "/writing" },
     { name: "Projects", href: "/projects" },
     { name: "Future", href: "/future" },
     { name: "Meditations", href: "/meditations" },
