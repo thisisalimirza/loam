@@ -18,9 +18,8 @@ export default function FuturePage() {
           <h1 className="future-title">The future I want to build</h1>
           <p className="future-date">May 2026</p>
           <p className="future-intro">
-            Here&apos;s what I actually believe. Not what I think sounds good, or what positions me
-            correctly, or what the people in my field tend to say. What I actually think, as of
-            right now.
+            Here&apos;s what I actually believe. Not what sounds good, not what positions me well,
+            not what people in my field tend to say. What I actually think, today.
           </p>
           {/* tl;dr — hidden for now
           <div className="future-tldr">
@@ -42,73 +41,71 @@ export default function FuturePage() {
             <section className="future-section">
               <h2>Medicine needs people who refuse to be confined by it</h2>
               <p>
-                The people most qualified to fix healthcare are systematically trained to stay inside
-                it. Medical school doesn&apos;t teach you to build, it teaches you to comply. The
-                most interesting physicians I&apos;ve encountered are the ones who found that
-                insufficient.
+                The people most able to fix healthcare are the ones trained hardest to stay inside
+                it. Med school doesn&apos;t teach you to build. It teaches you to comply. The most
+                interesting physicians I&apos;ve met are the ones who decided that wasn&apos;t
+                enough.
               </p>
               <p>
-                Most health tech is built by outsiders who treat clinicians as users to be
-                understood. Some is built by clinicians who treat technology as a hammer because
-                it&apos;s the only tool they recognize. What&apos;s missing is someone who has
-                genuinely lived both — and doesn&apos;t feel the need to choose a side.
+                Most health tech gets built by outsiders who treat clinicians as users to be
+                studied. Some gets built by clinicians who treat technology as a hammer, because
+                it&apos;s the only tool they own. What&apos;s missing is the person who has actually
+                lived both, and doesn&apos;t feel any need to pick a side.
               </p>
               <p>
-                I came to medicine with a software engineering background, and what I noticed
-                immediately is that the EHR isn&apos;t a bad product with good intentions built by
-                malicious people. It&apos;s a bad product with good intentions built by people who
-                were never asked to understand what they were actually disrupting. I was one of
-                those people at Epic. That&apos;s worth sitting with.
+                I came to medicine from software, and the first thing I noticed is that the EHR
+                isn&apos;t a bad product built by bad people. It&apos;s a bad product, built with
+                good intentions, by people who were never asked to understand what they were
+                disrupting. I know this because I worked at Epic. I was one of those people.
               </p>
               <p>
                 Medicine has a complicated relationship with new data. The precautionary principle
-                is real, important, and sometimes right. But the question I keep returning to is:
-                when does appropriate caution become something else? When does it become
-                institutional habit rather than intellectual humility? I don&apos;t think the
-                profession has fully answered that, and I think it&apos;s one of the most important
-                questions in health technology right now.
+                is real, and it&apos;s sometimes right. But the question I keep coming back to is
+                when appropriate caution quietly turns into something else — when it stops being
+                intellectual humility and becomes institutional habit. I don&apos;t think the
+                profession has answered that honestly. I think it&apos;s the question.
               </p>
             </section>
 
             <section className="future-section">
               <h2>Capital is a tool, not a destination</h2>
               <p>
-                Money interests me less than what it makes possible. I&apos;ve built a 30-year
-                financial model comparing every major medical career path by NPV and optionality. I
-                did it not because I care about being wealthy but because I wanted to understand
-                which path leaves the most room to do things. The answer surprised me and I keep
-                returning to it.
+                Money interests me less than what it buys you the freedom to do. I built a 30-year
+                financial model comparing every major medical career path by NPV and optionality —
+                not because I want to be rich, but because I wanted to know which path leaves the
+                most room to act. The answer surprised me, and I haven&apos;t stopped thinking about
+                it since.
               </p>
               <p>
-                I don&apos;t know yet whether I will practice medicine as my primary work, build
-                healthcare companies, or eventually sit on the investment side of the table. I think
-                it&apos;s important to say that honestly rather than perform certainty I
-                don&apos;t have. What I do know is that the most interesting position is the one
-                that lets you speak credibly to all three.
+                I don&apos;t know yet whether I&apos;ll practice as my main work, build companies, or
+                end up on the investment side of the table. I&apos;d rather say that plainly than
+                perform a certainty I don&apos;t have. What I do know is that the most interesting
+                seat is the one that lets you speak credibly to all three.
               </p>
               <p>
-                There is enormous arbitrage between people who understand the biology and people who
-                understand the capital. I want to be someone who can sit at that table and be taken
-                seriously on both sides. Building toward that is part of what I&apos;m doing right
-                now.
+                There&apos;s enormous arbitrage between the people who understand the biology and the
+                people who understand the capital. I want to be someone who can sit at that table
+                and get taken seriously on both sides. A lot of what I&apos;m doing right now is
+                building toward that.
               </p>
             </section>
 
             <section className="future-section">
               <h2>On writing</h2>
               <p>
-                I write because I can&apos;t not. I published a poetry collection. I write a
-                newsletter. The only way I&apos;ve ever arrived at what I actually believe is by
-                writing it and watching whether it holds up under scrutiny.
+                I write because I can&apos;t not. I&apos;ve published a poetry collection. I write a
+                newsletter. The only way I&apos;ve ever found out what I actually believe is to write
+                it down and see whether it survives contact with anyone who pushes back.
               </p>
               <p>
-                The essays I&apos;m most proud of are the ones where I published something, had to
-                defend it, and the defense changed my mind. That process is not incidental to
-                thinking clearly, it is thinking clearly, done in public.
+                The essays I&apos;m proudest of are the ones where I published something, had to
+                defend it, and the defense changed my own mind. That isn&apos;t a side effect of
+                thinking clearly. It is thinking clearly — just done out loud, where people can
+                watch.
               </p>
               <p>
-                If you want to be heard, don&apos;t hedge your statements. Say something. This is
-                advice I gave myself and try to follow.
+                If you want to be heard, stop hedging. Say the thing. I gave myself that advice and
+                I&apos;m still trying to take it.
               </p>
             </section>
           </div>
@@ -117,39 +114,38 @@ export default function FuturePage() {
             <section className="future-section">
               <h2>I believe in the reversal</h2>
               <p>
-                The people society places in the lower position often hold the real power. The
-                medical student who actually understands software. The outsider who actually
-                understands the inside. I have spent years cataloguing reversals because I think
-                identifying them is one of the most important skills a person can have.
+                The person society puts in the lower position is often the one holding the real
+                power. The med student who actually understands software. The outsider who actually
+                understands the inside. I&apos;ve spent years collecting reversals like this, because
+                spotting them might be the most useful habit I have.
               </p>
               <p>
-                Most people won&apos;t say anything real because they&apos;re optimizing not to be
-                wrong in front of others. I am more afraid of not saying anything than of being
-                wrong. These are different orientations toward truth and they produce very different
-                lives.
+                Most people never say anything real, because they&apos;re optimizing not to look
+                wrong in front of other people. I&apos;m more afraid of staying quiet than of being
+                wrong. That&apos;s a small difference on paper. It builds completely different lives.
               </p>
               <p>
-                The weak position, held with enough clarity and discipline, becomes the strong one.
-                I don&apos;t think this is optimism. I think it&apos;s structural.
+                The weak position, held with enough clarity and nerve, turns into the strong one. I
+                don&apos;t think that&apos;s optimism. I think it&apos;s structural.
               </p>
             </section>
 
             <section className="future-section">
               <h2>Faith is not a footnote</h2>
               <p>
-                I am a Shia Muslim. This is not incidental to how I think. The tradition I come
-                from places courage above almost everything else. Not the courage of the person who
-                isn&apos;t afraid, but the courage of the person who <em>is</em> afraid, who can
-                see exactly what it will cost them, and who does it anyway because it&apos;s right.
+                I&apos;m a Shia Muslim. This isn&apos;t incidental to how I think. The tradition I
+                come from puts courage above nearly everything — and not the courage of the person
+                who feels no fear. The courage of the person who <em>is</em> afraid, who can see
+                exactly what it&apos;s going to cost, and does it anyway, because it&apos;s right.
               </p>
               <blockquote className="future-blockquote">
                 &ldquo;Allow God to work through your hands so that He can help you do in the world
                 that which He knows only you can do.&rdquo;
               </blockquote>
-              <p>I wrote this for myself a year ago. I believe it.</p>
+              <p>I wrote that for myself a year ago. I believe it.</p>
               <p>
-                Religion gave the pious beggar a dignity the king couldn&apos;t touch. That is not
-                a metaphor I use lightly.
+                Religion gave the pious beggar a dignity the king couldn&apos;t touch. I don&apos;t
+                reach for that line lightly.
               </p>
             </section>
           </div>
