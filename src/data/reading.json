@@ -1,0 +1,656 @@
+{
+  "generatedAt": "2026-08-02T00:00:25.709Z",
+  "stats": {
+    "highlights": 12233,
+    "books": 62,
+    "sources": 946,
+    "notes": 220,
+    "byCategory": {
+      "books": 5802,
+      "articles": 728,
+      "tweets": 2241,
+      "podcasts": 3443,
+      "supplementals": 19
+    },
+    "since": "2020-02-11T04:56:00Z"
+  },
+  "currentlyReading": [
+    {
+      "title": "The 38 Letters From J.D. Rockefeller to His Son",
+      "author": "G. Ng and M. Tan",
+      "kind": "book",
+      "url": null,
+      "progress": null,
+      "highlightCount": 216,
+      "lastTouchedAt": "2026-05-09T04:56:00Z"
+    },
+    {
+      "title": "The Social Transformation of American Medicine",
+      "author": "Paul Starr",
+      "kind": "book",
+      "url": null,
+      "progress": null,
+      "highlightCount": 3,
+      "lastTouchedAt": "2026-02-19T04:56:00Z"
+    }
+  ],
+  "lately": [
+    {
+      "title": "Killer Marketing Secrets That Always Work",
+      "author": "My First Million",
+      "kind": "podcast",
+      "url": "https://share.snipd.com/episode/5e250619-3365-406e-89bb-a2fd7e9eb791",
+      "highlightCount": 5,
+      "lastHighlightedAt": "2026-07-27T11:07:27.762646Z"
+    },
+    {
+      "title": "Brainstorming Business Ideas With a Billion-Dollar Founder",
+      "author": "My First Million",
+      "kind": "podcast",
+      "url": "https://share.snipd.com/episode/dc012620-f88a-4039-92d7-36bc4883b8bb",
+      "highlightCount": 7,
+      "lastHighlightedAt": "2026-07-22T19:53:32.363975Z"
+    },
+    {
+      "title": "Ray Dalio: The Principles That Made Me a Billionaire",
+      "author": "My First Million",
+      "kind": "podcast",
+      "url": "https://share.snipd.com/episode/77b897ae-9c90-4ebe-9bd8-eb231e89d1a1",
+      "highlightCount": 8,
+      "lastHighlightedAt": "2026-07-22T19:12:35.781203Z"
+    },
+    {
+      "title": "#424 Peter Thiel on How to Build a Creative Monopoly",
+      "author": "Founders",
+      "kind": "podcast",
+      "url": "https://share.snipd.com/episode/6bdece6c-10ea-4790-b9c6-c0053315d118",
+      "highlightCount": 18,
+      "lastHighlightedAt": "2026-07-14T21:01:32.652463Z"
+    },
+    {
+      "title": "3 Levels of Building a Personal Brand | Ep 984",
+      "author": "The Game with Alex Hormozi",
+      "kind": "podcast",
+      "url": "https://share.snipd.com/episode/0da380ed-390c-48b5-887d-4131124373c4",
+      "highlightCount": 3,
+      "lastHighlightedAt": "2026-07-05T23:09:42.055481Z"
+    },
+    {
+      "title": "Most Replayed Moment: The Mid-Year Reset - Atomic Habits Author on How to Get Back on Track",
+      "author": "The Diary Of A CEO with Steven Bartlett",
+      "kind": "podcast",
+      "url": "https://share.snipd.com/episode/72fafab7-d183-4baa-b287-b94eacf7a7bb",
+      "highlightCount": 3,
+      "lastHighlightedAt": "2026-07-05T23:03:14.683836Z"
+    },
+    {
+      "title": "Money Expert: Buying a House Is a Mistake! Becoming Rich Is Simple but You Won’t Do It!",
+      "author": "The Diary Of A CEO with Steven Bartlett",
+      "kind": "podcast",
+      "url": "https://share.snipd.com/episode/6becaaa1-5fb1-4357-b2e6-b4b9a4475aa8",
+      "highlightCount": 6,
+      "lastHighlightedAt": "2026-05-08T14:48:16.667825Z"
+    },
+    {
+      "title": "This Guy Built a $1B+ Brand in 3 Years. The Product? You'd Never Guess",
+      "author": "My First Million",
+      "kind": "podcast",
+      "url": "https://share.snipd.com/episode/8508bb9f-c433-45d8-a6fa-9a19b91db38d",
+      "highlightCount": 2,
+      "lastHighlightedAt": "2026-04-29T21:42:09.790182Z"
+    },
+    {
+      "title": "How to Find Your Thing",
+      "author": "My First Million",
+      "kind": "podcast",
+      "url": "https://share.snipd.com/episode/e420261f-a630-4d50-8a6b-3d803ccdd7f6",
+      "highlightCount": 3,
+      "lastHighlightedAt": "2026-04-27T11:07:24.421716Z"
+    }
+  ],
+  "marginalia": [
+    {
+      "note": "Proteins go through an extra phase of digestion in cellular cytosol via hydrolases. This is because the epithelial layer contains transporters that can take up short peptides as well as monomeric amino acids.\n\nThis is in contrast to carbohydrates where the epithelial can only transport monosaccharides, and so diassacahrides must be digested by brush border enzymes before they can be absorbed.",
+      "passage": "For proteins, on the other hand, the epithelium expresses transporters that can take up short peptides, as well as those specific for monomeric amino acids. Thus, peptides taken up into the enterocytes undergo a third stage of digestion in the cytosol, mediated by intracellular hydrolases.",
+      "title": "Chapter 15. Carbohydrate, Protein, and Water-Soluble Vitamin Assimilation",
+      "author": "accessmedicine.mhmedical.com",
+      "kind": "article",
+      "url": "https://accessmedicine.mhmedical.com/content.aspx?bookid=691&sectionid=45431417",
+      "date": "2025-03-02T16:44:12.374521Z"
+    },
+    {
+      "note": "not understanding keeps things interesting",
+      "passage": "Everyone needs to know that all knowledge will be transformed into preconceived notions, and the result will be one-sided conservative psychology, thinking that “I understand”, “I understand”, and “society is like this”. With the prejudice of “understanding”, there will be a lack of interest in knowing, and if there is no interest, it will lose the motivation to move…",
+      "title": "The 38 Letters From J.D. Rockefeller to His Son",
+      "author": "G. Ng and M. Tan",
+      "kind": "book",
+      "url": null,
+      "date": "2024-10-05T04:56:00Z"
+    },
+    {
+      "note": "“So long as man remains free he strives for nothing so incessantly and so painfully as to find some one to worship,” he writes in The Brothers Karamazov.\n\nThis is further supported by researchers at the University of Oxford in a 2011 study that concluded that to believe in a God, gods, and an afterlife is inherent to human nature.\n\nIt can be argued humans have \"religion instinct\" based on how we conceive of the mind and the body as separate making room for the widespread belief in the soul.\n\nHe argues belief is a question of commitment, not emotion or reason. Doubt in the supernatural and…",
+      "passage": "5. Look up.",
+      "title": "Fyodor Dostoyevsky’s Five Principles of Personal Freedom",
+      "author": "Arthur C. Brooks",
+      "kind": "article",
+      "url": "https://www.theatlantic.com/ideas/archive/2024/07/fyodor-dostoyevsky-formula-happiness/679203/",
+      "date": "2024-08-13T20:43:36.998659Z"
+    },
+    {
+      "note": "\"I yearn to kiss with tears the earth that I have left\" says the protagonist in \"The Dream of a Ridiculous Man\", Bostoyevsky's short story in which a man dreams up a world exactly the same as Earth but completely devoid of any suffering at all.\n\nDostoyevsky argues through his prose that love requires suffering.",
+      "passage": "4. The pain is the point.",
+      "title": "Fyodor Dostoyevsky’s Five Principles of Personal Freedom",
+      "author": "Arthur C. Brooks",
+      "kind": "article",
+      "url": "https://www.theatlantic.com/ideas/archive/2024/07/fyodor-dostoyevsky-formula-happiness/679203/",
+      "date": "2024-08-13T20:38:05.494948Z"
+    },
+    {
+      "note": "Dostoyevsky believed that the exactitude of technocratic utopianism would drug us and strip us of our humanity.\n\nHe argues that the \"palace of crystal\" the world offers in exchange for your human freedoms is not worth it, and that the anguish of being fully alive in the real world is better than the languishing, tranquilized, in the palace of crystal.\n\nI find it remarkable that the Palace of Crystal, even in the most literary definition, semantically alludes to computer chips that have caused excessive harm to analog human experiences and replaced them with doomscrolling and shorter attention…",
+      "passage": "3. Beware the palace of crystal.",
+      "title": "Fyodor Dostoyevsky’s Five Principles of Personal Freedom",
+      "author": "Arthur C. Brooks",
+      "kind": "article",
+      "url": "https://www.theatlantic.com/ideas/archive/2024/07/fyodor-dostoyevsky-formula-happiness/679203/",
+      "date": "2024-08-13T20:28:55.041343Z"
+    },
+    {
+      "note": "Dostoyevsky in his second most popular work, The Brothers Karamazov, touches on freedom and how it relates to happiness. \n\nHe sets up a world wherein Jesus arrives back on earth towards the end of the Spanish Inquisition. Jesus claims that man must be free to chose his path, but the Grand Inquisatador claims that that path is folly and rife with pain, trouble, and doubt. Man needs a path of order and prescribed directions. Quite chilling, the Inquisatador tells Jesus, \"we have improved upon Thy work\" and sends Jesus to burn to death. \n\nThis is particularly interesting because while…",
+      "passage": "2. To be alive is to embrace freedom.",
+      "title": "Fyodor Dostoyevsky’s Five Principles of Personal Freedom",
+      "author": "Arthur C. Brooks",
+      "kind": "article",
+      "url": "https://www.theatlantic.com/ideas/archive/2024/07/fyodor-dostoyevsky-formula-happiness/679203/",
+      "date": "2024-08-13T20:22:58.217236Z"
+    },
+    {
+      "note": "Dostoyevsky references Christopher Columbus' adventure in The Idiot, where he mentions one of life's greatest paradoxes: happiness requires purpose, purpose requires a sense of direction; a sense of direction requires goal-setting-- but happiness can not be had by achieving those goals.\n\nThis is similar to the \"arrival fallacy\" wherein people believe that achieving big goals will make them happy only to realize they are not any happier and sometimes even go into a depression over the let down.\n\nDostoyevsky argues Christopher Columbus was likely happiest 3 days *before* arriving onshore on the…",
+      "passage": "1. The journey is the destination.",
+      "title": "Fyodor Dostoyevsky’s Five Principles of Personal Freedom",
+      "author": "Arthur C. Brooks",
+      "kind": "article",
+      "url": "https://www.theatlantic.com/ideas/archive/2024/07/fyodor-dostoyevsky-formula-happiness/679203/",
+      "date": "2024-08-13T20:18:01.307929Z"
+    },
+    {
+      "note": "There are a few rules that string through all his works that help us live a life of more meaning.",
+      "passage": "rules for living a meaningful life emerges.",
+      "title": "Fyodor Dostoyevsky’s Five Principles of Personal Freedom",
+      "author": "Arthur C. Brooks",
+      "kind": "article",
+      "url": "https://www.theatlantic.com/ideas/archive/2024/07/fyodor-dostoyevsky-formula-happiness/679203/",
+      "date": "2024-08-13T20:14:15.205245Z"
+    },
+    {
+      "note": "Dostoyevsky never wrote a compendium of his philosophy. This was quite unlike other thought leaders from the 19th century.",
+      "passage": "Unlike many of his 19th-century-thinker contemporaries, Dostoyevsky never laid out his master philosophy in a particular text designed for that purpose. Rather, he revealed it largely through novels such as *The* *Brothers Karamazov* and *The Idiot*, as well as short stories, novellas, and occasional essays.",
+      "title": "Fyodor Dostoyevsky’s Five Principles of Personal Freedom",
+      "author": "Arthur C. Brooks",
+      "kind": "article",
+      "url": "https://www.theatlantic.com/ideas/archive/2024/07/fyodor-dostoyevsky-formula-happiness/679203/",
+      "date": "2024-08-13T20:13:33.268272Z"
+    },
+    {
+      "note": "Dostoyevsky questioned everything and accepted nothing. This turned him into someone deeply unsettled, constantly wandering intellectually, finding not comfort but meaning to be the central keystone of this life.",
+      "passage": "Because he was at such ease with the imminent prospect of his death, you might assume that Dostoevsky must have been a calm and composed person—and, quite likely, an unquestioningly religious one. But you’d be wrong on all counts: Dostoyevsky was a tortured soul—a philosophical wanderer who accepted nothing and questioned everything, including his own faith. Yet precisely this deep uneasiness with life led him to…",
+      "title": "Fyodor Dostoyevsky’s Five Principles of Personal Freedom",
+      "author": "Arthur C. Brooks",
+      "kind": "article",
+      "url": "https://www.theatlantic.com/ideas/archive/2024/07/fyodor-dostoyevsky-formula-happiness/679203/",
+      "date": "2024-08-13T20:12:31.175436Z"
+    },
+    {
+      "note": "who gen z trusts for helath advice",
+      "passage": "Still, Gen Z was at least somewhat discerning when choosing who to take advice from. About 66 percent of people said they only took the advice if it came from a doctor, nutritionist, athlete or someone with a similar background.",
+      "title": "More Than 50% of Gen Z Gets Their Health Advice From TikTok",
+      "author": "Michelle Del Rey",
+      "kind": "article",
+      "url": "https://www.independent.co.uk/news/world/americas/tiktok-health-advice-gen-z-b2580836.html?callback=in&code=MTC4MGVHZDUTYZHHZS0ZM2IWLWI3OTMTNJGXYWJLZDA0NDLL&state=85a0362d7bff4010a36667f36b4198af",
+      "date": "2024-07-21T16:24:07.748101Z"
+    },
+    {
+      "note": "tiktik wins bc free and accessible",
+      "passage": "When Zing Coach asked, most Gen Zers said they turned to TikTok because the advice was free. Only 11 percent of people surveyed said they got medical advice from qualified professionals. Another reason individuals said they preferred TikTok was because of the copious amounts of content on the app at their fingertips.",
+      "title": "More Than 50% of Gen Z Gets Their Health Advice From TikTok",
+      "author": "Michelle Del Rey",
+      "kind": "article",
+      "url": "https://www.independent.co.uk/news/world/americas/tiktok-health-advice-gen-z-b2580836.html?callback=in&code=MTC4MGVHZDUTYZHHZS0ZM2IWLWI3OTMTNJGXYWJLZDA0NDLL&state=85a0362d7bff4010a36667f36b4198af",
+      "date": "2024-07-21T16:23:29.789091Z"
+    },
+    {
+      "note": "the core thing is here is to ask yourself \"what are the constituent parts of this particular goal?\" and tag accordingly",
+      "passage": "*“If you know what the constituent parts are of your particular art form, you can* *collect “snippets” of evocative ideas* *for any one of them in a single notebook and use tags to label them. So, for example, I have a “Film Ideas” folder where I store ideas and then tag them with one of the following labels:* • *C = description of Characters who could be used in a story.* • *L = interesting and visual Location.* •…",
+      "title": "A Complete Guide to Tagging for Personal Knowledge Management",
+      "author": "Tiago Forte",
+      "kind": "article",
+      "url": "https://fortelabs.com/blog/a-complete-guide-to-tagging-for-personal-knowledge-management/",
+      "date": "2024-07-21T16:01:46.543850Z"
+    },
+    {
+      "note": "how tags add a more flexible level of organization that can adapt to new needs without being destructive to the underlying information",
+      "passage": "How do you know which divisions or categories to use? Again, instead of trying to guess that upfront, start with the laziest approach: simply collect whatever seems interesting on a given topic. When the time comes, and *only* when the time comes, look at what you’ve already captured organically and look for patterns. The best time to do this is when starting a project that might draw on these notes, because often…",
+      "title": "A Complete Guide to Tagging for Personal Knowledge Management",
+      "author": "Tiago Forte",
+      "kind": "article",
+      "url": "https://fortelabs.com/blog/a-complete-guide-to-tagging-for-personal-knowledge-management/",
+      "date": "2024-07-21T15:49:01.389672Z"
+    },
+    {
+      "note": "Either you adapt to new technology or you become less and less productive",
+      "passage": "Will technology increase the gap between rich and poor? It will certainly increase the gap between the productive and the unproductive. That's the whole point of technology. With a tractor an energetic farmer could plow six times as much land in a day as he could with a team of horses. But only if he mastered a new kind of farming. I've seen the lever of technology grow visibly in my own time. In high school I made…",
+      "title": "Mind the Gap",
+      "author": "Paul Graham",
+      "kind": "article",
+      "url": "https://paulgraham.com/gap.html",
+      "date": "2024-06-29T12:27:59.854984Z"
+    },
+    {
+      "note": "What do you get paid money for?",
+      "passage": "You get paid by doing or making something people want, and those who make more money are often simply better at doing what people want. Top actors make a lot more money than B-list actors. The B-list actors might be almost as charismatic, but when people go to the theater and look at the list of movies playing, they want that extra oomph that the big stars have.",
+      "title": "Mind the Gap",
+      "author": "Paul Graham",
+      "kind": "article",
+      "url": "https://paulgraham.com/gap.html",
+      "date": "2024-06-29T11:45:12.125800Z"
+    },
+    {
+      "note": "Scientists make the best marketers",
+      "passage": "The Scientist Mindset in Business Summary: The best growth people in business are often scientists who are rigorous thinkers, differentiate between causation and correlation, and acknowledge the limits of their knowledge. Unlike many who believe they know everything until proven wrong, scientists work within the boundaries of their domain, like physicists recognizing the existence of dark matter. Applying this…",
+      "title": "How to Scale Your Startup With Growth Levers —  Matt Lerner",
+      "author": "Deep Dive with Ali Abdaal",
+      "kind": "podcast",
+      "url": "https://share.snipd.com/episode/b978cbf6-4fb6-407e-8e71-ca688dfc5348",
+      "date": "2024-06-19T16:16:01.557657Z"
+    },
+    {
+      "note": "Scientists make the best marketers",
+      "passage": "The Scientist Mindset in Business The best growth people in business are often scientists who are rigorous thinkers, differentiate between causation and correlation, and acknowledge the limits of their knowledge. Unlike many who believe they know everything until proven wrong, scientists work within the boundaries of their domain, like physicists recognizing the existence of dark matter. Applying this mindset to…",
+      "title": "How to Scale Your Startup With Growth Levers: Matt Lerner",
+      "author": "Deep Dive with Ali Abdaal",
+      "kind": "podcast",
+      "url": "https://share.snipd.com/episode/b978cbf6-4fb6-407e-8e71-ca688dfc5348",
+      "date": "2024-06-19T16:16:01.557657Z"
+    }
+  ],
+  "shelf": [
+    {
+      "title": "The Courage to Be Disliked",
+      "author": "Ichiro Kishimi, Fumitake Koga",
+      "url": null,
+      "highlightCount": 46,
+      "noteCount": 0,
+      "lastHighlightedAt": "2025-08-31T04:56:00Z"
+    },
+    {
+      "title": "$100M Leads",
+      "author": "Alex Hormozi",
+      "url": null,
+      "highlightCount": 15,
+      "noteCount": 0,
+      "lastHighlightedAt": "2025-03-22T04:56:00Z"
+    },
+    {
+      "title": "The 5 Types of Wealth",
+      "author": "Sahil Bloom",
+      "url": null,
+      "highlightCount": 8,
+      "noteCount": 0,
+      "lastHighlightedAt": "2025-03-15T04:56:00Z"
+    },
+    {
+      "title": "Analog",
+      "author": "Robert Hassan",
+      "url": null,
+      "highlightCount": 5,
+      "noteCount": 0,
+      "lastHighlightedAt": "2025-01-30T10:02:51.412005Z"
+    },
+    {
+      "title": "The Richest Man in Babylon",
+      "author": "George S. Clason",
+      "url": null,
+      "highlightCount": 57,
+      "noteCount": 0,
+      "lastHighlightedAt": "2025-01-10T04:56:00Z"
+    },
+    {
+      "title": "The Art and Business of Online Writing",
+      "author": "Nicolas Cole",
+      "url": null,
+      "highlightCount": 172,
+      "noteCount": 0,
+      "lastHighlightedAt": "2024-12-22T04:56:00Z"
+    },
+    {
+      "title": "Aesop's Fables",
+      "author": "Aesop",
+      "url": null,
+      "highlightCount": 12,
+      "noteCount": 0,
+      "lastHighlightedAt": "2024-08-31T04:56:00Z"
+    },
+    {
+      "title": "How to Develop Your Personal Mission Statement",
+      "author": "Stephen R. Covey",
+      "url": null,
+      "highlightCount": 41,
+      "noteCount": 0,
+      "lastHighlightedAt": "2024-06-03T04:56:00Z"
+    },
+    {
+      "title": "Psycho-Cybernetics",
+      "author": "Maxwell Maltz",
+      "url": null,
+      "highlightCount": 255,
+      "noteCount": 3,
+      "lastHighlightedAt": "2024-05-05T16:27:16.171758Z"
+    },
+    {
+      "title": "Building a StoryBrand",
+      "author": "Donald Miller",
+      "url": null,
+      "highlightCount": 151,
+      "noteCount": 0,
+      "lastHighlightedAt": "2024-03-14T04:56:00Z"
+    },
+    {
+      "title": "Scientific Advertising",
+      "author": "Claude C. Hopkins",
+      "url": null,
+      "highlightCount": 66,
+      "noteCount": 3,
+      "lastHighlightedAt": "2024-03-02T04:56:00Z"
+    },
+    {
+      "title": "Essentialism",
+      "author": "Greg McKeown",
+      "url": null,
+      "highlightCount": 126,
+      "noteCount": 2,
+      "lastHighlightedAt": "2024-02-28T04:00:21.873756Z"
+    },
+    {
+      "title": "Never Split the Difference",
+      "author": "Chris Voss and Tahl Raz",
+      "url": null,
+      "highlightCount": 295,
+      "noteCount": 4,
+      "lastHighlightedAt": "2024-01-31T04:56:00Z"
+    },
+    {
+      "title": "The Four Steps to the Epiphany",
+      "author": "Steve Blank",
+      "url": null,
+      "highlightCount": 407,
+      "noteCount": 3,
+      "lastHighlightedAt": "2024-01-22T04:56:00Z"
+    },
+    {
+      "title": "The Four Steps to the Epiphany",
+      "author": "Blank, Steve",
+      "url": null,
+      "highlightCount": 291,
+      "noteCount": 3,
+      "lastHighlightedAt": "2024-01-21T21:24:47.973227Z"
+    },
+    {
+      "title": "How to Win Friends and Influence People",
+      "author": "Carnegie, Dale",
+      "url": null,
+      "highlightCount": 172,
+      "noteCount": 1,
+      "lastHighlightedAt": "2024-01-16T11:57:20.735641Z"
+    },
+    {
+      "title": "Atomic Habits",
+      "author": "James Clear",
+      "url": null,
+      "highlightCount": 240,
+      "noteCount": 10,
+      "lastHighlightedAt": "2024-01-16T11:50:46.220074Z"
+    },
+    {
+      "title": "Think and Grow Rich!",
+      "author": "Napoleon Hill",
+      "url": null,
+      "highlightCount": 195,
+      "noteCount": 0,
+      "lastHighlightedAt": "2023-10-15T15:24:20.467173Z"
+    },
+    {
+      "title": "Building a Second Brain _ a Proven Method to Organize Your Digital Life and Unlock Your Creative Potential",
+      "author": "Tiago Forte",
+      "url": null,
+      "highlightCount": 275,
+      "noteCount": 10,
+      "lastHighlightedAt": "2023-10-15T15:20:58.032544Z"
+    },
+    {
+      "title": "Copywriting Secrets_ How Everyone Can Use the Power of Words to Get More Clicks, Sales and Profits . . . No Matter What You Sell or Who You Sell It To!-Author Academy Elite",
+      "author": "Jim Edwards",
+      "url": null,
+      "highlightCount": 386,
+      "noteCount": 9,
+      "lastHighlightedAt": "2023-10-15T15:20:09.735467Z"
+    },
+    {
+      "title": "The PARA Method",
+      "author": "Tiago Forte",
+      "url": null,
+      "highlightCount": 35,
+      "noteCount": 1,
+      "lastHighlightedAt": "2023-10-15T15:18:37.776232Z"
+    },
+    {
+      "title": "The Alchemist",
+      "author": "Paulo Coelho",
+      "url": null,
+      "highlightCount": 81,
+      "noteCount": 1,
+      "lastHighlightedAt": "2023-10-15T15:18:09.609518Z"
+    },
+    {
+      "title": "The Complete Harvard Classics - ALL 71 Volumes",
+      "author": "Benjamin Franklin, John Woolman, William Penn, Plato, Epictetus, Marcus Aurelius, Francis Bacon, Joh...",
+      "url": null,
+      "highlightCount": 141,
+      "noteCount": 4,
+      "lastHighlightedAt": "2023-09-16T04:56:00Z"
+    },
+    {
+      "title": "$100M Offers",
+      "author": "Alex Hormozi",
+      "url": null,
+      "highlightCount": 306,
+      "noteCount": 5,
+      "lastHighlightedAt": "2023-09-04T04:56:00Z"
+    },
+    {
+      "title": "$100M Offers",
+      "author": "Hormozi, Alex",
+      "url": null,
+      "highlightCount": 327,
+      "noteCount": 5,
+      "lastHighlightedAt": "2023-09-03T20:07:38.463326Z"
+    },
+    {
+      "title": "Exhalation",
+      "author": "Ted Chiang",
+      "url": null,
+      "highlightCount": 11,
+      "noteCount": 1,
+      "lastHighlightedAt": "2023-08-24T21:19:20.847064Z"
+    },
+    {
+      "title": "Deep Medicine",
+      "author": "Eric Topol",
+      "url": null,
+      "highlightCount": 79,
+      "noteCount": 11,
+      "lastHighlightedAt": "2023-08-24T21:18:38.586066Z"
+    },
+    {
+      "title": "Propaganda & Persuasion",
+      "author": "Jowett, Garth S.; O′Donnell, Victoria J.",
+      "url": null,
+      "highlightCount": 17,
+      "noteCount": 0,
+      "lastHighlightedAt": "2023-08-24T21:17:33.659756Z"
+    },
+    {
+      "title": "Global Catastrophes and Trends",
+      "author": "Smil, Vaclav",
+      "url": null,
+      "highlightCount": 188,
+      "noteCount": 7,
+      "lastHighlightedAt": "2023-08-24T21:16:55.929645Z"
+    },
+    {
+      "title": "How Propaganda Works",
+      "author": "Stanley, Jason;",
+      "url": null,
+      "highlightCount": 80,
+      "noteCount": 11,
+      "lastHighlightedAt": "2023-08-24T21:16:12.599235Z"
+    },
+    {
+      "title": "Mountains Beyond Mountains",
+      "author": "Kidder, Tracy",
+      "url": null,
+      "highlightCount": 31,
+      "noteCount": 0,
+      "lastHighlightedAt": "2023-08-24T21:15:35.046581Z"
+    },
+    {
+      "title": "Existentialism Is a Humanism, Jean-Paul Sartre 1946",
+      "author": "Jean-Paul Sartre",
+      "url": null,
+      "highlightCount": 44,
+      "noteCount": 0,
+      "lastHighlightedAt": "2023-08-24T21:14:46.817664Z"
+    },
+    {
+      "title": "Rich Dad Poor Dad",
+      "author": "Kiyosaki, Robert T.",
+      "url": null,
+      "highlightCount": 13,
+      "noteCount": 0,
+      "lastHighlightedAt": "2023-08-24T21:14:14.095605Z"
+    },
+    {
+      "title": "How to Lie With Statistics",
+      "author": "Huff, Darrell",
+      "url": null,
+      "highlightCount": 38,
+      "noteCount": 1,
+      "lastHighlightedAt": "2023-08-24T21:13:43.508821Z"
+    },
+    {
+      "title": "Moonwalking With Einstein",
+      "author": "Foer, Joshua",
+      "url": null,
+      "highlightCount": 35,
+      "noteCount": 4,
+      "lastHighlightedAt": "2023-08-24T21:12:45.762853Z"
+    },
+    {
+      "title": "Where Good Ideas Come From",
+      "author": "Steven Johnson",
+      "url": null,
+      "highlightCount": 60,
+      "noteCount": 2,
+      "lastHighlightedAt": "2023-08-24T21:12:17.318559Z"
+    },
+    {
+      "title": "How to Avoid a Climate Disaster",
+      "author": "Bill Gates",
+      "url": null,
+      "highlightCount": 81,
+      "noteCount": 2,
+      "lastHighlightedAt": "2023-08-24T21:08:56.926239Z"
+    },
+    {
+      "title": "Heart",
+      "author": "Sandeep Jauhar",
+      "url": null,
+      "highlightCount": 53,
+      "noteCount": 6,
+      "lastHighlightedAt": "2023-08-24T21:08:05.398012Z"
+    },
+    {
+      "title": "Stakeholder Capitalism",
+      "author": "Klaus Schwab",
+      "url": null,
+      "highlightCount": 160,
+      "noteCount": 5,
+      "lastHighlightedAt": "2023-08-24T21:07:31.666840Z"
+    },
+    {
+      "title": "Leadership",
+      "author": "Doris Kearns Goodwin",
+      "url": null,
+      "highlightCount": 57,
+      "noteCount": 1,
+      "lastHighlightedAt": "2023-08-24T21:04:51.106608Z"
+    }
+  ],
+  "activity": {
+    "2025-08-06": 3,
+    "2025-08-10": 1,
+    "2025-08-11": 28,
+    "2025-08-18": 1,
+    "2025-08-21": 14,
+    "2025-08-23": 13,
+    "2025-08-28": 39,
+    "2025-08-29": 12,
+    "2025-08-30": 1,
+    "2025-09-15": 4,
+    "2025-09-16": 4,
+    "2025-09-25": 11,
+    "2025-09-26": 12,
+    "2025-09-27": 5,
+    "2025-09-28": 10,
+    "2025-09-29": 27,
+    "2025-09-30": 7,
+    "2025-10-02": 17,
+    "2025-10-03": 34,
+    "2025-10-08": 3,
+    "2025-10-12": 62,
+    "2025-10-13": 14,
+    "2025-10-16": 1,
+    "2025-10-17": 16,
+    "2025-10-18": 4,
+    "2025-11-24": 9,
+    "2025-11-28": 3,
+    "2026-05-07": 1,
+    "2026-05-09": 8,
+    "2026-02-19": 5,
+    "2025-08-31": 2,
+    "2025-11-20": 75,
+    "2026-04-27": 3,
+    "2026-03-30": 2,
+    "2026-04-28": 1,
+    "2025-12-01": 30,
+    "2025-11-30": 32,
+    "2025-11-22": 8,
+    "2026-02-07": 14,
+    "2025-12-16": 4,
+    "2026-01-27": 10,
+    "2026-01-29": 31,
+    "2026-02-06": 18,
+    "2026-07-05": 6,
+    "2026-01-11": 17,
+    "2026-01-24": 2,
+    "2026-06-03": 1,
+    "2025-12-05": 1,
+    "2026-01-18": 1,
+    "2026-06-15": 1,
+    "2026-04-29": 2,
+    "2026-05-08": 6,
+    "2026-07-14": 18,
+    "2026-07-15": 6,
+    "2026-07-18": 6,
+    "2026-07-22": 3,
+    "2026-07-27": 5
+  }
+}

@@ -1426,3 +1426,242 @@ a.book-name:hover {
     gap: 0.3rem 0.8rem;
   }
 }
+
+/* -----------------------------------------------
+   Reading page (/reading)
+----------------------------------------------- */
+
+.reading-intro {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--foreground);
+  margin-bottom: 3rem;
+}
+
+.reading-section {
+  border-top: 1px solid var(--border);
+  padding-top: 1.75rem;
+  margin-bottom: 3rem;
+}
+
+.reading-section-title {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+
+.reading-section-note {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--muted);
+  margin-bottom: 1.25rem;
+}
+
+.reading-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.reading-item {
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.reading-item:first-child {
+  border-top: 1px solid var(--border);
+}
+
+.reading-item-title {
+  display: block;
+  color: var(--foreground);
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+a.reading-item-title:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.reading-item-author {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-top: 0.1rem;
+}
+
+.reading-item-meta {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--muted);
+  opacity: 0.85;
+  margin-top: 0.25rem;
+}
+
+/* Highlighting activity, a year at a glance */
+
+.reading-heatmap-scroll {
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.reading-heatmap {
+  min-width: 42rem;
+}
+
+.reading-heatmap-months,
+.reading-heatmap-grid {
+  display: flex;
+  gap: 3px;
+}
+
+.reading-heatmap-months {
+  margin-bottom: 0.3rem;
+}
+
+.reading-heatmap-month {
+  width: 10px;
+  flex: 0 0 10px;
+  font-size: 0.62rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.reading-heatmap-week {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.reading-heatmap-day {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: #e7e0d4;
+}
+
+.reading-heatmap-day[data-level="1"] { background: rgba(192, 69, 42, 0.22); }
+.reading-heatmap-day[data-level="2"] { background: rgba(192, 69, 42, 0.42); }
+.reading-heatmap-day[data-level="3"] { background: rgba(192, 69, 42, 0.65); }
+.reading-heatmap-day[data-level="4"] { background: rgba(192, 69, 42, 0.95); }
+
+.reading-heatmap-legend {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 0.6rem;
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+.reading-heatmap-legend span:first-child {
+  margin-right: 0.2rem;
+}
+
+.reading-heatmap-legend span:last-child {
+  margin-left: 0.2rem;
+}
+
+/* Marginalia */
+
+.reading-marginalia {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.reading-margin-entry {
+  padding: 1.4rem 0;
+  border-top: 1px solid var(--border);
+}
+
+.reading-margin-entry:last-child {
+  border-bottom: 1px solid var(--border);
+}
+
+.reading-margin-passage {
+  border-left: 2px solid var(--border);
+  padding-left: 1rem;
+  margin-bottom: 0.9rem;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+.reading-margin-note {
+  font-size: 1rem;
+  line-height: 1.7;
+  white-space: pre-line;
+}
+
+.reading-margin-source {
+  margin-top: 0.6rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.reading-margin-source .reading-item-title {
+  display: inline;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.reading-margin-source a.reading-item-title:hover {
+  color: var(--accent);
+}
+
+/* The shelf */
+
+.reading-shelf-year {
+  margin-bottom: 2.25rem;
+}
+
+.reading-shelf-year-title {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+}
+
+/* By the numbers */
+
+.reading-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.75rem 2.5rem;
+  margin: 0;
+}
+
+.reading-stat dt {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.2rem;
+}
+
+.reading-stat dd {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+.reading-footnote {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 2.5rem;
+}
+
+@media (max-width: 720px) {
+  .reading-stats {
+    gap: 1.25rem 2rem;
+  }
+
+  .reading-stat dd {
+    font-size: 1.2rem;
+  }
+}
