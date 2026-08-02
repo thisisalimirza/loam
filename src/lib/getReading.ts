@@ -1,41 +1,37 @@
 import readingData from "@/data/reading.json"
 
-export interface ReadingItem {
-  title: string
-  author: string | null
-  kind: string
-  url: string | null
-  progress: number | null
-  highlightCount: number | null
-  lastTouchedAt: string | null
-}
-
-export interface RecentSource {
-  title: string
-  author: string | null
-  kind: string
-  url: string | null
-  highlightCount: number
-  lastHighlightedAt: string
-}
-
-export interface Marginalia {
-  note: string
-  passage: string
-  title: string
-  author: string | null
-  kind: string
-  url: string | null
+export interface Highlight {
+  text: string
+  /** My own note on the passage, when I left one. */
+  note: string | null
   date: string | null
 }
 
-export interface ShelfItem {
+export interface Source {
+  slug: string
+  title: string
+  author: string | null
+  kind: string
+  category: string | null
+  sourceUrl: string | null
+  coverUrl: string | null
+  highlightCount: number
+  noteCount: number
+  firstHighlightedAt: string | null
+  lastHighlightedAt: string | null
+  /** True for books, false for the handful of non-book sources kept. */
+  shelf: boolean
+  /** Marked up recently enough to still count as open. */
+  open: boolean
+  highlights: Highlight[]
+}
+
+export interface OpenDocument {
   title: string
   author: string | null
   url: string | null
-  highlightCount: number
-  noteCount: number
-  lastHighlightedAt: string
+  progress: number
+  lastOpenedAt: string | null
 }
 
 export interface ReadingSnapshot {
@@ -43,15 +39,13 @@ export interface ReadingSnapshot {
   stats: {
     highlights: number
     books: number
-    sources: number
     notes: number
     byCategory: Record<string, number>
     since: string | null
   }
-  currentlyReading: ReadingItem[]
-  lately: RecentSource[]
-  marginalia: Marginalia[]
-  shelf: ShelfItem[]
+  books: Source[]
+  beyond: Source[]
+  openDocuments: OpenDocument[]
   activity: Record<string, number>
 }
 
@@ -60,4 +54,14 @@ export interface ReadingSnapshot {
  */
 export function getReading(): ReadingSnapshot {
   return readingData as ReadingSnapshot
+}
+
+/** Every source with a page of its own: the shelf plus what sits beside it. */
+export function getAllSources(): Source[] {
+  const { books, beyond } = getReading()
+  return [...books, ...beyond]
+}
+
+export function getSource(slug: string): Source | undefined {
+  return getAllSources().find((source) => source.slug === slug)
 }
