@@ -99,6 +99,28 @@ published: true   # Set to false to hide from navigation/search (draft mode)
 
 ---
 
+## 📖 The Reading Page
+
+`/reading` is the input side of the site: what I'm reading, what I marked up, and
+the notes I wrote in the margin. It renders from `src/data/reading.json`, a
+snapshot of my Readwise library — no API calls at request time, so the page is
+static like the rest of the site.
+
+To bring the snapshot up to date:
+
+```bash
+READWISE_TOKEN=xxxx npm run reading:refresh
+```
+
+The token comes from [readwise.io/access_token](https://readwise.io/access_token).
+The script pulls every highlight (Readwise) plus recent documents (Reader), and
+`scripts/lib/build-reading.mjs` decides what surfaces: books marked up in the
+last six months count as open, notes longer than a stray tag become marginalia,
+and a year of highlight dates becomes the activity grid. Commit the regenerated
+`reading.json` to publish it.
+
+---
+
 ## 🧩 Extending the Site
 
 - Add new sections by creating new folders in `/content`.

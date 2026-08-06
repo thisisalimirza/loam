@@ -1426,3 +1426,349 @@ a.book-name:hover {
     gap: 0.3rem 0.8rem;
   }
 }
+
+/* -----------------------------------------------
+   Reading page (/reading)
+----------------------------------------------- */
+
+.reading-intro {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--foreground);
+  margin-bottom: 3rem;
+}
+
+.reading-section {
+  border-top: 1px solid var(--border);
+  padding-top: 1.75rem;
+  margin-bottom: 3rem;
+}
+
+.reading-section-title {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+
+.reading-section-note {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--muted);
+  margin-bottom: 1.25rem;
+}
+
+.reading-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.reading-item {
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.reading-item:first-child {
+  border-top: 1px solid var(--border);
+}
+
+.reading-item-title {
+  display: block;
+  color: var(--foreground);
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+a.reading-item-title:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.reading-item-author {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-top: 0.1rem;
+}
+
+.reading-item-meta {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--muted);
+  opacity: 0.85;
+  margin-top: 0.25rem;
+}
+
+/* Highlighting activity, a year at a glance */
+
+.reading-heatmap-scroll {
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.reading-heatmap {
+  min-width: 42rem;
+}
+
+.reading-heatmap-months,
+.reading-heatmap-grid {
+  display: flex;
+  gap: 3px;
+}
+
+.reading-heatmap-months {
+  margin-bottom: 0.3rem;
+}
+
+.reading-heatmap-month {
+  width: 10px;
+  flex: 0 0 10px;
+  font-size: 0.62rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.reading-heatmap-week {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.reading-heatmap-day {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: #e7e0d4;
+}
+
+.reading-heatmap-day[data-level="1"] { background: rgba(192, 69, 42, 0.22); }
+.reading-heatmap-day[data-level="2"] { background: rgba(192, 69, 42, 0.42); }
+.reading-heatmap-day[data-level="3"] { background: rgba(192, 69, 42, 0.65); }
+.reading-heatmap-day[data-level="4"] { background: rgba(192, 69, 42, 0.95); }
+
+.reading-heatmap-legend {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 0.6rem;
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+.reading-heatmap-legend span:first-child {
+  margin-right: 0.2rem;
+}
+
+.reading-heatmap-legend span:last-child {
+  margin-left: 0.2rem;
+}
+
+/* The shelf */
+
+.shelf {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 2rem 1.5rem;
+}
+
+.shelf-book-link {
+  display: block;
+  color: var(--foreground);
+}
+
+.shelf-book-link:hover {
+  text-decoration: none;
+}
+
+.shelf-cover {
+  position: relative;
+  display: block;
+  aspect-ratio: 2 / 3;
+  margin-bottom: 0.6rem;
+  background: #ece5da;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: transform 0.15s ease;
+}
+
+.shelf-book-link:hover .shelf-cover {
+  transform: translateY(-2px);
+}
+
+.shelf-cover-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Books with no jacket in Readwise get a typeset one. */
+.shelf-cover-fallback {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  padding: 1rem 0.85rem;
+  border-left: 3px solid var(--accent);
+}
+
+.shelf-cover-fallback-title {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+
+.shelf-cover-fallback-author {
+  margin-top: 0.4rem;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.shelf-open-flag {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  padding: 0.15rem 0.45rem;
+  background: var(--accent);
+  color: var(--background);
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.shelf-book-title {
+  display: block;
+  font-size: 0.88rem;
+  line-height: 1.35;
+}
+
+.shelf-book-link:hover .shelf-book-title {
+  color: var(--accent);
+}
+
+.shelf-book-author,
+.shelf-book-meta {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 0.15rem;
+}
+
+.shelf-book-meta {
+  opacity: 0.8;
+}
+
+/* A single book: cover, byline, then the underlining */
+
+.book-back {
+  font-size: 0.85rem;
+  margin-bottom: 1.75rem;
+}
+
+.book-header {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  padding-bottom: 1.75rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0.5rem;
+}
+
+.book-cover {
+  display: block;
+  width: 110px;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.book-cover-image {
+  display: block;
+  width: 100%;
+}
+
+.book-title {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: 1.7rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.book-author {
+  font-size: 1rem;
+  color: var(--muted);
+  margin-top: 0.35rem;
+}
+
+.book-meta {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-top: 0.5rem;
+}
+
+.book-highlights {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.book-highlight {
+  padding: 1.4rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.book-highlight-text {
+  font-size: 1rem;
+  line-height: 1.7;
+  white-space: pre-line;
+}
+
+.book-highlight-note {
+  margin-top: 0.9rem;
+  padding-left: 1rem;
+  border-left: 2px solid var(--accent);
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--muted);
+  white-space: pre-line;
+}
+
+.book-highlight-note-label {
+  display: block;
+  font-size: 0.68rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.3rem;
+}
+
+.reading-footnote {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 2.5rem;
+}
+
+@media (max-width: 720px) {
+  .shelf {
+    grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+    gap: 1.5rem 1rem;
+  }
+
+  .book-header {
+    gap: 1rem;
+  }
+
+  .book-cover {
+    width: 80px;
+  }
+
+  .book-title {
+    font-size: 1.4rem;
+  }
+}
