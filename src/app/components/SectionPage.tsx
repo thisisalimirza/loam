@@ -1,14 +1,15 @@
 import { SectionPageProps } from "@/types"
-import MetaHead from "./MetaHead"
+import { CollectionSchema } from "./StructuredData"
 import SectionListClient from "./SectionListClient"
 
 export default function SectionPage({ section, items }: SectionPageProps) {
   return (
     <>
-      <MetaHead
+      <CollectionSchema
         title={section.name}
-        description={`${section.name} by Ali Mirza`}
-        canonical={`/${section.slug}`}
+        description={`Writing filed under ${section.name.toLowerCase()}.`}
+        path={`/${section.slug}`}
+        crumbs={[{ name: "Home", path: "/" }, { name: section.name }]}
       />
 
       <div className="page-layout">

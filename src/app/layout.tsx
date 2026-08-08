@@ -3,6 +3,7 @@ import { Fraunces, Instrument_Sans, Geist_Mono, EB_Garamond } from "next/font/go
 import Script from "next/script";
 import "./globals.css";
 import { siteConfig } from "@/config/site";
+import { ogImageUrl } from "@/lib/seo";
 import SiteHeader from "./components/SiteHeader";
 import SiteFooter from "./components/SiteFooter";
 import { Analytics } from '@vercel/analytics/next';
@@ -37,6 +38,12 @@ const geistMono = Geist_Mono({
   display: "swap",
 });
 
+/** Fallback card for any route that doesn't build its own. */
+const defaultOgImage = ogImageUrl(
+  "Medicine, technology, and what stays constant across centuries.",
+  "Essays · Book notes · Meditations"
+)
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
@@ -51,14 +58,14 @@ export const metadata: Metadata = {
     siteName: siteConfig.name,
     locale: siteConfig.meta.locale,
     type: "website",
-    images: [{ url: "/profilepic.jpg", width: 120, height: 120, alt: siteConfig.name }],
+    images: [{ url: defaultOgImage, width: 1200, height: 630, alt: siteConfig.name }],
   },
   twitter: {
     card: "summary_large_image",
     title: siteConfig.title,
     description: siteConfig.description,
     creator: siteConfig.author.twitter,
-    images: ["/profilepic.jpg"],
+    images: [defaultOgImage],
   },
   robots: {
     index: true,

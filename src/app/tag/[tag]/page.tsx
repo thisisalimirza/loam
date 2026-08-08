@@ -1,12 +1,44 @@
 import fs from "fs"
+import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { getAllTags, getContentByTag } from "@/lib/getAllTags"
-import MetaHead from "@/app/components/MetaHead"
+import { CollectionSchema } from "@/app/components/StructuredData"
+import { buildMetadata } from "@/lib/seo"
 import EntryList from "@/app/components/EntryList"
+
+/**
+ * A tag page earns a place in the index once it collects enough writing to be
+ * a genuine topic hub. Below this it stays crawlable but unindexed, so ninety
+ * near-empty pages can't compete with the essays themselves.
+ */
+const MIN_INDEXABLE = 3
 
 export function generateStaticParams() {
   return getAllTags().map(({ tag }) => ({ tag }))
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ tag: string }>
+}): Promise<Metadata> {
+  const { tag: rawTag } = await params
+  const tag = decodeURIComponent(rawTag).toLowerCase()
+  const items = getContentByTag(tag)
+
+  if (items.length === 0) return { title: "Not found", robots: { index: false, follow: false } }
+
+  return buildMetadata({
+    title: `Writing on ${tag}`,
+    description: `${items.length} ${items.length === 1 ? "piece" : "pieces"} by Ali Mirza on ${tag}${
+      items.length > 1 ? `, including “${items[0].title}”` : ""
+    }.`,
+    path: `/tag/${encodeURIComponent(tag)}`,
+    noIndex: items.length < MIN_INDEXABLE,
+    ogEyebrow: "Tagged",
+    ogMeta: `${items.length} ${items.length === 1 ? "piece" : "pieces"}`,
+  })
 }
 
 export default async function TagPage({
@@ -32,10 +64,11 @@ export default async function TagPage({
 
   return (
     <>
-      <MetaHead
-        title={`#${tag}`}
-        description={`Writing tagged "${tag}" by Ali Mirza.`}
-        canonical={`/tag/${encodeURIComponent(tag)}`}
+      <CollectionSchema
+        title={`Writing on ${tag}`}
+        description={`Writing by Ali Mirza tagged ${tag}.`}
+        path={`/tag/${encodeURIComponent(tag)}`}
+        crumbs={[{ name: "Home", path: "/" }, { name: `#${tag}` }]}
       />
 
       <div className="page-layout">

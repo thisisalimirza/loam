@@ -1932,6 +1932,67 @@ a.reading-item-title:hover {
   border-top: 1px solid var(--rule);
 }
 
+/* --- Source page: the prose that frames a set of highlights --------------- */
+
+.book-intro {
+  max-width: var(--measure);
+  margin-top: 2rem;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1.08rem;
+  line-height: 1.7;
+  color: var(--ink-2);
+}
+
+.book-themes {
+  max-width: var(--measure);
+  margin-top: 1.5rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+
+.book-themes-label {
+  display: block;
+  font-family: var(--font-ui), sans-serif;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.35rem;
+}
+
+.book-cta {
+  max-width: var(--measure);
+  margin-top: 3rem;
+  padding: 1.4rem 0 0;
+  border-top: 1px solid var(--rule);
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1.02rem;
+  line-height: 1.7;
+  color: var(--ink-2);
+}
+
+/* Summaries are prose, not metadata — they read in the same face as the essays. */
+.reading-item-summary {
+  display: block;
+  margin-top: 0.35rem;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+/* Deep-linked passages get a moment of emphasis rather than a jump-cut. */
+.book-highlight:target .book-highlight-text {
+  background: var(--accent-wash);
+  box-shadow: 0 0 0 0.5rem var(--accent-wash);
+  border-radius: 2px;
+}
+
 @media (max-width: 720px) {
   .shelf {
     grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
