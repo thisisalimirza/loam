@@ -1,5 +1,3 @@
-import BreadcrumbsServer from "@/app/components/BreadcrumbsServer"
-import Footer from "@/app/components/Footer"
 import MetaHead from "@/app/components/MetaHead"
 
 export default function FuturePage() {
@@ -12,7 +10,6 @@ export default function FuturePage() {
       />
 
       <div className="future-wrap">
-        <BreadcrumbsServer />
 
         <div className="future-header">
           <h1 className="future-title">The future I want to build</h1>
@@ -24,9 +21,8 @@ export default function FuturePage() {
         </div>
 
         <div className="future-grid">
-          <div className="future-col">
-            <section className="future-section">
-              <h2>Medicine</h2>
+          <section className="future-section">
+            <h2>Medicine</h2>
               <p>
                 My thesis on medicine is informed by both my classical education and my
                 perspective as a technologist, colored by the experience of living across many
@@ -81,12 +77,10 @@ export default function FuturePage() {
                 future. I began my training reps during medical school by building technological
                 solutions to micro-problems on a regular basis.
               </p>
-            </section>
-          </div>
+          </section>
 
-          <div className="future-col">
-            <section className="future-section">
-              <h2>Writing</h2>
+          <section className="future-section">
+            <h2>Writing</h2>
               <p>
                 There is not much I need to say on why I write. I write because it helps me think.
                 My ideas are rarely polished, and never complete. My writing exists as a record of
@@ -99,11 +93,8 @@ export default function FuturePage() {
                 with other people far more interesting, as they will already have read much of my
                 initial thinking and we engage in much deeper conversation as a result.
               </p>
-            </section>
-          </div>
+          </section>
         </div>
-
-        <Footer />
       </div>
     </>
   )

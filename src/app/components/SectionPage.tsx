@@ -1,6 +1,4 @@
 import { SectionPageProps } from "@/types"
-import BreadcrumbsServer from "./BreadcrumbsServer"
-import Footer from "./Footer"
 import MetaHead from "./MetaHead"
 import SectionListClient from "./SectionListClient"
 
@@ -14,13 +12,12 @@ export default function SectionPage({ section, items }: SectionPageProps) {
       />
 
       <div className="page-layout">
-        <BreadcrumbsServer />
-
-        <h1 className="page-title">{section.name}</h1>
+        <div className="page-head">
+          <p className="eyebrow">Section</p>
+          <h1 className="page-title">{section.name}</h1>
+        </div>
 
         <SectionListClient items={items} />
-
-        <Footer />
       </div>
     </>
   )

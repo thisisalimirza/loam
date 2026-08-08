@@ -1,25 +1,40 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, EB_Garamond } from "next/font/google";
+import { Fraunces, Instrument_Sans, Geist_Mono, EB_Garamond } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { siteConfig } from "@/config/site";
+import SiteHeader from "./components/SiteHeader";
+import SiteFooter from "./components/SiteFooter";
 import { Analytics } from '@vercel/analytics/next';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+/** Display face — warm, editorial, with the optical-size and wonk axes dialled in. */
+const fraunces = Fraunces({
+  variable: "--font-display",
   subsets: ["latin"],
+  axes: ["SOFT", "WONK", "opsz"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+/** Interface face — nav, labels, metadata. */
+const instrumentSans = Instrument_Sans({
+  variable: "--font-ui",
   subsets: ["latin"],
+  display: "swap",
 });
 
+/** Reading face — every word of long-form prose on the site. */
 const ebGaramond = EB_Garamond({
   variable: "--font-serif",
   subsets: ["latin"],
-  weight: ["400", "500", "700"],
+  weight: ["400", "500", "600", "700"],
   style: ["normal", "italic"],
+  display: "swap",
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-mono",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -72,10 +87,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} ${ebGaramond.variable}`}>
+      <body className={`${fraunces.variable} ${instrumentSans.variable} ${ebGaramond.variable} ${geistMono.variable}`}>
+        <div className="page-grain" aria-hidden="true" />
+        <a href="#main-content" className="skip-link">Skip to content</a>
+        <SiteHeader />
         <main id="main-content" role="main" tabIndex={-1}>
           {children}
         </main>
+        <SiteFooter />
         <Analytics />
         <Script id="microsoft-clarity" strategy="afterInteractive">
           {`

@@ -2,8 +2,6 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
-import BreadcrumbsServer from "@/app/components/BreadcrumbsServer"
-import Footer from "@/app/components/Footer"
 import { getAllSources, getSource } from "@/lib/getReading"
 import Cover from "../Cover"
 
@@ -50,7 +48,6 @@ export default async function SourcePage({ params }: PageProps) {
 
   return (
     <div className="page-layout">
-      <BreadcrumbsServer />
 
       <p className="book-back">
         <Link href="/reading">← the shelf</Link>
@@ -102,8 +99,6 @@ export default async function SourcePage({ params }: PageProps) {
       <p className="reading-footnote">
         <Link href="/reading">← back to the shelf</Link>
       </p>
-
-      <Footer />
     </div>
   )
 }

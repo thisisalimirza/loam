@@ -14,7 +14,7 @@ export const siteConfig = {
     twitter: "https://twitter.com/thisisalimirza",
   },
   meta: {
-    themeColor: "#2563eb",
+    themeColor: "#faf7f1",
     locale: "en_US",
     type: "website",
   },

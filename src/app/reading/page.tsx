@@ -1,8 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 
-import BreadcrumbsServer from "@/app/components/BreadcrumbsServer"
-import Footer from "@/app/components/Footer"
 import { getReading, type Source } from "@/lib/getReading"
 import { buildActivityWeeks, totalIn } from "./activity"
 import Cover from "./Cover"
@@ -64,11 +62,11 @@ export default function ReadingPage() {
 
   return (
     <div className="page-layout">
-      <BreadcrumbsServer />
+      <div className="page-head">
+        <p className="eyebrow">The input side</p>
+        <h1 className="page-title">Book Notes</h1>
 
-      <h1 className="page-title">Reading</h1>
-
-      <p className="reading-intro">
+        <p className="page-intro">
         Much of this website is outputs of my production. Over the years, many folks have asked
         me about what my inputs are and the sources of my ideas and thoughts. You&apos;ll notice
         there&apos;s no theme or pattern, they&apos;re very varied. But below are some of the
@@ -78,7 +76,8 @@ export default function ReadingPage() {
           Readwise
         </a>{" "}
         since {formatDate(stats.since, { day: undefined, month: "long" })}.
-      </p>
+        </p>
+      </div>
 
       {(open.length > 0 || openDocuments.length > 0) && (
         <section className="reading-section">
@@ -206,8 +205,6 @@ export default function ReadingPage() {
         Snapshot taken {formatDate(generatedAt)}. The output side lives in{" "}
         <Link href="/writing">writing</Link>.
       </p>
-
-      <Footer />
     </div>
   )
 }

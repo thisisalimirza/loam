@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import Link from "next/link"
 import { ContentItem } from "@/types"
+import EntryList from "@/app/components/EntryList"
 
 interface WritingListClientProps {
   items: ContentItem[]
@@ -15,7 +15,9 @@ export default function WritingListClient({ items }: WritingListClientProps) {
 
   const allSections = useMemo(() => {
     const set = new Set<string>()
-    items.forEach(item => { if (item.section) set.add(item.section) })
+    items.forEach(item => {
+      if (item.section) set.add(item.section)
+    })
     return Array.from(set).sort()
   }, [items])
 
@@ -27,20 +29,24 @@ export default function WritingListClient({ items }: WritingListClientProps) {
 
   const allYears = useMemo(() => {
     const set = new Set<string>()
-    items.forEach(item => { if (item.date) set.add(item.date.slice(0, 4)) })
+    items.forEach(item => {
+      if (item.date) set.add(item.date.slice(0, 4))
+    })
     return Array.from(set).sort((a, b) => b.localeCompare(a))
   }, [items])
 
-  const filtered = useMemo(() => {
-    return items.filter(item => {
-      if (activeSection && item.section !== activeSection) return false
-      if (activeTag && !item.tags?.some(t => t.toLowerCase() === activeTag)) return false
-      if (activeYear && item.date?.slice(0, 4) !== activeYear) return false
-      return true
-    })
-  }, [items, activeSection, activeTag, activeYear])
+  const filtered = useMemo(
+    () =>
+      items.filter(item => {
+        if (activeSection && item.section !== activeSection) return false
+        if (activeTag && !item.tags?.some(t => t.toLowerCase() === activeTag)) return false
+        if (activeYear && item.date?.slice(0, 4) !== activeYear) return false
+        return true
+      }),
+    [items, activeSection, activeTag, activeYear]
+  )
 
-  // Group filtered items by year
+  /** Filtered posts bucketed by publication year, newest year first. */
   const byYear = useMemo(() => {
     const map: Record<string, ContentItem[]> = {}
     for (const item of filtered) {
@@ -52,8 +58,8 @@ export default function WritingListClient({ items }: WritingListClientProps) {
   }, [filtered])
 
   const years = Object.keys(byYear).sort((a, b) => {
-    if (a === "Undated") return -1
-    if (b === "Undated") return 1
+    if (a === "Undated") return 1
+    if (b === "Undated") return -1
     return b.localeCompare(a)
   })
 
@@ -89,12 +95,15 @@ export default function WritingListClient({ items }: WritingListClientProps) {
               <span className="filter-label">Year</span>
               <select
                 className="filter-select"
+                aria-label="Filter by year"
                 value={activeYear ?? ""}
                 onChange={e => setActiveYear(e.target.value || null)}
               >
                 <option value="">All</option>
                 {allYears.map(year => (
-                  <option key={year} value={year}>{year}</option>
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
                 ))}
               </select>
             </div>
@@ -102,15 +111,18 @@ export default function WritingListClient({ items }: WritingListClientProps) {
 
           {allTags.length > 0 && (
             <div className="filter-group">
-              <span className="filter-label">Tags</span>
+              <span className="filter-label">Tag</span>
               <select
                 className="filter-select"
+                aria-label="Filter by tag"
                 value={activeTag ?? ""}
                 onChange={e => setActiveTag(e.target.value || null)}
               >
                 <option value="">All</option>
                 {allTags.map(tag => (
-                  <option key={tag} value={tag}>{tag}</option>
+                  <option key={tag} value={tag}>
+                    {tag}
+                  </option>
                 ))}
               </select>
             </div>
@@ -123,26 +135,10 @@ export default function WritingListClient({ items }: WritingListClientProps) {
       ) : (
         <div className="writing-index">
           {years.map(year => (
-            <div key={year} className="writing-year-group">
+            <section key={year} className="writing-year-group">
               <h2 className="writing-year">{year}</h2>
-              <ul className="writing-list">
-                {byYear[year].map(item => (
-                  <li key={item.url} className="writing-item">
-                    <Link href={item.url} className="writing-item-title">
-                      {item.title}
-                    </Link>
-                    <span className="writing-item-meta">
-                      {item.section && (
-                        <span className="writing-item-section">{item.section}</span>
-                      )}
-                      {item.date && (
-                        <span className="writing-item-date">{item.date}</span>
-                      )}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+              <EntryList items={byYear[year]} showSummary={false} />
+            </section>
           ))}
         </div>
       )}
