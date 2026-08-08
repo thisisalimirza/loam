@@ -13,11 +13,6 @@ export default function FuturePage() {
 
         <div className="future-header">
           <h1 className="future-title">The future I want to build</h1>
-          <p className="future-date">May 2026</p>
-          <p className="future-intro">
-            Here&apos;s what I actually believe. Not what sounds good, not what positions me well,
-            not what people in my field tend to say. What I actually think, today.
-          </p>
         </div>
 
         <div className="future-grid">

@@ -75,8 +75,8 @@ export default function HomePage() {
           <div>
             <h1 className="hero-name rise rise-1">Ali Mirza</h1>
             <p className="hero-line rise rise-2">
-              I&apos;m figuring everything out in real time — and{" "}
-              <em>sharing it along the way.</em>
+              Building and writing at the intersection of medicine, technology, and{" "}
+              <em>what stays constant across centuries and cultures.</em>
             </p>
             <div className="hero-actions rise rise-3">
               <Link href="/start-here" className="btn btn--solid">

@@ -453,9 +453,9 @@ hr {
 .hero-line {
   font-family: var(--font-serif), Georgia, serif;
   font-size: clamp(1.12rem, 0.95rem + 0.9vw, 1.5rem);
-  line-height: 1.5;
+  line-height: 1.45;
   color: var(--ink-2);
-  max-width: 36ch;
+  max-width: 42ch;
   text-wrap: balance;
 }
 
@@ -1470,22 +1470,7 @@ hr {
   text-wrap: balance;
 }
 
-.future-date {
-  font-family: var(--font-mono), monospace;
-  font-size: 0.7rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 1.25rem;
-}
 
-.future-intro {
-  font-family: var(--font-serif), Georgia, serif;
-  font-size: 1.22rem;
-  line-height: 1.65;
-  color: var(--ink-2);
-  max-width: 54ch;
-}
 
 /* One column: the two pillars differ wildly in length, so a two-up grid
    left a canyon of white space beside the shorter one. */
@@ -1562,6 +1547,50 @@ hr {
   border-top: 1px solid var(--rule);
   padding-top: 1.85rem;
   margin-top: 3rem;
+}
+
+.reading-section-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+/* Segmented list / covers switch on the shelf. */
+.view-toggle {
+  display: inline-flex;
+  flex: none;
+  padding: 2px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--paper-2);
+}
+
+.view-toggle-btn {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 999px;
+  padding: 0.3rem 0.85rem;
+  font-family: var(--font-ui), sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--muted);
+  transition: color 0.18s var(--ease), background 0.18s var(--ease);
+}
+
+.view-toggle-btn:hover {
+  color: var(--ink);
+}
+
+.view-toggle-btn--active {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.view-toggle-btn--active:hover {
+  color: var(--paper);
 }
 
 .reading-section-title {

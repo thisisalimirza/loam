@@ -1,9 +1,9 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 
-import { getReading, type Source } from "@/lib/getReading"
+import { getReading } from "@/lib/getReading"
 import { buildActivityWeeks, totalIn } from "./activity"
-import Cover from "./Cover"
+import Shelf from "./Shelf"
 
 export const metadata: Metadata = {
   title: "Reading – Ali Mirza",
@@ -24,34 +24,6 @@ const formatDate = (iso: string | null, opts: Intl.DateTimeFormatOptions = {}) =
     : null
 
 const formatNumber = (value: number) => value.toLocaleString("en-US")
-
-/**
- * A spine on the shelf. Books with no jacket in Readwise fall back to a typeset
- * one rather than a broken image.
- */
-function ShelfBook({ book }: { book: Source }) {
-  return (
-    <li className="shelf-book">
-      <Link href={`/reading/${book.slug}`} className="shelf-book-link">
-        <span className="shelf-cover">
-          <Cover
-            src={book.coverUrl}
-            title={book.title}
-            author={book.author}
-            className="shelf-cover-image"
-          />
-          {book.open && <span className="shelf-open-flag">reading</span>}
-        </span>
-        <span className="shelf-book-title">{book.title}</span>
-        {book.author && <span className="shelf-book-author">{book.author}</span>}
-        <span className="shelf-book-meta">
-          {formatNumber(book.highlightCount)} highlights
-          {book.noteCount > 0 && <> · {book.noteCount} notes</>}
-        </span>
-      </Link>
-    </li>
-  )
-}
 
 export default function ReadingPage() {
   const { stats, books, beyond, openDocuments, activity, generatedAt } = getReading()
@@ -119,18 +91,7 @@ export default function ReadingPage() {
         </section>
       )}
 
-      <section className="reading-section">
-        <h2 className="reading-section-title">The shelf</h2>
-        <p className="reading-section-note">
-          Newest markup first. Books imported in bulk carry their import date, so the order is
-          roughly, not exactly, the order I read them.
-        </p>
-        <ul className="shelf">
-          {books.map((book) => (
-            <ShelfBook key={book.slug} book={book} />
-          ))}
-        </ul>
-      </section>
+      <Shelf books={books} />
 
       {beyond.length > 0 && (
         <section className="reading-section">
