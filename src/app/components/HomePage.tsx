@@ -28,10 +28,10 @@ export default function HomePage() {
               height={80}
               className="home-aside-photo"
             />
-            <p className="home-aside-bio">
-              I quit my job at Epic to build a marketing agency. That experience showed me that I already had the self-agency I needed to build real things. Once the business hit a healthy profit, I went to med school. The goal: see patients, and spend the rest of my time fixing challenging problems in healthcare and technology.
-            </p>
-            <Link href="/start-here" className="home-aside-start-link">New here? Start here →</Link>
+            <div className="home-aside-links">
+              <Link href="/about" className="home-aside-start-link">About me →</Link>
+              <Link href="/start-here" className="home-aside-start-link">New here? Start here →</Link>
+            </div>
             <hr className="home-aside-rule" />
             <h3 className="home-aside-contact-title">Get in touch</h3>
             <p className="home-aside-contact-text">

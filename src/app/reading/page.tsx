@@ -69,10 +69,11 @@ export default function ReadingPage() {
       <h1 className="page-title">Reading</h1>
 
       <p className="reading-intro">
-        Everything else on this site is output. This is the input side — the shelf, and what I
-        underlined on the way through. Every book opens into its own highlights and whatever I
-        wrote in the margin. {formatNumber(stats.highlights)} highlights, {stats.books} books,
-        kept in{" "}
+        Much of this website is outputs of my production. Over the years, many folks have asked
+        me about what my inputs are and the sources of my ideas and thoughts. You&apos;ll notice
+        there&apos;s no theme or pattern, they&apos;re very varied. But below are some of the
+        excerpts and highlights taken directly from my Kindle as I read content.{" "}
+        {formatNumber(stats.highlights)} highlights, {stats.books} books, kept in{" "}
         <a href="https://readwise.io" target="_blank" rel="noopener noreferrer">
           Readwise
         </a>{" "}
