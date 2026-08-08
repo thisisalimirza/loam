@@ -1,16 +1,20 @@
-import type { Metadata } from "next"
 import Link from "next/link"
 
 import { getReading } from "@/lib/getReading"
+import { buildMetadata } from "@/lib/seo"
+import { CollectionSchema } from "@/app/components/StructuredData"
 import { buildActivityWeeks, totalIn } from "./activity"
 import Shelf from "./Shelf"
 
-export const metadata: Metadata = {
-  title: "Reading – Ali Mirza",
-  description:
-    "My bookshelf: everything I've read and marked up, with the highlights and notes from each book.",
-  alternates: { canonical: "/reading" },
-}
+const { stats: siteStats } = getReading()
+
+export const metadata = buildMetadata({
+  title: "Book Notes — Quotes & Highlights from Everything I Read",
+  description: `${siteStats.highlights.toLocaleString("en-US")} quotes and highlights from ${siteStats.books} books, with the notes I left in the margins. Kindle highlights on medicine, philosophy, business and technology.`,
+  path: "/reading",
+  ogEyebrow: "Book notes",
+  ogMeta: `${siteStats.books} books`,
+})
 
 const formatDate = (iso: string | null, opts: Intl.DateTimeFormatOptions = {}) =>
   iso
@@ -34,6 +38,13 @@ export default function ReadingPage() {
 
   return (
     <div className="page-layout">
+      <CollectionSchema
+        title="Book Notes"
+        description={`Quotes and highlights from ${stats.books} books, with margin notes.`}
+        path="/reading"
+        crumbs={[{ name: "Home", path: "/" }, { name: "Book Notes" }]}
+      />
+
       <div className="page-head">
         <p className="eyebrow">The input side</p>
         <h1 className="page-title">Book Notes</h1>

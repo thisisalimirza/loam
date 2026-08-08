@@ -2,8 +2,7 @@ import fs from "fs"
 import Image from "next/image"
 import Link from "next/link"
 
-import MetaHead from "./MetaHead"
-import StructuredData from "./StructuredData"
+import { SiteSchema } from "./StructuredData"
 import TagCloud from "./TagCloud"
 import EntryList from "./EntryList"
 import HomeWork from "./HomeWork"
@@ -66,8 +65,7 @@ export default function HomePage() {
 
   return (
     <>
-      <MetaHead />
-      <StructuredData type="website" />
+      <SiteSchema />
 
       {/* ---- Introduction ---- */}
       <section className="hero">

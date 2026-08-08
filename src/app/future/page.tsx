@@ -1,12 +1,22 @@
-import MetaHead from "@/app/components/MetaHead"
+import { ArticleSchema } from "@/app/components/StructuredData"
+import { buildMetadata } from "@/lib/seo"
+
+export const metadata = buildMetadata({
+  title: "The future I want to build",
+  description:
+    "What I actually believe about medicine, technology and society, as of right now — a standing statement of the future I'm working toward.",
+  path: "/future",
+  ogEyebrow: "A standing statement",
+})
 
 export default function FuturePage() {
   return (
     <>
-      <MetaHead
-        title="Future"
-        description="What I actually believe, as of right now."
-        canonical="/future"
+      <ArticleSchema
+        title="The future I want to build"
+        description="What I actually believe about medicine, technology and society, as of right now."
+        path="/future"
+        crumbs={[{ name: "Home", path: "/" }, { name: "Future" }]}
       />
 
       <div className="future-wrap">

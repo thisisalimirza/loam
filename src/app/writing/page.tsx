@@ -1,6 +1,15 @@
 import { getAllContent } from "@/lib/getAllContent"
-import MetaHead from "@/app/components/MetaHead"
+import { CollectionSchema } from "@/app/components/StructuredData"
+import { buildMetadata } from "@/lib/seo"
 import WritingListClient from "./WritingListClient"
+
+export const metadata = buildMetadata({
+  title: "Writing",
+  description:
+    "Essays, memos and vignettes by Ali Mirza on medicine, technology, philosophy and what stays constant across centuries — the full archive, going back to 2015.",
+  path: "/writing",
+  ogEyebrow: "The archive",
+})
 
 export default function WritingPage() {
   const allContent = getAllContent()
@@ -17,10 +26,11 @@ export default function WritingPage() {
 
   return (
     <>
-      <MetaHead
+      <CollectionSchema
         title="Writing"
-        description="Essays, memos, and notes by Ali Mirza."
-        canonical="/writing"
+        description="Essays, memos and vignettes by Ali Mirza."
+        path="/writing"
+        crumbs={[{ name: "Home", path: "/" }, { name: "Writing" }]}
       />
       <div className="page-layout">
         <div className="page-head">

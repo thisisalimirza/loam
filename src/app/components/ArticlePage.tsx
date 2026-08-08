@@ -2,8 +2,7 @@ import { MDXRemote } from "next-mdx-remote/rsc"
 import { ArticlePageProps } from "@/types"
 import TableOfContents from "./TableOfContents"
 import RelatedContent from "./RelatedContent"
-import MetaHead from "./MetaHead"
-import StructuredData from "./StructuredData"
+import { ArticleSchema } from "./StructuredData"
 import SubstackEmbed from "./SubstackEmbed"
 
 export default function ArticlePage({
@@ -20,22 +19,19 @@ export default function ArticlePage({
 }: ArticlePageProps & { sectionName?: string; sectionSlug: string }) {
   return (
     <>
-      <MetaHead
+      <ArticleSchema
         title={data.title as string}
         description={data.summary as string}
-        canonical={canonicalUrl}
-        type="article"
-        publishedTime={publishedDate}
-        modifiedTime={lastEditedDate}
-      />
-      <StructuredData
-        type="article"
-        title={data.title as string}
-        description={data.summary as string}
-        url={canonicalUrl}
+        path={canonicalUrl}
         publishedTime={publishedDate}
         modifiedTime={lastEditedDate}
         section={sectionName}
+        tags={Array.isArray(data.tags) ? (data.tags as string[]) : undefined}
+        crumbs={[
+          { name: "Home", path: "/" },
+          { name: sectionName ?? sectionSlug, path: `/${sectionSlug}` },
+          { name: (data.title as string) ?? "Untitled" },
+        ]}
       />
       
       <div className="article-layout">

@@ -1,6 +1,5 @@
 import { MDXRemote } from "next-mdx-remote/rsc"
-import MetaHead from "./MetaHead"
-import StructuredData from "./StructuredData"
+import { ArticleSchema } from "./StructuredData"
 import SubstackEmbed from "./SubstackEmbed"
 
 interface TopLevelPageProps {
@@ -18,19 +17,17 @@ export default function TopLevelPage({
 }: TopLevelPageProps) {
   return (
     <>
-      <MetaHead
+      <ArticleSchema
         title={(data.title as string) || slug}
         description={data.summary as string}
-        canonical={canonicalUrl}
-        type="article"
-      />
-      <StructuredData
-        type="article"
-        title={(data.title as string) || slug}
-        description={data.summary as string}
-        url={canonicalUrl}
+        path={canonicalUrl}
         publishedTime={data.date as string}
         modifiedTime={data.lastEdited as string}
+        tags={Array.isArray(data.tags) ? (data.tags as string[]) : undefined}
+        crumbs={[
+          { name: "Home", path: "/" },
+          { name: (data.title as string) || slug },
+        ]}
       />
       
       <div className="article-layout">

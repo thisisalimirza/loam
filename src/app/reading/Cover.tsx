@@ -7,6 +7,11 @@ interface CoverProps {
   title: string
   author: string | null
   className?: string
+  /**
+   * Describes the jacket for screen readers and image search. Left empty on the
+   * shelf, where the title sits right beside the cover and would be read twice.
+   */
+  alt?: string
 }
 
 /**
@@ -14,7 +19,7 @@ interface CoverProps {
  * Books, Open Library — and those links rot. When one fails, or never existed,
  * the book gets a typeset spine instead of a broken image.
  */
-export default function Cover({ src, title, author, className }: CoverProps) {
+export default function Cover({ src, title, author, className, alt = "" }: CoverProps) {
   const [failed, setFailed] = useState(false)
 
   if (!src || failed) {
@@ -31,7 +36,7 @@ export default function Cover({ src, title, author, className }: CoverProps) {
     // eslint-disable-next-line @next/next/no-img-element
     <img
       src={src}
-      alt=""
+      alt={alt}
       loading="lazy"
       className={className}
       onError={() => setFailed(true)}
