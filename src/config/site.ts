@@ -5,7 +5,7 @@ export const siteConfig = {
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://thisisalimirza.com",
   author: {
     name: "Ali Mirza",
-    email: "ali@janusny.com",
+    email: "ali@braskgroup.com",
     twitter: "@thisisalimirza",
   },
   links: {
@@ -14,7 +14,7 @@ export const siteConfig = {
     twitter: "https://twitter.com/thisisalimirza",
   },
   meta: {
-    themeColor: "#2563eb",
+    themeColor: "#faf7f1",
     locale: "en_US",
     type: "website",
   },

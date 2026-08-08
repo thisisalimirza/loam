@@ -1,15 +1,18 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import Link from "next/link"
 import { ContentItem } from "@/types"
+import EntryList from "./EntryList"
 
 interface SectionListClientProps {
   items: ContentItem[]
   showSectionFilter?: boolean
 }
 
-export default function SectionListClient({ items, showSectionFilter = false }: SectionListClientProps) {
+export default function SectionListClient({
+  items,
+  showSectionFilter = false,
+}: SectionListClientProps) {
   const [activeTag, setActiveTag] = useState<string | null>(null)
   const [activeSection, setActiveSection] = useState<string | null>(null)
 
@@ -25,13 +28,15 @@ export default function SectionListClient({ items, showSectionFilter = false }: 
     return Array.from(sectionSet).sort()
   }, [items])
 
-  const filtered = useMemo(() => {
-    return items.filter(item => {
-      if (activeSection && item.section !== activeSection) return false
-      if (activeTag && !item.tags?.some(t => t.toLowerCase() === activeTag)) return false
-      return true
-    })
-  }, [items, activeTag, activeSection])
+  const filtered = useMemo(
+    () =>
+      items.filter(item => {
+        if (activeSection && item.section !== activeSection) return false
+        if (activeTag && !item.tags?.some(t => t.toLowerCase() === activeTag)) return false
+        return true
+      }),
+    [items, activeTag, activeSection]
+  )
 
   const hasFilters = allTags.length > 0 || (showSectionFilter && allSections.length > 1)
 
@@ -86,32 +91,7 @@ export default function SectionListClient({ items, showSectionFilter = false }: 
       {filtered.length === 0 ? (
         <p className="filter-empty">No posts match the selected filter.</p>
       ) : (
-        <ul className="content-list">
-          {filtered.map(item => (
-            <li key={item.url} className="content-item">
-              <Link href={item.url} className="content-item-title">
-                {item.title}
-              </Link>
-              {item.summary && (
-                <div className="content-item-summary">{item.summary}</div>
-              )}
-              <div className="content-item-footer">
-                {showSectionFilter && (
-                  <span className="content-item-section">
-                    {item.section.charAt(0).toUpperCase() + item.section.slice(1)}
-                    {(item.effectiveDate || item.readTime) && " · "}
-                  </span>
-                )}
-                {item.effectiveDate && (
-                  <span className="content-item-date">{item.effectiveDate}</span>
-                )}
-                {item.readTime && (
-                  <span className="content-item-readtime"> · {item.readTime}</span>
-                )}
-              </div>
-            </li>
-          ))}
-        </ul>
+        <EntryList items={filtered} showSection={showSectionFilter} />
       )}
     </>
   )

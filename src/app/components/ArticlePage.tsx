@@ -1,9 +1,7 @@
 import { MDXRemote } from "next-mdx-remote/rsc"
 import { ArticlePageProps } from "@/types"
-import BreadcrumbsServer from "./BreadcrumbsServer"
 import TableOfContents from "./TableOfContents"
 import RelatedContent from "./RelatedContent"
-import Footer from "./Footer"
 import MetaHead from "./MetaHead"
 import StructuredData from "./StructuredData"
 import SubstackEmbed from "./SubstackEmbed"
@@ -41,7 +39,6 @@ export default function ArticlePage({
       />
       
       <div className="article-layout">
-        <BreadcrumbsServer />
         
         <header className="article-header">
           <h1 className="article-title">{typeof data.title === 'string' ? data.title : 'Untitled'}</h1>
@@ -69,8 +66,6 @@ export default function ArticlePage({
           sectionName={sectionName}
           sectionSlug={sectionSlug}
         />
-        
-        <Footer />
       </div>
     </>
   )

@@ -1,6 +1,4 @@
 import { getAllContent } from "@/lib/getAllContent"
-import BreadcrumbsServer from "@/app/components/BreadcrumbsServer"
-import Footer from "@/app/components/Footer"
 import MetaHead from "@/app/components/MetaHead"
 import WritingListClient from "./WritingListClient"
 
@@ -25,13 +23,15 @@ export default function WritingPage() {
         canonical="/writing"
       />
       <div className="page-layout">
-        <BreadcrumbsServer />
-
-        <h1 className="page-title">Writing</h1>
+        <div className="page-head">
+          <p className="eyebrow">The archive</p>
+          <h1 className="page-title">Writing</h1>
+          <p className="page-intro">
+            Essays, memos, and vignettes going back to 2015 — {published.length} pieces in all.
+          </p>
+        </div>
 
         <WritingListClient items={published} />
-
-        <Footer />
       </div>
     </>
   )

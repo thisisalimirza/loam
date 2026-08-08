@@ -1,11 +1,9 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 
-import BreadcrumbsServer from "@/app/components/BreadcrumbsServer"
-import Footer from "@/app/components/Footer"
-import { getReading, type Source } from "@/lib/getReading"
+import { getReading } from "@/lib/getReading"
 import { buildActivityWeeks, totalIn } from "./activity"
-import Cover from "./Cover"
+import Shelf from "./Shelf"
 
 export const metadata: Metadata = {
   title: "Reading – Ali Mirza",
@@ -27,34 +25,6 @@ const formatDate = (iso: string | null, opts: Intl.DateTimeFormatOptions = {}) =
 
 const formatNumber = (value: number) => value.toLocaleString("en-US")
 
-/**
- * A spine on the shelf. Books with no jacket in Readwise fall back to a typeset
- * one rather than a broken image.
- */
-function ShelfBook({ book }: { book: Source }) {
-  return (
-    <li className="shelf-book">
-      <Link href={`/reading/${book.slug}`} className="shelf-book-link">
-        <span className="shelf-cover">
-          <Cover
-            src={book.coverUrl}
-            title={book.title}
-            author={book.author}
-            className="shelf-cover-image"
-          />
-          {book.open && <span className="shelf-open-flag">reading</span>}
-        </span>
-        <span className="shelf-book-title">{book.title}</span>
-        {book.author && <span className="shelf-book-author">{book.author}</span>}
-        <span className="shelf-book-meta">
-          {formatNumber(book.highlightCount)} highlights
-          {book.noteCount > 0 && <> · {book.noteCount} notes</>}
-        </span>
-      </Link>
-    </li>
-  )
-}
-
 export default function ReadingPage() {
   const { stats, books, beyond, openDocuments, activity, generatedAt } = getReading()
 
@@ -64,11 +34,11 @@ export default function ReadingPage() {
 
   return (
     <div className="page-layout">
-      <BreadcrumbsServer />
+      <div className="page-head">
+        <p className="eyebrow">The input side</p>
+        <h1 className="page-title">Book Notes</h1>
 
-      <h1 className="page-title">Reading</h1>
-
-      <p className="reading-intro">
+        <p className="page-intro">
         Much of this website is outputs of my production. Over the years, many folks have asked
         me about what my inputs are and the sources of my ideas and thoughts. You&apos;ll notice
         there&apos;s no theme or pattern, they&apos;re very varied. But below are some of the
@@ -78,7 +48,8 @@ export default function ReadingPage() {
           Readwise
         </a>{" "}
         since {formatDate(stats.since, { day: undefined, month: "long" })}.
-      </p>
+        </p>
+      </div>
 
       {(open.length > 0 || openDocuments.length > 0) && (
         <section className="reading-section">
@@ -120,18 +91,7 @@ export default function ReadingPage() {
         </section>
       )}
 
-      <section className="reading-section">
-        <h2 className="reading-section-title">The shelf</h2>
-        <p className="reading-section-note">
-          Newest markup first. Books imported in bulk carry their import date, so the order is
-          roughly, not exactly, the order I read them.
-        </p>
-        <ul className="shelf">
-          {books.map((book) => (
-            <ShelfBook key={book.slug} book={book} />
-          ))}
-        </ul>
-      </section>
+      <Shelf books={books} />
 
       {beyond.length > 0 && (
         <section className="reading-section">
@@ -206,8 +166,6 @@ export default function ReadingPage() {
         Snapshot taken {formatDate(generatedAt)}. The output side lives in{" "}
         <Link href="/writing">writing</Link>.
       </p>
-
-      <Footer />
     </div>
   )
 }

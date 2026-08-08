@@ -2,9 +2,8 @@ import fs from "fs"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { getAllTags, getContentByTag } from "@/lib/getAllTags"
-import BreadcrumbsServer from "@/app/components/BreadcrumbsServer"
-import Footer from "@/app/components/Footer"
 import MetaHead from "@/app/components/MetaHead"
+import EntryList from "@/app/components/EntryList"
 
 export function generateStaticParams() {
   return getAllTags().map(({ tag }) => ({ tag }))
@@ -40,41 +39,16 @@ export default async function TagPage({
       />
 
       <div className="page-layout">
-        <BreadcrumbsServer />
+        <div className="page-head">
+          <p className="eyebrow">Tagged</p>
+          <h1 className="page-title">{tag}</h1>
+          <p className="tag-page-count">
+            {items.length} {items.length === 1 ? "piece" : "pieces"} ·{" "}
+            <Link href="/" className="tag-page-back">all themes</Link>
+          </p>
+        </div>
 
-        <p className="tag-page-eyebrow">Tagged</p>
-        <h1 className="page-title">{tag}</h1>
-        <p className="tag-page-count">
-          {items.length} {items.length === 1 ? "piece" : "pieces"} ·{" "}
-          <Link href="/" className="tag-page-back">all themes</Link>
-        </p>
-
-        <ul className="content-list">
-          {withDates.map(item => (
-            <li key={item.url} className="content-item">
-              <Link href={item.url} className="content-item-title">
-                {item.title}
-              </Link>
-              {item.summary && (
-                <div className="content-item-summary">{item.summary}</div>
-              )}
-              <div className="content-item-footer">
-                <span className="content-item-section">
-                  {item.section.charAt(0).toUpperCase() + item.section.slice(1)}
-                  {(item.effectiveDate || item.readTime) && " · "}
-                </span>
-                {item.effectiveDate && (
-                  <span className="content-item-date">{item.effectiveDate}</span>
-                )}
-                {item.readTime && (
-                  <span className="content-item-readtime"> · {item.readTime}</span>
-                )}
-              </div>
-            </li>
-          ))}
-        </ul>
-
-        <Footer />
+        <EntryList items={withDates} />
       </div>
     </>
   )
