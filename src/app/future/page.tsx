@@ -21,131 +21,83 @@ export default function FuturePage() {
             Here&apos;s what I actually believe. Not what sounds good, not what positions me well,
             not what people in my field tend to say. What I actually think, today.
           </p>
-          {/* tl;dr — hidden for now
-          <div className="future-tldr">
-            <span className="future-tldr-label">tl;dr</span>
-            <p className="future-tldr-theme">The recurring theme is inversion:</p>
-            <ul className="future-tldr-list">
-              <li>outsiders understand systems better than insiders</li>
-              <li>weak positions can become strong</li>
-              <li>medicine trains compliance rather than creation</li>
-              <li>wealth matters because it creates freedom, not status</li>
-              <li>writing is for discovering truth, not branding</li>
-            </ul>
-          </div>
-          */}
         </div>
 
         <div className="future-grid">
           <div className="future-col">
             <section className="future-section">
-              <h2>Medicine needs people who refuse to be confined by it</h2>
+              <h2>Medicine</h2>
               <p>
-                The people most able to fix healthcare are the ones trained hardest to stay inside
-                it. Med school doesn&apos;t teach you to build. It teaches you to comply. The most
-                interesting physicians I&apos;ve met are the ones who decided that wasn&apos;t
-                enough.
+                My thesis on medicine is informed by both my classical education and my
+                perspective as a technologist, colored by the experience of living across many
+                different cultures. I believe medicine is a deeply humanist profession more than
+                it is a precise mechanical science. At the same time, we must not forget that a
+                significant portion of the trust we hold was earned over centuries and millennia
+                through the faithful execution of the scientific process in the pursuit of
+                treating disease and illness.
               </p>
               <p>
-                Most health tech gets built by outsiders who treat clinicians as users to be
-                studied. Some gets built by clinicians who treat technology as a hammer, because
-                it&apos;s the only tool they own. What&apos;s missing is the person who has actually
-                lived both, and doesn&apos;t feel any need to pick a side.
+                Though I am sympathetic to the many ailments of society—and have seen the worst of
+                them closer than most in the countries I have lived in—I somewhat reject the
+                growing narrative that physicians must take responsibility for every problem that
+                ails people. I fear this makes us responsible, in the public eye, for too many
+                things beyond our control, and that it feeds the growing distrust of the
+                healthcare system. As we take on social problems we are unable to solve, our
+                inability to solve them leaves visible scars on the profession in the eyes of the
+                public we aim to serve.
               </p>
               <p>
-                I came to medicine from software, and the first thing I noticed is that the EHR
-                isn&apos;t a bad product built by bad people. It&apos;s a bad product, built with
-                good intentions, by people who were never asked to understand what they were
-                disrupting. I know this because I worked at Epic. I was one of those people.
+                I came to medicine because, across the many countries I flew in and out of
+                throughout my life, one thing remained constant: the desire to preserve life. It
+                also became clear to me that brilliance, innovation, and world-changing ideas can
+                come from anywhere and anyone. Minimizing the preventable loss of life is the most
+                directly modifiable factor in building a better future. At its core, then,
+                medicine is a humanist profession aimed simply at combating disease and
+                illness—not the establishment of some Sisyphean &ldquo;state of health.&rdquo;
               </p>
               <p>
-                Medicine has a complicated relationship with new data. The precautionary principle
-                is real, and it&apos;s sometimes right. But the question I keep coming back to is
-                when appropriate caution quietly turns into something else — when it stops being
-                intellectual humility and becomes institutional habit. I don&apos;t think the
-                profession has answered that honestly. I think it&apos;s the question.
-              </p>
-            </section>
-
-            <section className="future-section">
-              <h2>Capital is a tool, not a destination</h2>
-              <p>
-                Money interests me less than what it buys you the freedom to do. I built a 30-year
-                financial model comparing every major medical career path by NPV and optionality —
-                not because I want to be rich, but because I wanted to know which path leaves the
-                most room to act. The answer surprised me, and I haven&apos;t stopped thinking about
-                it since.
+                This perspective shapes how I see technology&apos;s place in the advancement of
+                medicine. It must support diagnostics, risk minimization, and harm reduction first
+                and foremost. Tangential social benefits are welcome, but they are not necessary
+                beyond these aims—lest we again take on responsibility for things we cannot
+                control.
               </p>
               <p>
-                I don&apos;t know yet whether I&apos;ll practice as my main work, build companies, or
-                end up on the investment side of the table. I&apos;d rather say that plainly than
-                perform a certainty I don&apos;t have. What I do know is that the most interesting
-                seat is the one that lets you speak credibly to all three.
+                The prospect of AI in medicine does not scare me, though I have noticed it scares
+                many. I believe it may birth a golden age for medicine if used appropriately. The
+                physician of the future will need to be adept at utilizing this technology,
+                co-developing it, and co-implementing it into the healthcare system. Much of
+                healthcare is ripe for disruption, and given the public&apos;s perception of the
+                current system, that is largely a good thing. The average physician will no longer
+                need to be only a better doctor in the scientific sense, but a better person in
+                the humanistic sense as well. If AI serves as a forcing function for this
+                metamorphosis, I welcome it.
               </p>
               <p>
-                There&apos;s enormous arbitrage between the people who understand the biology and the
-                people who understand the capital. I want to be someone who can sit at that table
-                and get taken seriously on both sides. A lot of what I&apos;m doing right now is
-                building toward that.
-              </p>
-            </section>
-
-            <section className="future-section">
-              <h2>On writing</h2>
-              <p>
-                I write because I can&apos;t not. I&apos;ve published a poetry collection. I write a
-                newsletter. The only way I&apos;ve ever found out what I actually believe is to write
-                it down and see whether it survives contact with anyone who pushes back.
-              </p>
-              <p>
-                The essays I&apos;m proudest of are the ones where I published something, had to
-                defend it, and the defense changed my own mind. That isn&apos;t a side effect of
-                thinking clearly. It is thinking clearly — just done out loud, where people can
-                watch.
-              </p>
-              <p>
-                If you want to be heard, stop hedging. Say the thing. I gave myself that advice and
-                I&apos;m still trying to take it.
+                As such, I occupy the unusual position of a physician-hopeful who is already
+                well-versed in this technology. Though the range of my interests sometimes seems
+                confusing to others, I am deeply comfortable waiting for society to catch up with
+                the inevitable direction healthcare is headed. I do not wait to co-develop that
+                future. I began my training reps during medical school by building technological
+                solutions to micro-problems on a regular basis.
               </p>
             </section>
           </div>
 
           <div className="future-col">
             <section className="future-section">
-              <h2>I believe in the reversal</h2>
+              <h2>Writing</h2>
               <p>
-                The person society puts in the lower position is often the one holding the real
-                power. The med student who actually understands software. The outsider who actually
-                understands the inside. I&apos;ve spent years collecting reversals like this, because
-                spotting them might be the most useful habit I have.
+                There is not much I need to say on why I write. I write because it helps me think.
+                My ideas are rarely polished, and never complete. My writing exists as a record of
+                changing thinking over time and as a selective pressure forcing me to state my
+                stances so that once I have written them, I can see them, and the work of
+                sharpening them over time can thereupon begin.
               </p>
               <p>
-                Most people never say anything real, because they&apos;re optimizing not to look
-                wrong in front of other people. I&apos;m more afraid of staying quiet than of being
-                wrong. That&apos;s a small difference on paper. It builds completely different lives.
-              </p>
-              <p>
-                The weak position, held with enough clarity and nerve, turns into the strong one. I
-                don&apos;t think that&apos;s optimism. I think it&apos;s structural.
-              </p>
-            </section>
-
-            <section className="future-section">
-              <h2>Faith is not a footnote</h2>
-              <p>
-                I&apos;m a Shia Muslim. This isn&apos;t incidental to how I think. The tradition I
-                come from puts courage above nearly everything — and not the courage of the person
-                who feels no fear. The courage of the person who <em>is</em> afraid, who can see
-                exactly what it&apos;s going to cost, and does it anyway, because it&apos;s right.
-              </p>
-              <blockquote className="future-blockquote">
-                &ldquo;Allow God to work through your hands so that He can help you do in the world
-                that which He knows only you can do.&rdquo;
-              </blockquote>
-              <p>I wrote that for myself a year ago. I believe it.</p>
-              <p>
-                Religion gave the pious beggar a dignity the king couldn&apos;t touch. I don&apos;t
-                reach for that line lightly.
+                The tangential benefit is that a record of public writing makes my conversations
+                with other people far more interesting, as they will already have read much of my
+                initial thinking and we engage in much deeper conversation as a result.
               </p>
             </section>
           </div>

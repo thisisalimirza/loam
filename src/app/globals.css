@@ -241,13 +241,18 @@ button, input, select, textarea {
   margin-bottom: 1.5rem;
 }
 
+.home-aside-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1.25rem;
+}
+
 .home-aside-start-link {
   display: inline-block;
   font-size: 0.78rem;
   color: var(--accent);
   text-decoration: none;
-  margin-top: -0.75rem;
-  margin-bottom: 1.25rem;
 }
 
 .home-aside-start-link:hover {
