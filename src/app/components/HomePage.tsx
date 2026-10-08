@@ -101,8 +101,8 @@ export default function HomePage() {
                 <span className="case-caption">First Aid–aligned cases</span>
               </div>
               <div className="project-copy">
-                <h3>Practice clinical reasoning daily.</h3>
-                <p>A daily case game that helps medical students practice Step 1 and build clinical reasoning.</p>
+                <h3>Better clinical reasoning for medical students with Rounds.</h3>
+                <p>A daily case game that helps medical students practice Step 1.</p>
                 <div className="project-links">
                   <a className="card-link" href={siteConfig.links.rounds} target="_blank" rel="noreferrer">
                     Explore Rounds <span aria-hidden="true">↗</span>
@@ -128,7 +128,7 @@ export default function HomePage() {
                 <span className="sitr-tagline">EVENT TICKETING & SEATING</span>
               </div>
               <div className="project-copy">
-                <h3>Events without spreadsheets.</h3>
+                <h3>Bringing people together with Sitr.</h3>
                 <p>A full event platform for ticketing, seating management, and attendee logistics—built after a friend needed help managing 400 guests at a med school formal.</p>
                 <a className="card-link" href={siteConfig.links.sitr} target="_blank" rel="noreferrer">
                   Visit Sitr <span aria-hidden="true">↗</span>
@@ -150,7 +150,7 @@ export default function HomePage() {
                 <span className="member-caption">physicians & med students</span>
               </div>
               <div className="project-copy">
-                <h3>More room to build in medicine.</h3>
+                <h3>Building community for the next generation of physician-innovators.</h3>
                 <p>At MD+, I lead sponsor and partner outreach for a medical education community where physicians and med students connect through events and a podcast.</p>
                 <a className="card-link" href={siteConfig.links.mdplus} target="_blank" rel="noreferrer">
                   Meet MD+ <span aria-hidden="true">↗</span>
@@ -240,7 +240,7 @@ export default function HomePage() {
               />
               <span className="book-info">
                 <strong>A World That Works</strong>
-                <span>Freedom, prosperity, and the honest case for capitalism</span>
+                <span>A back and forth conversation between a Capitalist and a Socialist, written in the style of Plato&apos;s The Republic.</span>
               </span>
             </a>
             <a className="book-item" href="https://www.amazon.com/Reveries-Through-Others-Stories-traveler-ebook/dp/B0CJ99H7DL" target="_blank" rel="noreferrer">
@@ -253,7 +253,7 @@ export default function HomePage() {
               />
               <span className="book-info">
                 <strong>Reveries</strong>
-                <span>Through the eyes of others</span>
+                <span>A collection of vignettes as I reflect on my upbringing across the world, trying to make sense of the vast difference of New York City streets versus those I grew up in in Pakistan and Kenya. I wrote these stories when I was roughly 16 years old.</span>
               </span>
             </a>
             <a className="book-item" href="https://www.amazon.com/Wealth-At-20-Financial-Graduates-ebook/dp/B0CJBBSXW5" target="_blank" rel="noreferrer">
@@ -266,7 +266,7 @@ export default function HomePage() {
               />
               <span className="book-info">
                 <strong>Wealth At 20</strong>
-                <span>Financial planning for fresh college graduates</span>
+                <span>I am no expert at money or finances. Despite this I have always been the go to for finance knowledge for my family and friends. This was a distillation of the most actionable and immediate advice and insights I&apos;d give someone who has just graduated undergrad, is getting their first real paycheck, and wants to know how to best use it.</span>
               </span>
             </a>
           </div>
