@@ -41,7 +41,14 @@ export default function WritingPage() {
           <p className="eyebrow">The archive</p>
           <h1 className="page-title">Writing</h1>
           <p className="page-intro">
-            Ten years of essays, memos, and vignettes — {published.length} pieces in all.
+            For polished essays on medicine, technology, and judgment, visit{" "}
+            <a href="https://blog.thisisalimirza.com/" target="_blank" rel="noreferrer" className="inversions-link">
+              Inversions
+            </a>
+            —my Substack where the finished work goes.
+          </p>
+          <p className="page-intro archive-note">
+            This archive is different: ten years of drafts, notes, and half-formed thoughts—{published.length} pieces in all.
             Click any topic to explore, or jump to the <Link href="#archive" className="archive-link">full archive</Link> below.
           </p>
         </div>

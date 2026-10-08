@@ -220,6 +220,59 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Books Section */}
+      <section className="books-section section-pad" id="books" aria-labelledby="books-title">
+        <div className="wrap">
+          <div className="section-heading books-heading">
+            <div>
+              <p className="section-kicker">02b / Published</p>
+              <h2 id="books-title">Books I&apos;ve written</h2>
+            </div>
+          </div>
+          <div className="books-grid">
+            <a className="book-item" href="https://www.amazon.com/World-That-Works-Prosperity-Capitalism-ebook/dp/B0G5LV6F2G" target="_blank" rel="noreferrer">
+              <Image
+                src="https://m.media-amazon.com/images/I/61t9YX0iMVL._SL1500_.jpg"
+                alt="A World That Works book cover"
+                width={120}
+                height={180}
+                className="book-cover"
+              />
+              <span className="book-info">
+                <strong>A World That Works</strong>
+                <span>Freedom, prosperity, and the honest case for capitalism</span>
+              </span>
+            </a>
+            <a className="book-item" href="https://www.amazon.com/Reveries-Through-Others-Stories-traveler-ebook/dp/B0CJ99H7DL" target="_blank" rel="noreferrer">
+              <Image
+                src="https://m.media-amazon.com/images/I/71u8Vthq34L._SL1500_.jpg"
+                alt="Reveries book cover"
+                width={120}
+                height={180}
+                className="book-cover"
+              />
+              <span className="book-info">
+                <strong>Reveries</strong>
+                <span>Through the eyes of others</span>
+              </span>
+            </a>
+            <a className="book-item" href="https://www.amazon.com/Wealth-At-20-Financial-Graduates-ebook/dp/B0CJBBSXW5" target="_blank" rel="noreferrer">
+              <Image
+                src="https://m.media-amazon.com/images/I/61fombI3cZL._SL1500_.jpg"
+                alt="Wealth At 20 book cover"
+                width={120}
+                height={180}
+                className="book-cover"
+              />
+              <span className="book-info">
+                <strong>Wealth At 20</strong>
+                <span>Financial planning for fresh college graduates</span>
+              </span>
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* Notes/Writing Section */}
       <section className="notes-section section-pad" id="notes" aria-labelledby="notes-title">
         <div className="wrap">
@@ -236,17 +289,17 @@ export default function HomePage() {
           </div>
 
           <div className="media-grid">
-            <Link href="/writing" className="media-card writing-card">
+            <a className="media-card writing-card" href={siteConfig.links.blog} target="_blank" rel="noreferrer">
               <div className="media-top">
                 <span className="media-icon writing-icon" aria-hidden="true">Aa</span>
                 <span className="media-arrow" aria-hidden="true">↗</span>
               </div>
               <div>
-                <span className="media-label">WRITING · ESSAYS</span>
+                <span className="media-label">WRITING · INVERSIONS</span>
                 <h3>Medicine, technology,<br />and the things between.</h3>
                 <span className="media-cta">Read the essays <span aria-hidden="true">→</span></span>
               </div>
-            </Link>
+            </a>
 
             <a className="media-card video-card" href={siteConfig.links.youtube} target="_blank" rel="noreferrer">
               <div className="video-orbit" aria-hidden="true">
@@ -289,8 +342,11 @@ export default function HomePage() {
               <a href={siteConfig.links.youtube} target="_blank" rel="noreferrer">
                 YouTube <span aria-hidden="true">↗</span>
               </a>
+              <a href={siteConfig.links.blog} target="_blank" rel="noreferrer">
+                Inversions <span aria-hidden="true">↗</span>
+              </a>
               <Link href="/writing">
-                Writing <span aria-hidden="true">↗</span>
+                Archive <span aria-hidden="true">→</span>
               </Link>
             </div>
           </div>

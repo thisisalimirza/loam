@@ -54,6 +54,16 @@ async function takeScreenshots() {
     });
     console.log('✓ writing-desktop.png saved');
     
+    // Meditations page desktop full-page
+    console.log('Taking meditations-desktop screenshot...');
+    await page.goto(`${BASE_URL}/meditations`, { waitUntil: 'networkidle0', timeout: 30000 });
+    await new Promise(r => setTimeout(r, 1000));
+    await page.screenshot({ 
+      path: `${OUTPUT_DIR}/meditations-desktop.png`, 
+      fullPage: true 
+    });
+    console.log('✓ meditations-desktop.png saved');
+    
     console.log('\nAll screenshots saved to:', OUTPUT_DIR);
     
   } finally {
