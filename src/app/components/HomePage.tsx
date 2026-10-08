@@ -236,7 +236,7 @@ export default function HomePage() {
                 alt="A World That Works book cover"
                 width={120}
                 height={180}
-                className="book-cover"
+                className="book-item-cover"
               />
               <span className="book-info">
                 <strong>A World That Works</strong>
@@ -249,7 +249,7 @@ export default function HomePage() {
                 alt="Reveries book cover"
                 width={120}
                 height={180}
-                className="book-cover"
+                className="book-item-cover"
               />
               <span className="book-info">
                 <strong>Reveries</strong>
@@ -262,7 +262,7 @@ export default function HomePage() {
                 alt="Wealth At 20 book cover"
                 width={120}
                 height={180}
-                className="book-cover"
+                className="book-item-cover"
               />
               <span className="book-info">
                 <strong>Wealth At 20</strong>
