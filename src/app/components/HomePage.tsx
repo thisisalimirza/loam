@@ -11,11 +11,9 @@ export default function HomePage() {
 
       {/* Hero Section */}
       <section className="hero" id="top" aria-labelledby="hero-title">
-        <div className="hero-grain" aria-hidden="true" />
         <div className="hero-grid">
           <div className="hero-copy">
             <p className="hero-eyebrow">
-              <span className="live-dot" />
               UConn medical student <span className="eyebrow-sep">/</span> founder
             </p>
             <h1 id="hero-title" className="hero-title">
@@ -32,11 +30,6 @@ export default function HomePage() {
                 Get in touch <span aria-hidden="true">↗</span>
               </a>
             </div>
-            <div className="hero-footnote">
-              <span>Currently in Connecticut</span>
-              <span className="footnote-line" />
-              <span>Curious by default</span>
-            </div>
           </div>
 
           <div className="portrait-stage">
@@ -48,26 +41,11 @@ export default function HomePage() {
                 alt="Ali Mirza smiling outdoors"
                 priority
               />
-              <div className="portrait-caption">
-                <span>ALI MIRZA</span>
-                <span>MEDICINE × BUILDING</span>
-              </div>
             </div>
             <div className="portrait-stamp">
-              <span className="stamp-small">CURRENTLY</span>
               <strong>Building<br />Rounds</strong>
-              <span className="stamp-arrow" aria-hidden="true">↗</span>
             </div>
-            <span className="orbit orbit-one" aria-hidden="true" />
-            <span className="orbit orbit-two" aria-hidden="true" />
           </div>
-        </div>
-
-        <div className="hero-bottom" aria-label="Areas of work">
-          <span>01 <b>Medical education</b></span>
-          <span>02 <b>Products</b></span>
-          <span>03 <b>Community</b></span>
-          <span>04 <b>Ideas in public</b></span>
         </div>
       </section>
 
@@ -76,29 +54,20 @@ export default function HomePage() {
         <div className="wrap">
           <div className="section-heading">
             <div>
-              <p className="section-kicker">01 / Selected work</p>
+              <p className="section-kicker">Selected Work</p>
               <h2 id="work-title">
-                A few things I&apos;m<br className="desktop-break" /> putting into the world.
+                A few things I&apos;m putting into the world.
               </h2>
             </div>
-            <p className="section-aside">
-              Different problems, same instinct: make something useful and put it in people&apos;s hands.
-            </p>
           </div>
 
           <div className="project-grid">
             {/* Rounds Card */}
             <article className="project-card rounds-card">
-              <div className="project-meta">
-                <span>01</span>
-                <span>Medical education · iOS</span>
-              </div>
-              <div className="rounds-art" aria-hidden="true">
-                <span className="rounds-orbit" />
-                <span className="rounds-orbit rounds-orbit-right" />
-                <span className="rounds-name">ROUNDS</span>
-                <span className="case-number">500<span>+</span></span>
-                <span className="case-caption">First Aid–aligned cases</span>
+              <div className="project-art rounds-art" aria-hidden="true">
+                <span className="art-name">ROUNDS</span>
+                <span className="art-stat">500<span>+</span></span>
+                <span className="art-caption">First Aid–aligned cases</span>
               </div>
               <div className="project-copy">
                 <h3>Better clinical reasoning for medical students with Rounds.</h3>
@@ -116,16 +85,10 @@ export default function HomePage() {
 
             {/* Sitr Card */}
             <article className="project-card sitr-card">
-              <div className="project-meta">
-                <span>02</span>
-                <span>Event management · SaaS</span>
-              </div>
-              <div className="sitr-art" aria-hidden="true">
-                <span className="sitr-ring" />
-                <span className="sitr-ring sitr-ring-b" />
-                <span className="sitr-name">SITR</span>
-                <span className="sitr-icon">📍</span>
-                <span className="sitr-tagline">EVENT TICKETING & SEATING</span>
+              <div className="project-art sitr-art" aria-hidden="true">
+                <span className="art-name">SITR</span>
+                <span className="art-icon">📍</span>
+                <span className="art-caption">Event ticketing & seating</span>
               </div>
               <div className="project-copy">
                 <h3>Bringing people together with Sitr.</h3>
@@ -138,16 +101,10 @@ export default function HomePage() {
 
             {/* MD+ Card */}
             <article className="project-card mdplus-card">
-              <div className="project-meta">
-                <span>03</span>
-                <span>Community · partnerships</span>
-              </div>
-              <div className="mdplus-art" aria-hidden="true">
-                <span className="plus-orbit orbit-left" />
-                <span className="plus-orbit orbit-right" />
-                <span className="mdplus-name">MD<span>+</span></span>
-                <span className="member-number">5,000<span>+</span></span>
-                <span className="member-caption">physicians & med students</span>
+              <div className="project-art mdplus-art" aria-hidden="true">
+                <span className="art-name">MD<span className="plus">+</span></span>
+                <span className="art-stat">5,000<span>+</span></span>
+                <span className="art-caption">physicians & med students</span>
               </div>
               <div className="project-copy">
                 <h3>Building community for the next generation of physician-innovators.</h3>
@@ -158,10 +115,6 @@ export default function HomePage() {
               </div>
             </article>
           </div>
-
-          <p className="fine-print">
-            Rounds&apos; case count and MD+&apos;s community size reflect their public sites as of October 2026.
-          </p>
         </div>
       </section>
 
@@ -169,14 +122,10 @@ export default function HomePage() {
       <section className="about-section section-pad" id="about" aria-labelledby="about-title">
         <div className="about-grid">
           <div className="about-heading">
-            <p className="section-kicker">02 / A little context</p>
+            <p className="section-kicker">About</p>
             <h2 id="about-title">
               Medicine keeps me close to the problem. Building gives me a way to try things.
             </h2>
-            <div className="about-note">
-              <span className="note-doodle" aria-hidden="true">↘</span>
-              <span>That&apos;s the thread<br />running through it all.</span>
-            </div>
           </div>
 
           <div className="about-body">
@@ -225,7 +174,7 @@ export default function HomePage() {
         <div className="wrap">
           <div className="section-heading books-heading">
             <div>
-              <p className="section-kicker">02b / Published</p>
+              <p className="section-kicker">Books</p>
               <h2 id="books-title">Books I&apos;ve written</h2>
             </div>
           </div>
@@ -278,42 +227,28 @@ export default function HomePage() {
         <div className="wrap">
           <div className="section-heading notes-heading">
             <div>
-              <p className="section-kicker">03 / Work in public</p>
+              <p className="section-kicker">Writing & Video</p>
               <h2 id="notes-title">
-                Notes, videos,<br className="desktop-break" /> unfinished thoughts.
+                Notes, videos, unfinished thoughts.
               </h2>
             </div>
-            <p className="section-aside">
-              I like sharing what I&apos;m learning while I&apos;m still learning it.
-            </p>
           </div>
 
           <div className="media-grid">
             <a className="media-card writing-card" href={siteConfig.links.blog} target="_blank" rel="noreferrer">
-              <div className="media-top">
-                <span className="media-icon writing-icon" aria-hidden="true">Aa</span>
-                <span className="media-arrow" aria-hidden="true">↗</span>
-              </div>
-              <div>
-                <span className="media-label">WRITING · INVERSIONS</span>
-                <h3>Medicine, technology,<br />and the things between.</h3>
+              <div className="media-content">
+                <h3>Inversions</h3>
+                <p>Essays on medicine, technology, and the things between.</p>
                 <span className="media-cta">Read the essays <span aria-hidden="true">→</span></span>
               </div>
             </a>
 
             <a className="media-card video-card" href={siteConfig.links.youtube} target="_blank" rel="noreferrer">
-              <div className="video-orbit" aria-hidden="true">
-                <span className="play-triangle" />
-              </div>
-              <div className="media-top video-top">
-                <span className="media-label">YOUTUBE · @THISISALIMIRZA</span>
-                <span className="media-arrow" aria-hidden="true">↗</span>
-              </div>
-              <div>
-                <h3>Trying things.<br />Sharing the process.</h3>
+              <div className="media-content">
+                <h3>YouTube</h3>
+                <p>Trying things. Sharing the process.</p>
                 <span className="media-cta">Watch on YouTube <span aria-hidden="true">→</span></span>
               </div>
-              <span className="video-grid-lines" aria-hidden="true" />
             </a>
           </div>
         </div>
@@ -323,7 +258,7 @@ export default function HomePage() {
       <section className="contact-section" id="contact" aria-labelledby="contact-title">
         <div className="contact-grid">
           <div>
-            <p className="section-kicker">04 / Get in touch</p>
+            <p className="section-kicker">Contact</p>
             <h2 id="contact-title">
               Have a good<br /><em>problem</em> to solve?
             </h2>
