@@ -35,7 +35,7 @@ export default function TagCloud({ tags }: TagCloudProps) {
         const size = MIN_REM + t * (MAX_REM - MIN_REM)
         // Heavier themes read slightly darker and bolder.
         const weight = 400 + Math.round(t * 3) * 100
-        const color = `color-mix(in srgb, var(--foreground) ${45 + t * 55}%, var(--muted))`
+        const color = `color-mix(in srgb, var(--ink) ${45 + t * 55}%, var(--muted))`
         return (
           <Link
             key={tag}

@@ -22,7 +22,7 @@ export default function HomePage() {
               I build useful things at the edge of <em>medicine</em> and everyday life.
             </h1>
             <p className="hero-intro">
-              I&apos;m Ali Mirza—an MD candidate at UConn, founder of Rounds, and builder working across medical education, restaurant checkout, and physician community.
+              I&apos;m Ali Mirza—an MD candidate at UConn, founder of Rounds, and builder working across medical education, event management, and physician community.
             </p>
             <div className="hero-actions">
               <Link href="#work" className="button button-lime">
@@ -89,17 +89,20 @@ export default function HomePage() {
           <div className="project-grid">
             {/* Rounds Card */}
             <article className="project-card rounds-card">
+              <div className="project-meta">
+                <span>01</span>
+                <span>Medical education · iOS</span>
+              </div>
+              <div className="rounds-art" aria-hidden="true">
+                <span className="rounds-orbit" />
+                <span className="rounds-orbit rounds-orbit-right" />
+                <span className="rounds-name">ROUNDS</span>
+                <span className="case-number">500<span>+</span></span>
+                <span className="case-caption">First Aid–aligned cases</span>
+              </div>
               <div className="project-copy">
-                <div className="project-meta">
-                  <span>01</span>
-                  <span>Medical education · iOS</span>
-                </div>
-                <h3>Rounds</h3>
+                <h3>Practice clinical reasoning daily.</h3>
                 <p>A daily case game that helps medical students practice Step 1 and build clinical reasoning.</p>
-                <div className="proof-line">
-                  <strong>500+</strong>
-                  <span>First Aid–aligned cases</span>
-                </div>
                 <div className="project-links">
                   <a className="card-link" href={siteConfig.links.rounds} target="_blank" rel="noreferrer">
                     Explore Rounds <span aria-hidden="true">↗</span>
@@ -109,36 +112,26 @@ export default function HomePage() {
                   </a>
                 </div>
               </div>
-              <div className="rounds-visual" aria-label="Real Rounds app screen showing the daily case and game modes">
-                <Image
-                  src="/images/rounds-main.webp"
-                  alt="Rounds app home screen with a daily case, case browser, leaderboard, and game modes"
-                  width={720}
-                  height={1500}
-                  loading="lazy"
-                />
-                <span className="visual-label">A real screen from the app</span>
-              </div>
             </article>
 
-            {/* Tally Card */}
-            <article className="project-card tally-card">
+            {/* Sitr Card */}
+            <article className="project-card sitr-card">
               <div className="project-meta">
                 <span>02</span>
-                <span>Restaurant technology · AI</span>
+                <span>Event management · SaaS</span>
               </div>
-              <div className="tally-art" aria-hidden="true">
-                <span className="tally-ring ring-a" />
-                <span className="tally-ring ring-b" />
-                <span className="tally-word">TALLY</span>
-                <span className="tally-chip">CHECKOUT, REWORKED</span>
-                <span className="tally-art-foot">FAST-CASUAL<br />ORDER FLOW</span>
+              <div className="sitr-art" aria-hidden="true">
+                <span className="sitr-ring" />
+                <span className="sitr-ring sitr-ring-b" />
+                <span className="sitr-name">SITR</span>
+                <span className="sitr-icon">📍</span>
+                <span className="sitr-tagline">EVENT TICKETING & SEATING</span>
               </div>
               <div className="project-copy">
-                <h3>Move the line along.</h3>
-                <p>Tally is building AI checkout for assembly-line restaurants—designed to remove the register from the fast-casual line.</p>
-                <a className="card-link" href={siteConfig.links.tally} target="_blank" rel="noreferrer">
-                  Visit Tally <span aria-hidden="true">↗</span>
+                <h3>Events without spreadsheets.</h3>
+                <p>A full event platform for ticketing, seating management, and attendee logistics—built after a friend needed help managing 400 guests at a med school formal.</p>
+                <a className="card-link" href={siteConfig.links.sitr} target="_blank" rel="noreferrer">
+                  Visit Sitr <span aria-hidden="true">↗</span>
                 </a>
               </div>
             </article>

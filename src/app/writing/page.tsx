@@ -1,6 +1,9 @@
+import Link from "next/link"
 import { getAllContent } from "@/lib/getAllContent"
+import { getAllTags } from "@/lib/getAllTags"
 import { CollectionSchema } from "@/app/components/StructuredData"
 import { buildMetadata } from "@/lib/seo"
+import TagCloud from "@/app/components/TagCloud"
 import WritingListClient from "./WritingListClient"
 
 export const metadata = buildMetadata({
@@ -13,6 +16,7 @@ export const metadata = buildMetadata({
 
 export default function WritingPage() {
   const allContent = getAllContent()
+  const tags = getAllTags()
 
   const published = allContent
     .filter(item => item.published !== false && item.section && item.section !== "")
@@ -37,11 +41,25 @@ export default function WritingPage() {
           <p className="eyebrow">The archive</p>
           <h1 className="page-title">Writing</h1>
           <p className="page-intro">
-            Essays, memos, and vignettes going back to 2015 — {published.length} pieces in all.
+            Ten years of essays, memos, and vignettes — {published.length} pieces in all.
+            Click any topic to explore, or jump to the <Link href="#archive" className="archive-link">full archive</Link> below.
           </p>
         </div>
 
-        <WritingListClient items={published} />
+        {/* Tag Cloud Section */}
+        <section className="writing-topics">
+          <h2 className="writing-topics-title">What I write about</h2>
+          <TagCloud tags={tags} />
+        </section>
+
+        {/* Archive Section */}
+        <section id="archive" className="writing-archive">
+          <div className="archive-header">
+            <h2 className="archive-title">The full archive</h2>
+            <p className="archive-note">All {published.length} pieces, from newest to oldest.</p>
+          </div>
+          <WritingListClient items={published} />
+        </section>
       </div>
     </>
   )

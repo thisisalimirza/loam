@@ -16,7 +16,7 @@ export const siteConfig = {
     youtube: "https://www.youtube.com/@thisisalimirza",
     blog: "https://blog.thisisalimirza.com/",
     rounds: "https://www.getrounds.app/",
-    tally: "https://tallytodayai.com/",
+    sitr: "https://www.usesitr.com/",
     mdplus: "https://mdplus.community/",
   },
   meta: {
