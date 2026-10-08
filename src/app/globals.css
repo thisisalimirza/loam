@@ -288,11 +288,47 @@ hr {
 
 @media (max-width: 640px) {
   .site-header-inner {
-    min-height: 60px;
+    min-height: auto;
+    flex-wrap: wrap;
+    padding: 12px var(--gutter);
+    gap: 10px 20px;
   }
   
   .site-wordmark {
-    gap: 6px;
+    gap: 8px;
+    font-size: 10px;
+  }
+  
+  .wordmark-mark {
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+  }
+  
+  .site-nav-list {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 16px;
+  }
+  
+  .site-nav-link {
+    font-size: 11px;
+  }
+  
+  .nav-contact {
+    margin-left: auto;
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 390px) {
+  .site-header-inner {
+    padding: 10px 12px;
+    gap: 8px 16px;
+  }
+  
+  .site-wordmark {
     font-size: 9px;
   }
   
@@ -313,41 +349,6 @@ hr {
   .nav-contact {
     padding: 7px 10px;
     font-size: 10px;
-  }
-}
-
-@media (max-width: 480px) {
-  .site-header-inner {
-    min-height: 56px;
-    padding: 0 12px;
-  }
-  
-  .site-wordmark {
-    gap: 5px;
-    font-size: 8px;
-  }
-  
-  .wordmark-mark {
-    width: 20px;
-    height: 20px;
-    font-size: 14px;
-  }
-  
-  .site-nav-list {
-    gap: 8px;
-  }
-  
-  .site-nav-link {
-    font-size: 9px;
-  }
-  
-  .nav-contact {
-    padding: 6px 8px;
-    font-size: 9px;
-  }
-  
-  .nav-contact-arrow {
-    display: none;
   }
 }
 
