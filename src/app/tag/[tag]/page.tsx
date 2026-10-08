@@ -73,7 +73,6 @@ export default async function TagPage({
 
       <div className="page-layout">
         <div className="page-head">
-          <p className="eyebrow">Tagged</p>
           <h1 className="page-title">{tag}</h1>
           <p className="tag-page-count">
             {items.length} {items.length === 1 ? "piece" : "pieces"} ·{" "}

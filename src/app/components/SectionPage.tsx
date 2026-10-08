@@ -14,7 +14,6 @@ export default function SectionPage({ section, items }: SectionPageProps) {
 
       <div className="page-layout">
         <div className="page-head">
-          <p className="eyebrow">Section</p>
           <h1 className="page-title">{section.name}</h1>
         </div>
 

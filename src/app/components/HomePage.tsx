@@ -53,12 +53,9 @@ export default function HomePage() {
       <section className="work-section section-pad" id="work" aria-labelledby="work-title">
         <div className="wrap">
           <div className="section-heading">
-            <div>
-              <p className="section-kicker">Selected Work</p>
-              <h2 id="work-title">
-                A few things I&apos;m putting into the world.
-              </h2>
-            </div>
+            <h2 id="work-title">
+              A few things I&apos;m putting into the world.
+            </h2>
           </div>
 
           <div className="project-grid">
@@ -93,9 +90,11 @@ export default function HomePage() {
               <div className="project-copy">
                 <h3>Bringing people together with Sitr.</h3>
                 <p>A full event platform for ticketing, seating management, and attendee logistics—built after a friend needed help managing 400 guests at a med school formal.</p>
-                <a className="card-link" href={siteConfig.links.sitr} target="_blank" rel="noreferrer">
-                  Visit Sitr <span aria-hidden="true">↗</span>
-                </a>
+                <div className="project-links">
+                  <a className="card-link" href={siteConfig.links.sitr} target="_blank" rel="noreferrer">
+                    Visit Sitr <span aria-hidden="true">↗</span>
+                  </a>
+                </div>
               </div>
             </article>
 
@@ -109,9 +108,11 @@ export default function HomePage() {
               <div className="project-copy">
                 <h3>Building community for the next generation of physician-innovators.</h3>
                 <p>At MD+, I lead sponsor and partner outreach for a medical education community where physicians and med students connect through events and a podcast.</p>
-                <a className="card-link" href={siteConfig.links.mdplus} target="_blank" rel="noreferrer">
-                  Meet MD+ <span aria-hidden="true">↗</span>
-                </a>
+                <div className="project-links">
+                  <a className="card-link" href={siteConfig.links.mdplus} target="_blank" rel="noreferrer">
+                    Meet MD+ <span aria-hidden="true">↗</span>
+                  </a>
+                </div>
               </div>
             </article>
           </div>
@@ -122,7 +123,6 @@ export default function HomePage() {
       <section className="about-section section-pad" id="about" aria-labelledby="about-title">
         <div className="about-grid">
           <div className="about-heading">
-            <p className="section-kicker">About</p>
             <h2 id="about-title">
               Medicine keeps me close to the problem. Building gives me a way to try things.
             </h2>
@@ -173,10 +173,7 @@ export default function HomePage() {
       <section className="books-section section-pad" id="books" aria-labelledby="books-title">
         <div className="wrap">
           <div className="section-heading books-heading">
-            <div>
-              <p className="section-kicker">Books</p>
-              <h2 id="books-title">Books I&apos;ve written</h2>
-            </div>
+            <h2 id="books-title">Books I&apos;ve written</h2>
           </div>
           <div className="books-grid">
             <a className="book-item" href="https://www.amazon.com/World-That-Works-Prosperity-Capitalism-ebook/dp/B0G5LV6F2G" target="_blank" rel="noreferrer">
@@ -226,12 +223,9 @@ export default function HomePage() {
       <section className="notes-section section-pad" id="notes" aria-labelledby="notes-title">
         <div className="wrap">
           <div className="section-heading notes-heading">
-            <div>
-              <p className="section-kicker">Writing & Video</p>
-              <h2 id="notes-title">
-                Notes, videos, unfinished thoughts.
-              </h2>
-            </div>
+            <h2 id="notes-title">
+              Notes, videos, unfinished thoughts.
+            </h2>
           </div>
 
           <div className="media-grid">
@@ -258,7 +252,6 @@ export default function HomePage() {
       <section className="contact-section" id="contact" aria-labelledby="contact-title">
         <div className="contact-grid">
           <div>
-            <p className="section-kicker">Contact</p>
             <h2 id="contact-title">
               Have a good<br /><em>problem</em> to solve?
             </h2>

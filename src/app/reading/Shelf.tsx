@@ -44,10 +44,6 @@ export default function Shelf({ books }: { books: Source[] }) {
       <div className="reading-section-head">
         <div>
           <h2 className="reading-section-title">The shelf</h2>
-          <p className="reading-section-note">
-            Newest markup first. Books imported in bulk carry their import date, so the order is
-            roughly, not exactly, the order I read them.
-          </p>
         </div>
 
         <div className="view-toggle" role="group" aria-label="Shelf view">

@@ -1,4 +1,3 @@
-import Link from "next/link"
 import { getAllContent } from "@/lib/getAllContent"
 import { getAllTags } from "@/lib/getAllTags"
 import { CollectionSchema } from "@/app/components/StructuredData"
@@ -38,7 +37,6 @@ export default function WritingPage() {
       />
       <div className="page-layout">
         <div className="page-head">
-          <p className="eyebrow">The archive</p>
           <h1 className="page-title">Writing</h1>
           <p className="page-intro">
             For polished essays on medicine, technology, and judgment, visit{" "}
@@ -49,22 +47,14 @@ export default function WritingPage() {
           </p>
           <p className="page-intro archive-note">
             This archive is different: ten years of drafts, notes, and half-formed thoughts—{published.length} pieces in all.
-            Click any topic to explore, or jump to the <Link href="#archive" className="archive-link">full archive</Link> below.
           </p>
         </div>
 
-        {/* Tag Cloud Section */}
         <section className="writing-topics">
-          <h2 className="writing-topics-title">What I write about</h2>
           <TagCloud tags={tags} />
         </section>
 
-        {/* Archive Section */}
         <section id="archive" className="writing-archive">
-          <div className="archive-header">
-            <h2 className="archive-title">The full archive</h2>
-            <p className="archive-note">All {published.length} pieces, from newest to oldest.</p>
-          </div>
           <WritingListClient items={published} />
         </section>
       </div>

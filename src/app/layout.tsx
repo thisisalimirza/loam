@@ -84,7 +84,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${libreBaskerville.variable} ${inter.variable} ${geistMono.variable}`}>
-        <div className="page-grain" aria-hidden="true" />
         <a href="#main-content" className="skip-link">Skip to content</a>
         <SiteHeader />
         <main id="main-content" role="main" tabIndex={-1}>
