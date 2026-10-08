@@ -69,9 +69,11 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "48x48" },
+      { url: "/favicon.png", type: "image/png", sizes: "32x32" },
     ],
-    apple: [{ url: "/images/ali-mirza.webp", type: "image/webp" }],
-    shortcut: "/favicon.svg",
+    apple: [{ url: "/images/am-monogram-180.png", type: "image/png" }],
+    shortcut: "/favicon.ico",
   },
   themeColor: siteConfig.meta.themeColor,
 };

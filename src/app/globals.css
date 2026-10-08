@@ -233,6 +233,15 @@ hr {
   letter-spacing: 0; 
 }
 
+.wordmark-monogram {
+  width: 32px;
+  height: 32px;
+  display: block;
+  flex-shrink: 0;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 .wordmark-dot { 
   color: var(--lime); 
 }
@@ -305,6 +314,11 @@ hr {
     font-size: 16px;
   }
   
+  .wordmark-monogram {
+    width: 26px;
+    height: 26px;
+  }
+  
   .site-nav-list {
     width: 100%;
     justify-content: flex-start;
@@ -336,6 +350,11 @@ hr {
     width: 22px;
     height: 22px;
     font-size: 15px;
+  }
+  
+  .wordmark-monogram {
+    width: 24px;
+    height: 24px;
   }
   
   .site-nav-list {

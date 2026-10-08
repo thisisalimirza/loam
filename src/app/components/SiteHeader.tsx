@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 import { NavLink } from "@/types"
 import SiteNav from "./SiteNav"
@@ -14,7 +15,14 @@ export default function SiteHeader() {
     <header className="site-header">
       <div className="site-header-inner">
         <Link href="/" className="site-wordmark" aria-label="Ali Mirza home">
-          <span className="wordmark-mark" aria-hidden="true">A</span>
+          <Image
+            src="/images/am-monogram.png"
+            alt=""
+            width={32}
+            height={32}
+            className="wordmark-monogram"
+            priority
+          />
           <span>ALI MIRZA<span className="wordmark-dot">.</span></span>
         </Link>
         <SiteNav navLinks={navLinks} />
