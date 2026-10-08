@@ -224,25 +224,36 @@ export default function HomePage() {
         <div className="wrap">
           <div className="section-heading notes-heading">
             <h2 id="notes-title">
-              Notes, videos, unfinished thoughts.
+              Notes, videos,<br className="desktop-break" /> unfinished thoughts.
             </h2>
           </div>
 
           <div className="media-grid">
             <a className="media-card writing-card" href={siteConfig.links.blog} target="_blank" rel="noreferrer">
-              <div className="media-content">
-                <h3>Inversions</h3>
-                <p>Essays on medicine, technology, and the things between.</p>
+              <div className="media-top">
+                <span className="media-icon writing-icon" aria-hidden="true">Aa</span>
+                <span className="media-arrow" aria-hidden="true">↗</span>
+              </div>
+              <div>
+                <span className="media-label">WRITING · INVERSIONS</span>
+                <h3>Medicine, technology,<br />and the things between.</h3>
                 <span className="media-cta">Read the essays <span aria-hidden="true">→</span></span>
               </div>
             </a>
 
             <a className="media-card video-card" href={siteConfig.links.youtube} target="_blank" rel="noreferrer">
-              <div className="media-content">
-                <h3>YouTube</h3>
-                <p>Trying things. Sharing the process.</p>
+              <div className="video-orbit" aria-hidden="true">
+                <span className="play-triangle" />
+              </div>
+              <div className="media-top video-top">
+                <span className="media-label">YOUTUBE · @THISISALIMIRZA</span>
+                <span className="media-arrow" aria-hidden="true">↗</span>
+              </div>
+              <div>
+                <h3>Trying things.<br />Sharing the process.</h3>
                 <span className="media-cta">Watch on YouTube <span aria-hidden="true">→</span></span>
               </div>
+              <span className="video-grid-lines" aria-hidden="true" />
             </a>
           </div>
         </div>
