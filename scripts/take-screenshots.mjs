@@ -43,6 +43,17 @@ async function takeScreenshots() {
     });
     console.log('✓ homepage-mobile.png saved');
     
+    // Mobile header close-up (390px viewport-only)
+    console.log('Taking mobile-header screenshot (390px viewport)...');
+    await page.setViewport({ width: 390, height: 200 });
+    await page.goto(BASE_URL, { waitUntil: 'networkidle0', timeout: 30000 });
+    await new Promise(r => setTimeout(r, 500));
+    await page.screenshot({ 
+      path: `${OUTPUT_DIR}/mobile-header.png`, 
+      fullPage: false 
+    });
+    console.log('✓ mobile-header.png saved');
+    
     // Writing page desktop full-page
     console.log('Taking writing-desktop screenshot...');
     await page.setViewport({ width: 1440, height: 900 });

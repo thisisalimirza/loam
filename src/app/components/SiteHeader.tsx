@@ -6,6 +6,7 @@ const navLinks: NavLink[] = [
   { name: "Work", href: "/#work" },
   { name: "About", href: "/#about" },
   { name: "Writing", href: "/writing" },
+  { name: "Meditations", href: "/meditations" },
 ]
 
 export default function SiteHeader() {

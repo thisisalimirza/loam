@@ -288,31 +288,66 @@ hr {
 
 @media (max-width: 640px) {
   .site-header-inner {
-    min-height: 70px;
+    min-height: 60px;
   }
   
   .site-wordmark {
-    gap: 8px;
-    font-size: 10px;
+    gap: 6px;
+    font-size: 9px;
   }
   
   .wordmark-mark {
-    width: 26px;
-    height: 26px;
-    font-size: 18px;
+    width: 22px;
+    height: 22px;
+    font-size: 15px;
   }
   
   .site-nav-list {
-    gap: 0;
+    gap: 12px;
   }
   
-  .site-nav-list > li:not(:last-child) {
-    display: none;
+  .site-nav-link {
+    font-size: 10px;
   }
   
   .nav-contact {
-    padding: 9px 12px;
-    font-size: 11px;
+    padding: 7px 10px;
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .site-header-inner {
+    min-height: 56px;
+    padding: 0 12px;
+  }
+  
+  .site-wordmark {
+    gap: 5px;
+    font-size: 8px;
+  }
+  
+  .wordmark-mark {
+    width: 20px;
+    height: 20px;
+    font-size: 14px;
+  }
+  
+  .site-nav-list {
+    gap: 8px;
+  }
+  
+  .site-nav-link {
+    font-size: 9px;
+  }
+  
+  .nav-contact {
+    padding: 6px 8px;
+    font-size: 9px;
+  }
+  
+  .nav-contact-arrow {
+    display: none;
   }
 }
 
