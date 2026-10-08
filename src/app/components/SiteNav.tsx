@@ -4,10 +4,6 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { NavLink } from "@/types"
 
-/**
- * The primary navigation. Rendered as a client component only because the
- * active link is derived from the current path.
- */
 export default function SiteNav({ navLinks }: { navLinks: NavLink[] }) {
   const pathname = usePathname()
 
@@ -43,6 +39,11 @@ export default function SiteNav({ navLinks }: { navLinks: NavLink[] }) {
             </li>
           )
         })}
+        <li>
+          <a href="mailto:ali@braskgroup.com" className="site-nav-link nav-contact">
+            Say hello <span className="nav-contact-arrow" aria-hidden="true">↗</span>
+          </a>
+        </li>
       </ul>
     </nav>
   )
