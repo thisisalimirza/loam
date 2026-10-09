@@ -14,6 +14,7 @@ import { buildMetadata } from "@/lib/seo"
 import { SourceSchema } from "@/app/components/StructuredData"
 import { siteConfig } from "@/config/site"
 import Cover from "../Cover"
+import Icon from "@/app/components/Icon"
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -166,7 +167,7 @@ export default async function SourcePage({ params }: PageProps) {
       />
 
       <p className="book-back">
-        <Link href="/reading">← the shelf</Link>
+        <Link href="/reading"><Icon name="left" /> the shelf</Link>
       </p>
 
       <header className="book-header">
@@ -315,7 +316,7 @@ export default async function SourcePage({ params }: PageProps) {
       </section>
 
       <p className="reading-footnote">
-        <Link href="/reading">← back to the shelf</Link>
+        <Link href="/reading"><Icon name="left" /> back to the shelf</Link>
       </p>
     </div>
   )

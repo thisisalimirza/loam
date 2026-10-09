@@ -634,72 +634,114 @@ hr {
   
 }
 
-/* 768px breakpoint */
+/* 768px: keep copy and portrait side by side so phones don't stack the photo on top */
 @media (max-width: 768px) {
   .hero-grid {
-    grid-template-columns: 1fr;
-    gap: 28px;
-    padding-top: 32px;
-    padding-bottom: 28px;
+    grid-template-columns: 1fr 140px;
+    gap: 16px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    align-items: start;
   }
   
   .hero-copy {
     padding: 0;
-    order: 1;
   }
   
   .portrait-stage {
-    order: 0;
-    width: min(70%, 260px);
-    justify-self: center;
-    padding-right: 14px;
+    width: 140px;
+    justify-self: end;
+    padding: 0;
+  }
+  
+  .portrait-stamp {
+    width: 56px;
+    height: 56px;
+    right: -8px;
+    bottom: 8px;
+    padding: 6px;
+  }
+  
+  .portrait-stamp strong {
+    font-size: 10px;
   }
   
   .hero-title {
-    font-size: clamp(2.4rem, 8vw, 3.2rem);
+    font-size: clamp(1.85rem, 6vw, 2.5rem);
     max-width: 100%;
+    margin-bottom: 12px;
   }
   
   .hero-eyebrow {
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     font-size: 9px;
   }
   
   .hero-intro {
     max-width: 100%;
-    font-size: 14px;
+    font-size: 13px;
+    margin-bottom: 14px;
+    line-height: 1.45;
   }
 }
 
-/* 640px and below - mobile */
+/* 640px and below - iPhone fold: copy first, tiny portrait */
 @media (max-width: 640px) {
   .hero-grid {
-    gap: 24px;
-    padding-top: 28px;
-    padding-bottom: 24px;
+    grid-template-columns: 1fr 68px;
+    grid-template-areas:
+      "eyebrow portrait"
+      "title title"
+      "intro intro"
+      "actions actions";
+    gap: 8px 10px;
+    padding-top: 12px;
+    padding-bottom: 14px;
+  }
+  
+  .hero-copy {
+    display: contents;
+  }
+  
+  .hero-eyebrow {
+    grid-area: eyebrow;
+    margin-bottom: 0;
+    font-size: 8px;
+    align-self: end;
   }
   
   .hero-title {
-    margin-bottom: 14px;
-    font-size: clamp(2.2rem, 9vw, 2.8rem);
+    grid-area: title;
+    margin-bottom: 0;
+    font-size: 1.7rem;
+    letter-spacing: -0.04em;
+    line-height: 1.08;
   }
   
   .hero-intro {
-    margin-bottom: 16px;
-    font-size: 13px;
+    grid-area: intro;
+    margin-bottom: 0;
+    font-size: 12.5px;
+    line-height: 1.4;
   }
   
   .hero-actions {
-    gap: 12px;
+    grid-area: actions;
+    gap: 10px;
+    margin-top: 4px;
   }
   
   .portrait-stage {
-    width: min(65%, 240px);
-    padding-right: 10px;
+    grid-area: portrait;
+    width: 68px;
+    padding: 0;
+    justify-self: end;
+    align-self: start;
   }
   
   .portrait-frame {
-    border-radius: 140px 140px 12px 12px;
+    border-radius: 36px 36px 8px 8px;
+    box-shadow: 4px 5px 0 rgba(13, 39, 30, .35);
   }
   
   .portrait-frame img {
@@ -707,19 +749,13 @@ hr {
   }
   
   .portrait-stamp {
-    right: -20px;
-    bottom: 40px;
-    width: 80px;
-    height: 80px;
-    padding: 10px;
+    display: none;
   }
   
-  .portrait-stamp strong {
-    font-size: 13px;
-  }
-  
-  .stamp-small {
-    font-size: 6px;
+  .button {
+    min-height: 40px;
+    padding-inline: 14px;
+    font-size: 11px;
   }
 }
 
@@ -763,15 +799,42 @@ hr {
   text-decoration: none; 
 }
 
-.text-link span, 
-.card-link span, 
-.social-links span { 
+.ui-icon {
+  display: inline-block;
+  width: 0.85em;
+  height: 0.85em;
+  flex-shrink: 0;
+  vertical-align: -0.1em;
+}
+
+.button .ui-icon,
+.text-link .ui-icon,
+.card-link .ui-icon,
+.social-links .ui-icon,
+.back-top .ui-icon,
+.nav-contact .ui-icon,
+.media-cta .ui-icon {
+  margin-left: 0.35em;
+}
+
+.art-icon .ui-icon {
+  width: 1em;
+  height: 1em;
+  margin: 0;
+}
+
+.text-link .ui-icon, 
+.card-link .ui-icon, 
+.social-links .ui-icon,
+.media-arrow,
+.nav-contact-arrow { 
   transition: transform .2s ease; 
 }
 
-.text-link:hover span, 
-.card-link:hover span, 
-.social-links a:hover span { 
+.text-link:hover .ui-icon, 
+.card-link:hover .ui-icon, 
+.social-links a:hover .ui-icon,
+.media-card:hover .media-arrow { 
   transform: translate(2px, -2px); 
 }
 
@@ -1457,7 +1520,9 @@ hr {
 }
 
 .media-arrow { 
-  font-size: 20px; 
+  width: 20px;
+  height: 20px;
+  margin: 0;
   transition: transform .2s ease; 
 }
 
@@ -1730,10 +1795,9 @@ hr {
   letter-spacing: .13em;
 }
 
-.footer-wordmark .wordmark-mark { 
+.footer-wordmark .wordmark-monogram { 
   width: 24px; 
   height: 24px; 
-  font-size: 17px; 
 }
 
 .footer-tagline {
@@ -1757,6 +1821,8 @@ hr {
 }
 
 .back-top { 
+  display: inline-flex;
+  align-items: center;
   color: var(--lime); 
   text-decoration: none; 
 }
@@ -1778,10 +1844,9 @@ hr {
     font-size: 9px;
   }
   
-  .footer-wordmark .wordmark-mark {
+  .footer-wordmark .wordmark-monogram {
     width: 20px;
     height: 20px;
-    font-size: 14px;
   }
 }
 
@@ -3130,6 +3195,12 @@ a.reading-item-title:hover {
 .book-back {
   font-size: 0.8rem;
   margin-bottom: 1.75rem;
+}
+
+.book-back a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
 }
 
 .book-header {

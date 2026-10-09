@@ -1,6 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 
+import Icon from "./Icon"
 import { SiteSchema } from "./StructuredData"
 import { siteConfig } from "@/config/site"
 
@@ -24,10 +25,10 @@ export default function HomePage() {
             </p>
             <div className="hero-actions">
               <Link href="#work" className="button button-lime">
-                See what I&apos;m building <span aria-hidden="true">↓</span>
+                See what I&apos;m building <Icon name="down" />
               </Link>
               <a href={`mailto:${siteConfig.author.email}`} className="text-link light-link">
-                Get in touch <span aria-hidden="true">↗</span>
+                Get in touch <Icon name="external" />
               </a>
             </div>
           </div>
@@ -71,10 +72,10 @@ export default function HomePage() {
                 <p>A daily case game that helps medical students practice Step 1.</p>
                 <div className="project-links">
                   <a className="card-link" href={siteConfig.links.rounds} target="_blank" rel="noreferrer">
-                    Explore Rounds <span aria-hidden="true">↗</span>
+                    Explore Rounds <Icon name="external" />
                   </a>
                   <a className="card-link" href="https://apps.apple.com/app/id6756315417" target="_blank" rel="noreferrer">
-                    App Store <span aria-hidden="true">↗</span>
+                    App Store <Icon name="external" />
                   </a>
                 </div>
               </div>
@@ -84,7 +85,7 @@ export default function HomePage() {
             <article className="project-card sitr-card">
               <div className="project-art sitr-art" aria-hidden="true">
                 <span className="art-name">SITR</span>
-                <span className="art-icon">📍</span>
+                <span className="art-icon"><Icon name="pin" /></span>
                 <span className="art-caption">Event ticketing & seating</span>
               </div>
               <div className="project-copy">
@@ -92,7 +93,7 @@ export default function HomePage() {
                 <p>A full event platform for ticketing, seating management, and attendee logistics—built after a friend needed help managing 400 guests at a med school formal.</p>
                 <div className="project-links">
                   <a className="card-link" href={siteConfig.links.sitr} target="_blank" rel="noreferrer">
-                    Visit Sitr <span aria-hidden="true">↗</span>
+                    Visit Sitr <Icon name="external" />
                   </a>
                 </div>
               </div>
@@ -110,7 +111,7 @@ export default function HomePage() {
                 <p>At MD+, I lead sponsor and partner outreach for a medical education community where physicians and med students connect through events and a podcast.</p>
                 <div className="project-links">
                   <a className="card-link" href={siteConfig.links.mdplus} target="_blank" rel="noreferrer">
-                    Meet MD+ <span aria-hidden="true">↗</span>
+                    Meet MD+ <Icon name="external" />
                   </a>
                 </div>
               </div>
@@ -163,7 +164,7 @@ export default function HomePage() {
             </div>
 
             <a className="text-link dark-link" href={siteConfig.links.linkedin} target="_blank" rel="noreferrer">
-              More about my background on LinkedIn <span aria-hidden="true">↗</span>
+              More about my background on LinkedIn <Icon name="external" />
             </a>
           </div>
         </div>
@@ -232,12 +233,12 @@ export default function HomePage() {
             <a className="media-card writing-card" href={siteConfig.links.blog} target="_blank" rel="noreferrer">
               <div className="media-top">
                 <span className="media-icon writing-icon" aria-hidden="true">Aa</span>
-                <span className="media-arrow" aria-hidden="true">↗</span>
+                <Icon name="external" className="media-arrow" />
               </div>
               <div>
                 <span className="media-label">WRITING · INVERSIONS</span>
                 <h3>Medicine, technology,<br />and the things between.</h3>
-                <span className="media-cta">Read the essays <span aria-hidden="true">→</span></span>
+                <span className="media-cta">Read the essays <Icon name="right" /></span>
               </div>
             </a>
 
@@ -247,11 +248,11 @@ export default function HomePage() {
               </div>
               <div className="media-top video-top">
                 <span className="media-label">YOUTUBE · @THISISALIMIRZA</span>
-                <span className="media-arrow" aria-hidden="true">↗</span>
+                <Icon name="external" className="media-arrow" />
               </div>
               <div>
                 <h3>Trying things.<br />Sharing the process.</h3>
-                <span className="media-cta">Watch on YouTube <span aria-hidden="true">→</span></span>
+                <span className="media-cta">Watch on YouTube <Icon name="right" /></span>
               </div>
               <span className="video-grid-lines" aria-hidden="true" />
             </a>
@@ -272,20 +273,20 @@ export default function HomePage() {
               I&apos;m always up for a thoughtful note, a useful connection, or a conversation about something you&apos;re building.
             </p>
             <a className="button button-lime" href={`mailto:${siteConfig.author.email}`}>
-              Email me <span aria-hidden="true">↗</span>
+              Email me <Icon name="external" />
             </a>
             <div className="social-links">
               <a href={siteConfig.links.linkedin} target="_blank" rel="noreferrer">
-                LinkedIn <span aria-hidden="true">↗</span>
+                LinkedIn <Icon name="external" />
               </a>
               <a href={siteConfig.links.youtube} target="_blank" rel="noreferrer">
-                YouTube <span aria-hidden="true">↗</span>
+                YouTube <Icon name="external" />
               </a>
               <a href={siteConfig.links.blog} target="_blank" rel="noreferrer">
-                Inversions <span aria-hidden="true">↗</span>
+                Inversions <Icon name="external" />
               </a>
               <Link href="/writing">
-                Archive <span aria-hidden="true">→</span>
+                Archive <Icon name="right" />
               </Link>
             </div>
           </div>

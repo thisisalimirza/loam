@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { NavLink } from "@/types"
+import Icon from "./Icon"
 
 export default function SiteNav({ navLinks }: { navLinks: NavLink[] }) {
   const pathname = usePathname()
@@ -41,7 +42,7 @@ export default function SiteNav({ navLinks }: { navLinks: NavLink[] }) {
         })}
         <li>
           <a href="mailto:ali@braskgroup.com" className="site-nav-link nav-contact">
-            Say hello <span className="nav-contact-arrow" aria-hidden="true">↗</span>
+            Say hello <Icon name="external" className="nav-contact-arrow" />
           </a>
         </li>
       </ul>
