@@ -1,171 +1,297 @@
-import fs from "fs"
 import Image from "next/image"
 import Link from "next/link"
 
+import Icon from "./Icon"
 import { SiteSchema } from "./StructuredData"
-import TagCloud from "./TagCloud"
-import EntryList from "./EntryList"
-import HomeWork from "./HomeWork"
-import { getAllTags } from "@/lib/getAllTags"
-import { getAllContent } from "@/lib/getAllContent"
-import { getHomeStats } from "@/lib/getHomeStats"
 import { siteConfig } from "@/config/site"
-import { ContentItem } from "@/types"
-
-const RECENT_COUNT = 6
-
-/** Newest published writing first, dated by frontmatter or file birth time. */
-function recentWriting(): ContentItem[] {
-  return getAllContent()
-    .filter(item => item.published !== false && item.section !== "")
-    .map(item => {
-      let effectiveDate = item.date
-      if (!effectiveDate && item.filePath) {
-        try {
-          effectiveDate = fs.statSync(item.filePath).birthtime.toISOString().slice(0, 10)
-        } catch {}
-      }
-      return { ...item, effectiveDate }
-    })
-    .sort((a, b) => (b.effectiveDate || "").localeCompare(a.effectiveDate || ""))
-    .slice(0, RECENT_COUNT)
-}
 
 export default function HomePage() {
-  const tags = getAllTags()
-  const stats = getHomeStats()
-  const recent = recentWriting()
-
-  const doors = [
-    {
-      href: "/writing",
-      name: "Writing",
-      desc: "Essays, memos, and vignettes going back to 2015.",
-      count: `${stats.pieces} pieces`,
-    },
-    {
-      href: "/reading",
-      name: "Book Notes",
-      desc: "Highlights and margin notes from everything I read.",
-      count: `${stats.books} books · ${(stats.highlights / 1000).toFixed(1)}k highlights`,
-    },
-    {
-      href: "/meditations",
-      name: "Meditations",
-      desc: "Aphorisms and life lessons worth remembering.",
-      count: `${stats.meditations} entries`,
-    },
-    {
-      href: "/projects",
-      name: "Projects",
-      desc: "Apps and tools I've built.",
-      count: `${stats.projects} shipped`,
-    },
-  ]
-
   return (
     <>
       <SiteSchema />
 
-      {/* ---- Introduction ---- */}
-      <section className="hero">
-        <div className="hero-inner">
-          <div>
-            <h1 className="hero-name rise rise-1">Ali Mirza</h1>
-            <p className="hero-line rise rise-2">
-              Building and writing at the intersection of medicine, technology, and{" "}
-              <em>what stays constant across centuries and cultures.</em>
+      {/* Hero Section */}
+      <section className="hero" id="top" aria-labelledby="hero-title">
+        <div className="hero-grid">
+          <div className="hero-copy">
+            <p className="hero-eyebrow">
+              UConn medical student <span className="eyebrow-sep">/</span> founder
             </p>
-            <div className="hero-actions rise rise-3">
-              <Link href="/start-here" className="btn btn--solid">
-                Start here <span className="arrow" aria-hidden="true">→</span>
+            <h1 id="hero-title" className="hero-title">
+              I build useful things at the edge of <em>medicine</em> and everyday life.
+            </h1>
+            <p className="hero-intro">
+              I&apos;m Ali Mirza—an MD candidate at UConn, founder of Rounds, and builder working across medical education, event management, and physician community.
+            </p>
+            <div className="hero-actions">
+              <Link href="#work" className="button button-lime">
+                See what I&apos;m building <Icon name="down" />
               </Link>
-              <Link href="/writing" className="btn btn--ghost">
-                Read the writing
-              </Link>
-              <Link href="/about" className="btn btn--ghost">
-                About me
-              </Link>
+              <a href={`mailto:${siteConfig.author.email}`} className="text-link light-link">
+                Get in touch <Icon name="external" />
+              </a>
             </div>
           </div>
 
-          <Image
-            src="/profilepic.jpg"
-            alt="Ali Mirza"
-            width={168}
-            height={168}
-            priority
-            className="hero-portrait rise rise-2"
-          />
+          <div className="portrait-stage">
+            <div className="portrait-frame">
+              <Image
+                src="/images/ali-mirza.webp"
+                width={960}
+                height={1200}
+                alt="Ali Mirza smiling outdoors"
+                priority
+              />
+            </div>
+            <div className="portrait-stamp">
+              <strong>Building<br />Rounds</strong>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* ---- Four doors into the site ---- */}
-      <div className="shell">
-        <nav className="doors" aria-label="Sections">
-          {doors.map((door, index) => (
-            <Link key={door.href} href={door.href} className="door">
-              <span className="door-index">{String(index + 1).padStart(2, "0")}</span>
-              <span className="door-name">{door.name}</span>
-              <span className="door-desc">{door.desc}</span>
-              <span className="door-count">{door.count}</span>
-            </Link>
-          ))}
-        </nav>
-      </div>
-
-      {/* ---- Latest writing ---- */}
-      <section className="section shell">
-        <div className="section-head">
-          <div>
-            <h2 className="section-title">Latest writing</h2>
+      {/* Selected Work Section */}
+      <section className="work-section section-pad" id="work" aria-labelledby="work-title">
+        <div className="wrap">
+          <div className="section-heading">
+            <h2 id="work-title">
+              A few things I&apos;m putting into the world.
+            </h2>
           </div>
-          <Link href="/writing" className="section-more">
-            All {stats.pieces} pieces <span className="arrow" aria-hidden="true">→</span>
-          </Link>
+
+          <div className="project-grid">
+            {/* Rounds Card */}
+            <article className="project-card rounds-card">
+              <div className="project-art rounds-art" aria-hidden="true">
+                <span className="art-name">ROUNDS</span>
+                <span className="art-stat">500<span>+</span></span>
+                <span className="art-caption">First Aid–aligned cases</span>
+              </div>
+              <div className="project-copy">
+                <h3>Better clinical reasoning for medical students with Rounds.</h3>
+                <p>A daily case game that helps medical students practice Step 1.</p>
+                <div className="project-links">
+                  <a className="card-link" href={siteConfig.links.rounds} target="_blank" rel="noreferrer">
+                    Explore Rounds <Icon name="external" />
+                  </a>
+                  <a className="card-link" href="https://apps.apple.com/app/id6756315417" target="_blank" rel="noreferrer">
+                    App Store <Icon name="external" />
+                  </a>
+                </div>
+              </div>
+            </article>
+
+            {/* Sitr Card */}
+            <article className="project-card sitr-card">
+              <div className="project-art sitr-art" aria-hidden="true">
+                <span className="art-name">SITR</span>
+                <span className="art-icon"><Icon name="pin" /></span>
+                <span className="art-caption">Event ticketing & seating</span>
+              </div>
+              <div className="project-copy">
+                <h3>Bringing people together with Sitr.</h3>
+                <p>A full event platform for ticketing, seating management, and attendee logistics—built after a friend needed help managing 400 guests at a med school formal.</p>
+                <div className="project-links">
+                  <a className="card-link" href={siteConfig.links.sitr} target="_blank" rel="noreferrer">
+                    Visit Sitr <Icon name="external" />
+                  </a>
+                </div>
+              </div>
+            </article>
+
+            {/* MD+ Card */}
+            <article className="project-card mdplus-card">
+              <div className="project-art mdplus-art" aria-hidden="true">
+                <span className="art-name">MD<span className="plus">+</span></span>
+                <span className="art-stat">5,000<span>+</span></span>
+                <span className="art-caption">physicians & med students</span>
+              </div>
+              <div className="project-copy">
+                <h3>Building community for the next generation of physician-innovators.</h3>
+                <p>At MD+, I lead sponsor and partner outreach for a medical education community where physicians and med students connect through events and a podcast.</p>
+                <div className="project-links">
+                  <a className="card-link" href={siteConfig.links.mdplus} target="_blank" rel="noreferrer">
+                    Meet MD+ <Icon name="external" />
+                  </a>
+                </div>
+              </div>
+            </article>
+          </div>
         </div>
-        <EntryList items={recent} />
       </section>
 
-      {/* ---- Themes ---- */}
-      <div className="band">
-        <section className="section shell">
-          <div className="section-head">
-            <div>
-              <h2 className="section-title">What I write about</h2>
-              <p className="section-note">
-                Ten years of essays, memos, and vignettes — sized by how often each theme comes up.
-              </p>
-            </div>
+      {/* About Section */}
+      <section className="about-section section-pad" id="about" aria-labelledby="about-title">
+        <div className="about-grid">
+          <div className="about-heading">
+            <h2 id="about-title">
+              Medicine keeps me close to the problem. Building gives me a way to try things.
+            </h2>
           </div>
-          <TagCloud tags={tags} />
-        </section>
-      </div>
 
-      {/* ---- Building, tools, books, papers ---- */}
-      <HomeWork />
+          <div className="about-body">
+            <p className="about-lead">
+              I&apos;m an MD candidate at the University of Connecticut School of Medicine and the founder of Rounds.
+            </p>
+            <p>
+              I grew up across Pakistan, Lebanon, Kenya, and the U.S. I planned on medicine, but first worked at Epic, where I co-led one of the company&apos;s early collaborative installs and helped launch two more hospital EMR systems. I later started a marketing agency and grew it to a team of three. Now I&apos;m an MD candidate at UConn, building in the gaps.
+            </p>
+            <p>
+              At MD+, I lead sponsor and partner outreach for a medical education community with events and a podcast. I write about medicine, technology, and judgment, and share the process on YouTube.
+            </p>
 
-      {/* ---- Newsletter ---- */}
-      <div className="band">
-        <section className="section section--tight shell">
-          <div className="subscribe">
-            <div>
-              <h2 className="subscribe-title">Side Effects</h2>
-              <p className="subscribe-note">
-                My newsletter on medicine, systems, and building.
-              </p>
+            <div className="experience-list" aria-label="Current focus">
+              <div>
+                <span>Training</span>
+                <strong>UConn School of Medicine</strong>
+              </div>
+              <div>
+                <span>Building</span>
+                <strong>Rounds · Founder</strong>
+              </div>
+              <div>
+                <span>Connecting</span>
+                <strong>MD+ · Partnerships</strong>
+              </div>
+              <div>
+                <span>Previously</span>
+                <strong>Epic · hospital EMR launches</strong>
+              </div>
+              <div>
+                <span>Founded</span>
+                <strong>Marketing agency · team of 3</strong>
+              </div>
             </div>
-            <a
-              href={siteConfig.links.newsletter}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn--solid"
-            >
-              Subscribe <span className="arrow" aria-hidden="true">→</span>
+
+            <a className="text-link dark-link" href={siteConfig.links.linkedin} target="_blank" rel="noreferrer">
+              More about my background on LinkedIn <Icon name="external" />
             </a>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
+
+      {/* Books Section */}
+      <section className="books-section section-pad" id="books" aria-labelledby="books-title">
+        <div className="wrap">
+          <div className="section-heading books-heading">
+            <h2 id="books-title">Books I&apos;ve written</h2>
+          </div>
+          <div className="books-grid">
+            <a className="book-item" href="https://www.amazon.com/World-That-Works-Prosperity-Capitalism-ebook/dp/B0G5LV6F2G" target="_blank" rel="noreferrer">
+              <Image
+                src="https://m.media-amazon.com/images/I/61t9YX0iMVL._SL1500_.jpg"
+                alt="A World That Works book cover"
+                width={120}
+                height={180}
+                className="book-item-cover"
+              />
+              <span className="book-info">
+                <strong>A World That Works</strong>
+                <span>A back and forth conversation between a Capitalist and a Socialist, written in the style of Plato&apos;s The Republic.</span>
+              </span>
+            </a>
+            <a className="book-item" href="https://www.amazon.com/Reveries-Through-Others-Stories-traveler-ebook/dp/B0CJ99H7DL" target="_blank" rel="noreferrer">
+              <Image
+                src="https://m.media-amazon.com/images/I/71u8Vthq34L._SL1500_.jpg"
+                alt="Reveries book cover"
+                width={120}
+                height={180}
+                className="book-item-cover"
+              />
+              <span className="book-info">
+                <strong>Reveries</strong>
+                <span>A collection of vignettes as I reflect on my upbringing across the world, trying to make sense of the vast difference of New York City streets versus those I grew up in in Pakistan and Kenya. I wrote these stories when I was roughly 16 years old.</span>
+              </span>
+            </a>
+            <a className="book-item" href="https://www.amazon.com/Wealth-At-20-Financial-Graduates-ebook/dp/B0CJBBSXW5" target="_blank" rel="noreferrer">
+              <Image
+                src="https://m.media-amazon.com/images/I/61fombI3cZL._SL1500_.jpg"
+                alt="Wealth At 20 book cover"
+                width={120}
+                height={180}
+                className="book-item-cover"
+              />
+              <span className="book-info">
+                <strong>Wealth At 20</strong>
+                <span>I am no expert at money or finances. Despite this I have always been the go to for finance knowledge for my family and friends. This was a distillation of the most actionable and immediate advice and insights I&apos;d give someone who has just graduated undergrad, is getting their first real paycheck, and wants to know how to best use it.</span>
+              </span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Notes/Writing Section */}
+      <section className="notes-section section-pad" id="notes" aria-labelledby="notes-title">
+        <div className="wrap">
+          <div className="section-heading notes-heading">
+            <h2 id="notes-title">
+              Notes, videos,<br className="desktop-break" /> unfinished thoughts.
+            </h2>
+          </div>
+
+          <div className="media-grid">
+            <a className="media-card writing-card" href={siteConfig.links.blog} target="_blank" rel="noreferrer">
+              <div className="media-top">
+                <span className="media-icon writing-icon" aria-hidden="true">Aa</span>
+                <Icon name="external" className="media-arrow" />
+              </div>
+              <div>
+                <span className="media-label">WRITING · INVERSIONS</span>
+                <h3>Medicine, technology,<br />and the things between.</h3>
+                <span className="media-cta">Read the essays <Icon name="right" /></span>
+              </div>
+            </a>
+
+            <a className="media-card video-card" href={siteConfig.links.youtube} target="_blank" rel="noreferrer">
+              <div className="video-orbit" aria-hidden="true">
+                <span className="play-triangle" />
+              </div>
+              <div className="media-top video-top">
+                <span className="media-label">YOUTUBE · @THISISALIMIRZA</span>
+                <Icon name="external" className="media-arrow" />
+              </div>
+              <div>
+                <h3>Trying things.<br />Sharing the process.</h3>
+                <span className="media-cta">Watch on YouTube <Icon name="right" /></span>
+              </div>
+              <span className="video-grid-lines" aria-hidden="true" />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section className="contact-section" id="contact" aria-labelledby="contact-title">
+        <div className="contact-grid">
+          <div>
+            <h2 id="contact-title">
+              Have a good<br /><em>problem</em> to solve?
+            </h2>
+          </div>
+          <div className="contact-copy">
+            <p>
+              I&apos;m always up for a thoughtful note, a useful connection, or a conversation about something you&apos;re building.
+            </p>
+            <a className="button button-lime" href={`mailto:${siteConfig.author.email}`}>
+              Email me <Icon name="external" />
+            </a>
+            <div className="social-links">
+              <a href={siteConfig.links.linkedin} target="_blank" rel="noreferrer">
+                LinkedIn <Icon name="external" />
+              </a>
+              <a href={siteConfig.links.youtube} target="_blank" rel="noreferrer">
+                YouTube <Icon name="external" />
+              </a>
+              <a href={siteConfig.links.blog} target="_blank" rel="noreferrer">
+                Inversions <Icon name="external" />
+              </a>
+              <Link href="/writing">
+                Archive <Icon name="right" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
     </>
   )
 }

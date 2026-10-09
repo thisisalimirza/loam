@@ -1,7 +1,7 @@
 export const siteConfig = {
   name: "Ali Mirza",
-  title: "Ali Mirza – Personal Website",
-  description: "Ali Mirza is a medical student, builder, and writer. Essays on medicine, systems, and building software — plus Side Effects, a newsletter.",
+  title: "Ali Mirza — MD Candidate, Founder & Builder",
+  description: "Ali Mirza is an MD candidate at UConn and founder building across medical education, restaurant checkout, and physician community.",
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://thisisalimirza.com",
   author: {
     name: "Ali Mirza",
@@ -12,17 +12,24 @@ export const siteConfig = {
     newsletter: "https://thisisalimirza.substack.com",
     github: "https://github.com/thisisalimirza",
     twitter: "https://twitter.com/thisisalimirza",
+    linkedin: "https://www.linkedin.com/in/thisisalimirza",
+    youtube: "https://www.youtube.com/@thisisalimirza",
+    blog: "https://blog.thisisalimirza.com/",
+    rounds: "https://www.getrounds.app/",
+    sitr: "https://www.usesitr.com/",
+    mdplus: "https://mdplus.community/",
   },
   meta: {
-    themeColor: "#faf7f1",
+    themeColor: "#173b30",
     locale: "en_US",
     type: "website",
   },
   images: {
-    profile: "/profilepic.jpg",
+    profile: "/images/ali-mirza.webp",
+    og: "/og.png",
     profileSize: {
-      width: 120,
-      height: 120,
+      width: 960,
+      height: 1200,
     },
   },
 }

@@ -285,7 +285,7 @@ export default function AdminPage() {
             <label className="admin-label">
               Slug
               <span style={{ color: 'var(--muted)', fontWeight: 400, marginLeft: '0.5rem', fontSize: '0.8rem' }}>
-                → {section === '__root__' ? `/${slug || 'slug'}` : `/${section || 'section'}/${slug || 'slug'}`}
+                {section === '__root__' ? `/${slug || 'slug'}` : `/${section || 'section'}/${slug || 'slug'}`}
               </span>
             </label>
             <input type="text" value={slug} onChange={e => { setSlug(e.target.value); setSlugManuallyEdited(true); }}
@@ -360,7 +360,7 @@ export default function AdminPage() {
         <div>
           <button onClick={() => { setEditingFile(null); setEditStatus(null); }}
             className="admin-btn-ghost" style={{ marginBottom: '1.5rem', fontSize: '0.9rem' }}>
-            ← Back
+            Back
           </button>
           <div style={{ fontSize: '0.8rem', color: 'var(--muted)', fontFamily: 'var(--font-geist-mono, monospace)', marginBottom: '1.25rem' }}>
             {editingFile.path}

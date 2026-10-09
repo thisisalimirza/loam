@@ -46,7 +46,6 @@ export default function ReadingPage() {
       />
 
       <div className="page-head">
-        <p className="eyebrow">The input side</p>
         <h1 className="page-title">Book Notes</h1>
 
         <p className="page-intro">
@@ -107,9 +106,6 @@ export default function ReadingPage() {
       {beyond.length > 0 && (
         <section className="reading-section">
           <h2 className="reading-section-title">Beyond books</h2>
-          <p className="reading-section-note">
-            The articles, essays and episodes I marked up most heavily.
-          </p>
           <ul className="reading-list">
             {beyond.map((source) => (
               <li key={source.slug} className="reading-item">
@@ -174,8 +170,7 @@ export default function ReadingPage() {
       </section>
 
       <p className="reading-footnote">
-        Snapshot taken {formatDate(generatedAt)}. The output side lives in{" "}
-        <Link href="/writing">writing</Link>.
+        Snapshot taken {formatDate(generatedAt)}.
       </p>
     </div>
   )

@@ -1,6 +1,8 @@
 import { getAllContent } from "@/lib/getAllContent"
+import { getAllTags } from "@/lib/getAllTags"
 import { CollectionSchema } from "@/app/components/StructuredData"
 import { buildMetadata } from "@/lib/seo"
+import TagCloud from "@/app/components/TagCloud"
 import WritingListClient from "./WritingListClient"
 
 export const metadata = buildMetadata({
@@ -13,6 +15,7 @@ export const metadata = buildMetadata({
 
 export default function WritingPage() {
   const allContent = getAllContent()
+  const tags = getAllTags()
 
   const published = allContent
     .filter(item => item.published !== false && item.section && item.section !== "")
@@ -34,14 +37,26 @@ export default function WritingPage() {
       />
       <div className="page-layout">
         <div className="page-head">
-          <p className="eyebrow">The archive</p>
           <h1 className="page-title">Writing</h1>
           <p className="page-intro">
-            Essays, memos, and vignettes going back to 2015 — {published.length} pieces in all.
+            For polished essays on medicine, technology, and judgment, visit{" "}
+            <a href="https://blog.thisisalimirza.com/" target="_blank" rel="noreferrer" className="inversions-link">
+              Inversions
+            </a>
+            —my Substack where the finished work goes.
+          </p>
+          <p className="page-intro archive-note">
+            This archive is different: ten years of drafts, notes, and half-formed thoughts—{published.length} pieces in all.
           </p>
         </div>
 
-        <WritingListClient items={published} />
+        <section className="writing-topics">
+          <TagCloud tags={tags} />
+        </section>
+
+        <section id="archive" className="writing-archive">
+          <WritingListClient items={published} />
+        </section>
       </div>
     </>
   )
