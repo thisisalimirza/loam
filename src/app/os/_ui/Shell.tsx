@@ -65,7 +65,7 @@ export default function Shell({ areas, inbox, mentions, children }: { areas: A[]
           <form action={logout}><button className="btn ghost sm" title="Sign out" aria-label="Sign out"><Icon name="logout" /></button></form>
         </div>
       </aside>
-      <main className="m">{children}</main>
+      <div className="m">{children}</div>
       <Capture />
       <Shortcuts />
       <Suspense fallback={null}><TaskPanel today={todayISO()} /></Suspense>
