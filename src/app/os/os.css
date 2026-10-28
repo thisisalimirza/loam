@@ -573,3 +573,4 @@ background:var(--bg);font:400 var(--t-body)/1.34 var(--font);letter-spacing:-.01
   .os li.trow .rmeta:empty{display:none}
   .os li.trow .rmeta .pill{max-width:none}
 }
+@media (min-width:900px){.os .dr-add{flex-wrap:nowrap}}
