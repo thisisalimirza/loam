@@ -16,3 +16,4 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
     </div>
   )
 }
+export const maxDuration = 30

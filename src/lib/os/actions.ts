@@ -18,6 +18,8 @@ const back = () => revalidatePath("/os", "layout")
 export async function login(_prev: { error?: string } | undefined, f: FormData) {
   const h = await headers()
   const ip = (h.get("x-forwarded-for") ?? "").split(",")[0].trim() || "unknown"
+  const t0 = Date.now()
+  console.log("login: start")
   const sql = db()
   let n: number
   try {
@@ -28,6 +30,7 @@ export async function login(_prev: { error?: string } | undefined, f: FormData) 
     console.error("loam_os db error", err.code, err.message?.replace(/postgres(ql)?:\/\/\S+/g, "[url]"))
     return { error: "Can't reach the database right now." }
   }
+  console.log("login: counted", Date.now() - t0)
   if (n >= 5) return { error: "Too many attempts. Try again in 15 minutes." }
 
   const given = createHash("sha256").update(str(f, "password")).digest()
@@ -35,6 +38,7 @@ export async function login(_prev: { error?: string } | undefined, f: FormData) 
   const ok = !!process.env.ADMIN_PASSWORD && timingSafeEqual(given, real)
   await sql`insert into loam_os.login_attempts (ip, ok) values (${ip}, ${ok})`
   await sql`delete from loam_os.login_attempts where at < now() - interval '7 days'`
+  console.log("login: logged", Date.now() - t0, ok)
   if (!ok) return { error: "That password didn't match." }
 
   const jar = await cookies()

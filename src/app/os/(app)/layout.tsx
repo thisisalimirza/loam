@@ -3,6 +3,7 @@ import { countInbox, getAreas } from "@/lib/os/data"
 import Shell from "../_ui/Shell"
 
 export const dynamic = "force-dynamic"
+export const maxDuration = 30
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   await requireOwner()
