@@ -19,8 +19,15 @@ export async function login(_prev: { error?: string } | undefined, f: FormData) 
   const h = await headers()
   const ip = (h.get("x-forwarded-for") ?? "").split(",")[0].trim() || "unknown"
   const sql = db()
-  const [{ n }] = await sql<{ n: number }[]>`
-    select count(*)::int n from loam_os.login_attempts where ip = ${ip} and not ok and at > now() - interval '15 minutes'`
+  let n: number
+  try {
+    ;[{ n }] = await sql<{ n: number }[]>`
+      select count(*)::int n from loam_os.login_attempts where ip = ${ip} and not ok and at > now() - interval '15 minutes'`
+  } catch (e) {
+    const err = e as { code?: string; message?: string }
+    console.error("loam_os db error", err.code, err.message?.replace(/postgres(ql)?:\/\/\S+/g, "[url]"))
+    return { error: "Can't reach the database right now." }
+  }
   if (n >= 5) return { error: "Too many attempts. Try again in 15 minutes." }
 
   const given = createHash("sha256").update(str(f, "password")).digest()

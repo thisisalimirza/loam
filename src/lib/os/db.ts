@@ -12,6 +12,7 @@ function make() {
     prepare: false, // transaction pooler
     max: 3,
     idle_timeout: 20,
+    connect_timeout: 8,
     ssl: { rejectUnauthorized: false },
     types: {
       // keep `date` columns as YYYY-MM-DD strings
