@@ -75,6 +75,7 @@ min-height:100vh;background:radial-gradient(1200px 400px at 70% -10%,#eef0ff,tra
 .os .chk:hover{border-color:var(--acc)}
 .os .done .chk{background:var(--acc);border-color:var(--acc);box-shadow:inset 0 0 0 3px var(--card)}
 .os .tt{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}.os .done .tt{color:var(--mute);text-decoration:line-through}
+.os button.tt{background:none;border:0;padding:0;text-align:left;font:inherit;font-weight:500;color:inherit;cursor:text}.os input.tt{height:30px;padding:0 8px}
 .os .due{font-size:12px;color:var(--mute);font-variant-numeric:tabular-nums;white-space:nowrap}.os .due.warn{color:var(--warn);font-weight:600}
 .os .row .x{opacity:0;color:var(--mute);padding:4px;border-radius:6px}.os .row:hover .x{opacity:1}.os .row .x:hover{color:var(--warn);background:var(--warnsoft)}
 

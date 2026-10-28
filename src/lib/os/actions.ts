@@ -137,6 +137,13 @@ export async function updateTask(f: FormData) {
     project_id = ${opt(f, "project_id")}, due_date = ${opt(f, "due_date")}, scheduled_date = ${opt(f, "scheduled_date")} where id = ${id}`
   back()
 }
+export async function renameTask(id: string, title: string) {
+  await requireOwner()
+  const t = title.trim()
+  if (!t) return
+  await db()`update loam_os.tasks set title = ${t} where id = ${id}`
+  back()
+}
 export async function toggleTask(id: string, done: boolean) {
   await requireOwner()
   await db()`update loam_os.tasks set status = ${done ? "done" : "todo"}, done_at = ${done ? new Date() : null} where id = ${id}`

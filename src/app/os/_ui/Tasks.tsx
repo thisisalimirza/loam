@@ -1,10 +1,10 @@
 "use client"
 import Link from "next/link"
-import { useOptimistic, useTransition, type CSSProperties } from "react"
+import { useOptimistic, useState, useTransition, type CSSProperties } from "react"
 import { useRouter } from "next/navigation"
 import { Icon } from "./icons"
 import Kanban from "./Kanban"
-import { createTask, deleteTask, moveTask, toggleTask } from "@/lib/os/actions"
+import { createTask, deleteTask, moveTask, renameTask, toggleTask } from "@/lib/os/actions"
 import { relDue } from "@/lib/os/dates"
 import { TASK_COLS, type Task, type TaskStatus } from "@/lib/os/types"
 
@@ -27,10 +27,21 @@ function DueLabel({ t, today }: { t: Task; today: string }) {
 export function TaskRow({ t, areas, today, hideArea }: { t: Task; areas: AreaLite[]; today: string; hideArea?: boolean }) {
   const [done, setDone] = useOptimistic(t.status === "done")
   const [, start] = useTransition()
+  const [title, setTitle] = useOptimistic(t.title)
+  const [editing, setEditing] = useState(false)
+  const save = (v: string) => {
+    setEditing(false)
+    const n = v.trim()
+    if (n && n !== t.title) start(async () => { setTitle(n); await renameTask(t.id, n) })
+  }
   return (
     <li className={`row hov${done ? " done" : ""}`}>
       <button className="chk" aria-label={done ? "Mark not done" : "Mark done"} onClick={() => start(async () => { setDone(!done); await toggleTask(t.id, !done) })} />
-      <span className="tt" title={t.title}>{t.title}</span>
+      {editing
+        ? <input className="in tt" autoFocus defaultValue={title} aria-label="Edit task"
+            onBlur={e => save(e.currentTarget.value)}
+            onKeyDown={e => { if (e.key === "Enter") e.currentTarget.blur(); if (e.key === "Escape") setEditing(false) }} />
+        : <button type="button" className="tt" title="Click to edit" onClick={() => setEditing(true)}>{title}</button>}
       {!hideArea && <AreaPill id={t.area_id} areas={areas} />}
       <DueLabel t={t} today={today} />
       <button className="x" aria-label="Delete task" onClick={() => start(() => deleteTask(t.id))}><Icon name="x" size={14} /></button>
