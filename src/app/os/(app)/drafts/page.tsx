@@ -16,7 +16,7 @@ export default async function Drafts() {
           <select className="in" name="channel" aria-label="Channel" style={{ width: 130 }}>{CHANNELS.map(c => <option key={c}>{c}</option>)}</select>
           <button className="btn pri">Add</button>
         </form>} />
-      <DraftBoard drafts={drafts.map(d => ({ id: d.id, col: d.stage, sort: Number(d.sort), title: d.title, body: d.body.slice(0, 160), channel: d.channel, url: d.url }))} />
+      <DraftBoard drafts={drafts.map(d => ({ id: d.id, col: d.stage, sort: Number(d.sort), title: d.title, body: (d.body ?? "").slice(0, 160), channel: d.channel, url: d.url }))} />
     </>
   )
 }

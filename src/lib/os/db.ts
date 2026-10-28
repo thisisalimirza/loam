@@ -1,20 +1,21 @@
 import "server-only"
+import { cache } from "react"
+import { after } from "next/server"
 import postgres from "postgres"
 
-declare global {
-  var __loamSql: ReturnType<typeof postgres> | undefined
-}
-
+// One short-lived connection per request. A pool kept on globalThis goes stale
+// when Vercel freezes the function between requests, and queries on the dead
+// socket hang until the function times out.
 function make() {
   const url = process.env.LOAM_DATABASE_URL
   if (!url) throw new Error("LOAM_DATABASE_URL is missing")
   return postgres(url, {
     prepare: false, // transaction pooler
-    max: 3,
-    idle_timeout: 10,
-    max_lifetime: 60 * 5,
-    connect_timeout: 8,
+    max: 1,
+    idle_timeout: 5,
+    connect_timeout: 6,
     ssl: { rejectUnauthorized: false },
+    connection: { statement_timeout: 8000 },
     types: {
       // keep `date` columns as YYYY-MM-DD strings
       date: { to: 1082, from: [1082], serialize: (x: string) => x, parse: (x: string) => x },
@@ -22,7 +23,12 @@ function make() {
   })
 }
 
+const perRequest = cache(() => {
+  const sql = make()
+  try { after(() => sql.end({ timeout: 2 })) } catch { /* outside a request: idle_timeout closes it */ }
+  return sql
+})
+
 export function db() {
-  globalThis.__loamSql ??= make()
-  return globalThis.__loamSql
+  return perRequest()
 }
