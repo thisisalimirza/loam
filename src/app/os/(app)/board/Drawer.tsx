@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import type { BoardData, BoardTask } from "@/lib/os/board"
 import type { Activity, BoardColumn, CheckItem, Priority } from "@/lib/os/types"
 import Checklist from "./Checklist"
-import { recent, remember } from "../../_ui/recent"
+import { frequent, recent, remember } from "../../_ui/recent"
 import { bCreate, bEditComment, bComment, bDelete, bDeleteComment, bDep, bDetail, bLink, bUpdate, type Patch } from "@/lib/os/boardActions"
 import { REPEATS, REPEAT_LABEL } from "@/lib/os/dates"
 import { Icon } from "../../_ui/icons"
@@ -39,11 +39,12 @@ export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOp
   }, [t.id])
   useEffect(() => {
     const prev = document.body.style.overflow
-    document.body.style.overflow = "hidden"
+    const docked = window.matchMedia("(min-width:1366px)").matches
+    if (docked) document.body.classList.add("has-panel"); else document.body.style.overflow = "hidden"
     panel.current?.focus()
     const k = (e: KeyboardEvent) => { if (e.key === "Escape" && !(e.target as HTMLElement).closest(".bd-dep-results")) onClose() }
     window.addEventListener("keydown", k)
-    return () => { document.body.style.overflow = prev; window.removeEventListener("keydown", k) }
+    return () => { document.body.style.overflow = prev; document.body.classList.remove("has-panel"); window.removeEventListener("keydown", k) }
   }, [onClose])
 
   async function save(p: Patch, quiet = false) {
@@ -76,7 +77,7 @@ export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOp
   }, [depQ, tasks, t, blockedBy])
   const depHits = depGroups.flatMap(g => g.items)
   const [depOpen, setDepOpen] = useState(false)
-  useEffect(() => { remember("task", t.id) }, [t.id])
+  useEffect(() => { remember("task", t.id, t.title) }, [t.id, t.title])
 
   async function dep(other: string, on: boolean) {
     const r = await bDep(t.id, other, on)
@@ -90,6 +91,18 @@ export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOp
     if (!r.ok) return toast({ text: r.error, tone: "err" })
     setLinks(l => on ? [...l, { kind, ref_id: id }] : l.filter(x => !(x.kind === kind && x.ref_id === id)))
   }
+  const personGroups = (() => {
+    const free = data.people.filter(p => !links.some(l => l.kind === "person" && l.ref_id === p.id))
+    const text = (t.title + " " + (t.notes ?? "")).toLowerCase(); const used = new Set<string>()
+    const take = (l: typeof free) => l.filter(p => !used.has(p.id)).map(p => (used.add(p.id), p))
+    const fq = frequent("person")
+    return [
+      { h: "Mentioned here", items: take(free.filter(p => text.includes(p.name.toLowerCase().split(" ")[0]))) },
+      { h: "Recent", items: take(fq.map(id => free.find(p => p.id === id)).filter(Boolean) as typeof free).slice(0, 5) },
+      { h: t.area_id ? "In this area" : "Everyone", items: take(t.area_id ? free.filter(p => (p as { area_id?: string | null }).area_id === t.area_id) : free) },
+      { h: "Everyone else", items: take(free) },
+    ].filter(g => g.items.length)
+  })()
   const linkedPeople = links.filter(l => l.kind === "person").map(l => data.people.find(p => p.id === l.ref_id)).filter(Boolean) as { id: string; name: string }[]
   const linkedNotes = links.filter(l => l.kind === "note").map(l => data.notes.find(p => p.id === l.ref_id)).filter(Boolean) as { id: string; title: string }[]
 
@@ -181,8 +194,8 @@ export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOp
               {linkedNotes.map(n => <span key={n.id} className="chip on"><Link href={`/os/notes/${n.id}`}>{n.title}</Link><button aria-label={`Unlink ${n.title}`} onClick={() => link("note", n.id, false)}><Icon name="x" size={11} /></button></span>)}
             </div>
             <div className="inline">
-              {data.people.length > 0 && <select className="in" value="" onChange={e => link("person", e.target.value, true)} aria-label="Link a person">
-                <option value="">Link a person…</option>{data.people.filter(p => !linkedPeople.some(x => x.id === p.id)).map(p => <option key={p.id} value={p.id}>{p.name}</option>)}</select>}
+              {data.people.length > 0 && <select className="in" value="" onChange={e => { remember("person", e.target.value, data.people.find(p => p.id === e.target.value)?.name); link("person", e.target.value, true) }} aria-label="Link a person">
+                <option value="">Link a person…</option>{personGroups.map(g => <optgroup key={g.h} label={g.h}>{g.items.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}</optgroup>)}</select>}
               {data.notes.length > 0 && <select className="in" value="" onChange={e => link("note", e.target.value, true)} aria-label="Link a note">
                 <option value="">Link a note…</option>{data.notes.filter(n => !linkedNotes.some(x => x.id === n.id)).map(n => <option key={n.id} value={n.id}>{n.title}</option>)}</select>}
             </div>

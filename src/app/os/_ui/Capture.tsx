@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { Icon } from "./icons"
 import { capture, searchAll } from "@/lib/os/actions"
+import { recentItems, remember, type Recent } from "./recent"
 
 const OPEN = "loam:capture"
 const KIND_HREF: Record<string, string> = { task: "/os/tasks", person: "/os/people/", note: "/os/notes/", area: "/os/areas/", draft: "/os/drafts/" }
@@ -29,6 +30,7 @@ export default function Capture() {
   const [q, setQ] = useState("")
   const [hits, setHits] = useState<Hit[]>([])
   const [sel, setSel] = useState(0)
+  const [rec, setRec] = useState<Recent[]>([])
   const [flash, setFlash] = useState("")
   const [pending, start] = useTransition()
   const router = useRouter()
@@ -46,7 +48,7 @@ export default function Capture() {
     return () => { window.removeEventListener("keydown", onKey); window.removeEventListener(OPEN, onOpen) }
   }, [router])
 
-  useEffect(() => { if (open) { setQ(""); setHits([]); setSel(0); setTimeout(() => si.current?.focus(), 10) } }, [open])
+  useEffect(() => { if (open) { setQ(""); setHits([]); setSel(0); setRec(recentItems(5)); setTimeout(() => si.current?.focus(), 10) } }, [open])
 
   useEffect(() => {
     if (!open || q.trim().length < 2 || q.includes(":")) { setHits([]); return }
@@ -57,7 +59,8 @@ export default function Capture() {
   const jumps = q ? JUMPS.filter(j => j.label.toLowerCase().includes(q.toLowerCase())) : JUMPS
   const items: { label: string; sub: string; go: () => void }[] = [
     ...(q.trim() ? [{ label: `Add “${q.trim()}”`, sub: q.includes(":") ? "" : "Inbox", go: () => submit() }] : []),
-    ...hits.map(h => ({ label: h.title, sub: h.kind, go: () => { setOpen(false); router.push(h.kind === "task" ? `${location.pathname}?task=${h.id}` : KIND_HREF[h.kind] + h.id) } })),
+    ...(q.trim() ? [] : rec.map(r => ({ label: r.title!, sub: "Recent " + r.kind, go: () => { setOpen(false); remember(r.kind, r.id, r.title); router.push(r.kind === "task" ? `${location.pathname}?task=${r.id}` : KIND_HREF[r.kind] + r.id) } }))),
+    ...hits.map(h => ({ label: h.title, sub: h.kind, go: () => { setOpen(false); remember(h.kind, h.id, h.title); router.push(h.kind === "task" ? `${location.pathname}?task=${h.id}` : KIND_HREF[h.kind] + h.id) } })),
     ...jumps.map(j => ({ label: j.label, sub: j.key ?? "Go", go: () => { setOpen(false); router.push(j.href) } })),
   ]
 
