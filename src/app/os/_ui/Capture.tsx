@@ -1,4 +1,5 @@
 "use client"
+import SmartInput, { type SmartHandle } from "./SmartInput"
 import { useEffect, useRef, useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { Icon } from "./icons"
@@ -31,7 +32,7 @@ export default function Capture() {
   const [flash, setFlash] = useState("")
   const [pending, start] = useTransition()
   const router = useRouter()
-  const inputRef = useRef<HTMLInputElement>(null)
+  const si = useRef<SmartHandle>(null)
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -45,7 +46,7 @@ export default function Capture() {
     return () => { window.removeEventListener("keydown", onKey); window.removeEventListener(OPEN, onOpen) }
   }, [router])
 
-  useEffect(() => { if (open) { setQ(""); setHits([]); setSel(0); setTimeout(() => inputRef.current?.focus(), 10) } }, [open])
+  useEffect(() => { if (open) { setQ(""); setHits([]); setSel(0); setTimeout(() => si.current?.focus(), 10) } }, [open])
 
   useEffect(() => {
     if (!open || q.trim().length < 2 || q.includes(":")) { setHits([]); return }
@@ -63,7 +64,8 @@ export default function Capture() {
   function submit() {
     const text = q.trim(); if (!text) return
     start(async () => {
-      const r = await capture(text)
+      const v = si.current?.value()
+      const r = await capture(text, v && !/^\w+:/.test(text) ? { title: v.title, due: v.due, repeat: v.repeat } : undefined)
       setOpen(false)
       if (r.href) router.push(r.href)
       else { setFlash("Added to Inbox"); router.refresh(); setTimeout(() => setFlash(""), 1800) }
@@ -80,7 +82,7 @@ export default function Capture() {
           <div className="modal" role="dialog" aria-label="Capture">
             <div className="mi">
               <Icon name="plus" />
-              <input ref={inputRef} value={q} placeholder="Add a task, or type to search…" onChange={e => { setQ(e.target.value); setSel(0) }}
+              <SmartInput ref={si} autoFocus dates={!/^\w+:/.test(q)} placeholder="Add a task, or type to search…" aria-label="Capture or search" onValue={v => { if (v.raw !== q) { setQ(v.raw); setSel(0) } }}
                 onKeyDown={e => {
                   if (e.key === "ArrowDown") { e.preventDefault(); setSel(s => Math.min(s + 1, items.length - 1)) }
                   if (e.key === "ArrowUp") { e.preventDefault(); setSel(s => Math.max(s - 1, 0)) }
@@ -95,7 +97,7 @@ export default function Capture() {
                 </button></li>
               ))}
             </ul>
-            <div className="hint"><span>End with “today” or “tomorrow” to set a due date</span><span>note: · person: · draft:</span></div>
+            <div className="hint"><span>Dates like “fri” or “every mon” are picked up as you type</span><span>note: · person: · draft:</span></div>
           </div>
         </div>
       )}

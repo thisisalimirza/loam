@@ -1,4 +1,5 @@
 "use client"
+import SmartInput, { type SmartHandle, type SmartValue } from "../../_ui/SmartInput"
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import {
@@ -153,10 +154,10 @@ export default function Board({ data, today, scope = {}, embedded }: { data: Boa
     requestAnimationFrame(() => document.querySelector<HTMLElement>(`[data-card="${id}"]`)?.focus())
   }
 
-  async function quickAdd(colId: string, title: string, lane?: string) {
+  async function quickAdd(colId: string, v: SmartValue, lane?: string) {
     const area = lane && lane !== "all" && lane !== NO_AREA ? lane : scope.areaId ?? (filters.areas?.length === 1 && filters.areas[0] !== NO_AREA ? filters.areas[0] : null)
     const project = scope.projectId ?? (filters.projects?.length === 1 && filters.projects[0] !== NO_AREA ? filters.projects[0] : null)
-    const r = await bCreate(title, colId, { area_id: area, project_id: project, tags: filters.tags?.length === 1 ? filters.tags : [] })
+    const r = await bCreate(v.title, colId, { area_id: area, project_id: project ?? v.project, tags: filters.tags?.length === 1 ? filters.tags : [], due_date: v.due, repeat: v.repeat, parsed: true })
     if (!r.ok) return fail(r.error)
     setTasks(ts => [...ts, r.data])
   }
@@ -327,7 +328,7 @@ export default function Board({ data, today, scope = {}, embedded }: { data: Boa
                       <Column key={c.id} col={c} lane={lane.id} showHead={!lanes || lane === laneList[0]} count={list.length} total={total}
                         onEdit={() => setColEdit(c.id)} dragDisabled={lanes}
                         footer={adding === `${lane.id}:${c.id}` || (adding === c.id && lane === laneList[0])
-                          ? <QuickAdd onAdd={t => quickAdd(c.id, t, lanes ? lane.id : undefined)} onClose={() => setAdding(null)} />
+                          ? <QuickAdd onAdd={v => quickAdd(c.id, v, lanes ? lane.id : undefined)} onClose={() => setAdding(null)} />
                           : <button className="bd-add" onClick={() => setAdding(`${lane.id}:${c.id}`)}><Icon name="plus" size={14} />Add card</button>}>
                         <SortableContext items={list.map(t => t.id)} strategy={verticalListSortingStrategy}>
                           {list.map(t => <Card key={t.id} t={t} data={data} today={today} waiting={blockers.waiting.get(t.id) ?? 0} unblocks={blockers.unblocks.get(t.id) ?? 0}
@@ -451,13 +452,14 @@ function Card({ t, data, today, waiting, unblocks, kind, onOpen, hideArea, hideP
   )
 }
 
-function QuickAdd({ onAdd, onClose }: { onAdd: (t: string) => Promise<void> | void; onClose: () => void }) {
-  const [v, setV] = useState("")
+function QuickAdd({ onAdd, onClose }: { onAdd: (v: SmartValue) => Promise<void> | void; onClose: () => void }) {
+  const si = useRef<SmartHandle>(null)
+  const go = async () => { const v = si.current?.value(); if (!v?.title) return; si.current?.clear(); await onAdd(v) }
   return (
-    <form className="bd-quick" onSubmit={async e => { e.preventDefault(); const t = v.trim(); if (!t) return; setV(""); await onAdd(t) }}>
-      <textarea className="in" autoFocus rows={2} value={v} onChange={e => setV(e.target.value)} placeholder="Card title. Use @person or #project"
-        aria-label="New card title" onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); e.currentTarget.form?.requestSubmit() } if (e.key === "Escape") onClose() }}
-        onBlur={() => { if (!v.trim()) onClose() }} />
+    <form className="bd-quick" onSubmit={e => { e.preventDefault(); go() }}>
+      <SmartInput ref={si} autoFocus placeholder="Card title. Try “fri”, @person, #project" aria-label="New card title"
+        onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); go() } if (e.key === "Escape") onClose() }}
+        onBlur={e => { if (!e.currentTarget.value.trim() && !e.currentTarget.closest("form")?.contains(e.relatedTarget as Node)) onClose() }} />
       <div className="inline"><button className="btn pri sm">Add</button><button type="button" className="btn ghost sm" onClick={onClose}>Cancel</button></div>
     </form>
   )

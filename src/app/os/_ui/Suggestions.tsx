@@ -1,6 +1,7 @@
 "use client"
+import SmartInput, { dueText, type SmartHandle, type SmartValue } from "./SmartInput"
 import Link from "next/link"
-import { useEffect, useState, useTransition } from "react"
+import { useEffect, useRef, useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import type { Suggestion } from "@/lib/os/graph"
 import { addNextStep, draftFromEntry } from "@/lib/os/actions"
@@ -46,18 +47,18 @@ function Row({ s, onDismiss }: { s: Suggestion; onDismiss: () => void }) {
   const [adding, setAdding] = useState(false)
   const [pending, start] = useTransition()
   const router = useRouter()
+  const si = useRef<SmartHandle>(null)
+  const go = (v: SmartValue) => { if (!v.title) return; start(async () => { const r = await addNextStep(s.projectId!, v.title, { due: v.due, repeat: v.repeat }); if (r) { toast(v.due ? `Next step added, due ${dueText(v.due)}` : "Next step added"); onDismiss() } }) }
   return (
     <li>
       <span className={`sg-ic ${tone}`}><Icon name={ic} size={14} /></span>
       {adding && s.projectId ? (
-        <form className="inline" onSubmit={e => {
-          e.preventDefault(); const v = new FormData(e.currentTarget).get("t") as string
-          start(async () => { const r = await addNextStep(s.projectId!, v); if (r) { toast("Next step added"); onDismiss() } })
-        }}>
-          <input className="in" name="t" autoFocus placeholder={`Next step for ${s.text.replace(/ has no next step$/, "")}`} aria-label="Next step" style={{ height: 32 }}
-            onKeyDown={e => { if (e.key === "Escape") setAdding(false) }} />
-          <button className="btn pri sm" disabled={pending}>Add</button>
-        </form>
+        <div className="inline sg-step">
+          <SmartInput ref={si} autoFocus placeholder={`Next step for ${s.text.replace(/ has no next step$/, "")}. Try “… today”`} aria-label="Next step"
+            onKeyDown={e => { if (e.key === "Escape") setAdding(false) }}
+            onSubmit={v => go(v)} />
+          <button className="btn pri sm" disabled={pending} onClick={() => si.current && go(si.current.value())}>Add</button>
+        </div>
       ) : (<>
         <div className="sg-t">{s.href ? <Link href={s.href}>{s.text}</Link> : <strong>{s.text}</strong>}{s.sub && <small>{s.sub}</small>}</div>
         <div className="sg-act">

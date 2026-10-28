@@ -3,8 +3,11 @@ import { notFound } from "next/navigation"
 import type { CSSProperties } from "react"
 import { getArea, getAreas, getNotes, getPeople, getPins, getProjects, getTasks } from "@/lib/os/data"
 import { archiveArea, createProject, deleteArea, deletePin, updateArea } from "@/lib/os/actions"
-import { daysBetween, fmtDate, todayISO } from "@/lib/os/dates"
-import { Avatar, Card, Empty, PageHeader, Pill } from "../../../_ui/ui"
+import { daysBetween, fmtDate, relDue, todayISO } from "@/lib/os/dates"
+import { nextUp } from "@/lib/os/focus"
+import Sheet from "../../../_ui/Sheet"
+import DateChip from "../../../_ui/DateChip"
+import { Avatar, Card, PageHeader, Pill } from "../../../_ui/ui"
 import { Swatches } from "../../../_ui/AreaForm"
 import { AddTask, TaskList, ViewToggle } from "../../../_ui/Tasks"
 import { Icon } from "../../../_ui/icons"
@@ -24,12 +27,38 @@ export default async function AreaPage({ params, searchParams }: { params: Promi
   const myPeople = people.filter(p => p.area_id === id)
   const myPins = pins.filter(p => p.area_id === id && p.pin_date >= today)
   const myNotes = notes.filter(n => n.area_id === id)
+  const nx = nextUp(open)
+  const stuck = projects.filter(p => p.status === "active" && !open.some(t => t.project_id === p.id))
+  const edit = (
+    <Sheet label="Edit area" title="Edit area" icon="more" iconOnly>
+      <form action={updateArea} className="form">
+        <input type="hidden" name="id" value={id} />
+        <label className="fld"><span>Name</span><input className="in" name="name" defaultValue={area.name} required aria-label="Area name" /></label>
+        <Swatches value={area.color} />
+        <div><button className="btn pri">Save</button></div>
+      </form>
+      <div className="danger-zone">
+        <form action={archiveArea.bind(null, id, !area.archived)}><button className="btn sm">{area.archived ? "Restore area" : "Archive area"}</button></form>
+        <Confirm action={deleteArea.bind(null, id)} label="Delete area" message="Delete this area? Its tasks, projects and people stay, but lose the link." />
+      </div>
+    </Sheet>
+  )
+  const newProject = (
+    <Sheet label="New project" icon="flag">
+      <form action={createProject} className="form">
+        <input type="hidden" name="area_id" value={id} />
+        <label className="fld"><span>Name</span><input className="in" name="name" placeholder="e.g. Step 2 prep" required aria-label="Project name" /></label>
+        <DateChip label="Due" name="due_date" />
+        <div><button className="btn pri">Create project</button></div>
+      </form>
+    </Sheet>
+  )
   return (
     <>
       <PageHeader back={{ href: "/os/areas", label: "Areas" }}
         eyebrow={<span className="inline"><span className="dot" style={{ "--c": area.color, margin: 0 } as CSSProperties} />{area.archived ? "Archived area" : "Area"}</span>}
         title={area.name} sub={`${open.length} open ${open.length === 1 ? "task" : "tasks"} · ${projects.filter(p => p.status === "active").length} active projects`}
-        actions={<ViewToggle base={`/os/areas/${id}`} view={view} />} />
+        actions={<><ViewToggle base={`/os/areas/${id}`} view={view} />{edit}</>} />
       {myPins.length > 0 && (
         <div className="countdowns">
           {myPins.map(p => (
@@ -41,47 +70,38 @@ export default async function AreaPage({ params, searchParams }: { params: Promi
         </div>
       )}
       <div className="stack">
+        {view === "list" && (nx ? (
+          <section className="card focus-card"><div className="fc-b">
+            <span className="eyebrow" style={{ width: "100%", margin: 0 }}>Next up</span>
+            <span className="fc-t">{nx.title}</span>
+            {nx.due_date && <span className="due">{relDue(nx.due_date, today).label}</span>}
+          </div></section>
+        ) : open.length === 0 && <p className="quiet-line">Nothing open here. Add the next thing below.</p>)}
         {view === "board" ? <Board data={await getBoard()} today={today} scope={{ areaId: id }} embedded /> : (
           <Card title="Tasks" icon="tasks" meta={open.length}>
-            <TaskList tasks={open} areas={areas} today={today} hideArea emptyTitle="No open tasks here" />
-            <AddTask areaId={id} projects={projects.filter(p => p.status === "active")} />
+            <AddTask areaId={id} projects={projects.filter(p => p.status === "active")} placeholder={`Add to ${area.name}. Try “… fri”`} />
+            {open.length > 0 && <TaskList tasks={open} areas={areas} today={today} hideArea />}
           </Card>
         )}
-        <div className="grid2">
-          <Card title="Projects" icon="flag" meta={projects.length}>
-            {projects.length === 0 ? <Empty icon="flag" title="No projects">Projects have an end: a rotation, a launch, an application cycle.</Empty> : (
-              <ul>{projects.map(p => <li key={p.id}><Link href={`/os/projects/${p.id}`} className="row"><span className="tt">{p.name}</span>{p.due_date && <span className="due">{fmtDate(p.due_date)}</span>}<Pill gray>{p.status}</Pill></Link></li>)}</ul>
-            )}
-            <form action={createProject} className="addrow">
-              <input type="hidden" name="area_id" value={id} />
-              <input className="in" name="name" placeholder="New project" required aria-label="Project name" />
-              <button className="btn sm">Add</button>
-            </form>
-          </Card>
-          <Card title="People" icon="people" meta={myPeople.length}>
-            {myPeople.length === 0 ? <Empty icon="people" title="No one linked">Set this area on a person’s page to list them here.</Empty> : (
-              <ul>{myPeople.map(p => <li key={p.id}><Link href={`/os/people/${p.id}`} className="row"><Avatar name={p.name} /><span className="tt">{p.name}</span><span className="due">{p.role}</span></Link></li>)}</ul>
-            )}
-          </Card>
-          {myNotes.length > 0 && (
-            <Card title="Notes" icon="notes" className="span">
-              <ul>{myNotes.map(n => <li key={n.id}><Link href={`/os/notes/${n.id}`} className="row"><span className="tt">{n.title}</span></Link></li>)}</ul>
-            </Card>
+        <Card title="Projects" icon="flag" meta={projects.length || undefined} actions={newProject}>
+          {projects.length === 0 ? <p className="quiet-line" style={{ padding: "4px 16px 14px" }}>No projects yet. Projects have an end: a rotation, a launch, an application cycle.</p> : (
+            <ul>{projects.map(p => { const pn = nextUp(open.filter(t => t.project_id === p.id)); return (
+              <li key={p.id}><Link href={`/os/projects/${p.id}`} className="row"><span className="tt">{p.name}{pn ? <small className="al-pn">{pn.title}</small> : p.status === "active" && <small className="al-pn warn">No next step</small>}</span>{p.due_date && <span className="due">{fmtDate(p.due_date)}</span>}{p.status !== "active" && <Pill gray>{p.status}</Pill>}</Link></li>
+            ) })}</ul>
           )}
-          <Related kind="area" id={id} />
-          <Card title="Settings" className="span">
-            <form action={updateArea} className="form cb">
-              <input type="hidden" name="id" value={id} />
-              <div className="frow"><input className="in" name="name" defaultValue={area.name} required aria-label="Area name" /></div>
-              <Swatches value={area.color} />
-              <div className="inline">
-                <button className="btn pri sm">Save</button>
-                <button className="btn sm" formAction={archiveArea.bind(null, id, !area.archived)}>{area.archived ? "Restore" : "Archive"}</button>
-                <Confirm action={deleteArea.bind(null, id)} label="Delete area" message="Delete this area? Its tasks, projects and people stay, but lose the link." />
-              </div>
-            </form>
-          </Card>
-        </div>
+        </Card>
+        {stuck.length > 0 && <p className="quiet-line">{stuck.length === 1 ? `${stuck[0].name} has` : `${stuck.length} projects have`} no next step. Open {stuck.length === 1 ? "it" : "one"} to add one.</p>}
+        {myPeople.length > 0 ? (
+          <section className="quiet-sec"><h3>People</h3>
+            <ul>{myPeople.map(p => <li key={p.id}><Link href={`/os/people/${p.id}`} className="row"><Avatar name={p.name} /><span className="tt">{p.name}</span><span className="due">{p.role}</span></Link></li>)}</ul>
+          </section>
+        ) : <p className="quiet-line">No people linked. Set this area on someone’s page in <Link href="/os/people">People</Link>.</p>}
+        {myNotes.length > 0 && (
+          <section className="quiet-sec"><h3>Notes</h3>
+            <ul>{myNotes.map(n => <li key={n.id}><Link href={`/os/notes/${n.id}`} className="row"><span className="tt">{n.title}</span></Link></li>)}</ul>
+          </section>
+        )}
+        <Related kind="area" id={id} />
       </div>
     </>
   )

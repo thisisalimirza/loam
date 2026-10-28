@@ -6,6 +6,7 @@ import { timingSafeEqual, createHash } from "node:crypto"
 import { db } from "./db"
 import { requireOwner } from "./auth"
 import { createToken, SESSION_COOKIE, SESSION_TTL } from "./session"
+import { parseTask } from "./parse"
 import { addDays, todayISO, REPEATS, type Repeat } from "./dates"
 import { setStatus } from "./taskStatus"
 import { CHANNELS, type Channel, type Stage, type TaskStatus } from "./types"
@@ -108,6 +109,12 @@ export async function createProject(f: FormData) {
   await db()`insert into loam_os.projects (name, area_id, due_date) values (${name}, ${opt(f, "area_id")}, ${opt(f, "due_date")})`
   back()
 }
+export async function updateProject(f: FormData) {
+  await requireOwner()
+  const name = str(f, "name"); if (!name) return
+  await db()`update loam_os.projects set name = ${name}, area_id = ${opt(f, "area_id")}, due_date = ${opt(f, "due_date")} where id = ${str(f, "id")}`
+  back()
+}
 export async function setProjectStatus(id: string, status: "active" | "paused" | "done") {
   await requireOwner()
   await db()`update loam_os.projects set status = ${status} where id = ${id}`
@@ -126,6 +133,21 @@ export async function createPin(f: FormData) {
   await db()`insert into loam_os.pins (label, pin_date, area_id) values (${label}, ${date}, ${opt(f, "area_id")})`
   back()
 }
+export async function pinDate(label: string, date: string, areaId: string | null) {
+  await requireOwner()
+  await db()`insert into loam_os.pins (label, pin_date, area_id) values (${label.slice(0, 120)}, ${date}, ${areaId})`
+  back()
+}
+/** End of day: move unfinished tasks that were due or planned up to today onto tomorrow. */
+export async function rollOver(ids: string[]) {
+  await requireOwner()
+  if (!ids.length) return 0
+  const tm = addDays(todayISO(), 1)
+  const r = await db()`update loam_os.tasks set due_date = case when due_date is not null then ${tm}::date else null end,
+    scheduled_date = case when scheduled_date is not null then ${tm}::date else null end
+    where id = any(${ids}::uuid[]) and status <> 'done'`
+  back(); return r.count
+}
 export async function deletePin(id: string) {
   await requireOwner()
   await db()`delete from loam_os.pins where id = ${id}`
@@ -136,8 +158,13 @@ export async function deletePin(id: string) {
 
 export async function createTask(f: FormData) {
   await requireOwner()
-  const title = str(f, "title"); if (!title) return
-  const project = opt(f, "project_id")
+  let title = str(f, "title"); if (!title) return
+  let project = opt(f, "project_id") ?? opt(f, "mention_project")
+  if (!f.get("parsed") && !opt(f, "due_date") && !opt(f, "repeat")) {
+    const p = parseTask(title); title = p.title
+    if (p.due) f.set("due_date", p.due); if (p.repeat) f.set("repeat", p.repeat)
+  }
+  if (!project) { const { getMentionIndex } = await import("./graph"); const { findMentions } = await import("./mentions"); project = findMentions(title, await getMentionIndex()).find(m => m.kind === "project")?.id ?? null }
   let area = opt(f, "area_id")
   const sql = db()
   if (project && !area) {
@@ -184,12 +211,14 @@ export async function toggleTask(id: string, done: boolean) {
  * One-step "make this a task" from any text (a journal line, a note selection, a conversation).
  * Mentioned @people and #projects get linked; follow-ups get a date three days out.
  */
-export async function makeTask(text: string, o: { followUp?: boolean; due?: string | null; source?: { type: "entry" | "note" | "draft" | "conversation" | "person"; id: string }; personId?: string } = {}) {
+export async function makeTask(text: string, o: { followUp?: boolean; due?: string | null; repeat?: string | null; source?: { type: "entry" | "note" | "draft" | "conversation" | "person"; id: string }; personId?: string } = {}) {
   await requireOwner()
   const sql = db()
   const { getMentionIndex } = await import("./graph")
-  const title = text.trim().split("\n")[0].replace(/^([-*•]|\[ \]|\d+[.)])\s+/, "").slice(0, 200)
+  let title = text.trim().split("\n")[0].replace(/^([-*•]|\[ \]|\d+[.)])\s+/, "").slice(0, 200)
   if (!title) return null
+  let parsedDue: string | null = null, rep = repeatOf(o.repeat ?? null)
+  if (o.due === undefined) { const p = parseTask(title); title = p.title; parsedDue = p.due; rep = rep ?? p.repeat }
   const idx = await getMentionIndex()
   const low = text.toLowerCase()
   const has = (k: string) => { const i = low.indexOf(k.toLowerCase()); return i >= 0 && !/[\p{L}\p{N}]/u.test(low[i + k.length] ?? "") }
@@ -199,9 +228,10 @@ export async function makeTask(text: string, o: { followUp?: boolean; due?: stri
   let area: string | null = null
   if (proj) { const [r] = await sql<{ area_id: string | null }[]>`select area_id from loam_os.projects where id = ${proj.id}`; area = r?.area_id ?? null }
   else if (people[0]) { const [r] = await sql<{ area_id: string | null }[]>`select area_id from loam_os.people where id = ${people[0]}`; area = r?.area_id ?? null }
-  const due = o.due !== undefined ? o.due : o.followUp ? addDays(todayISO(), 3) : null
-  const [t] = await sql<{ id: string; title: string }[]>`insert into loam_os.tasks (title, notes, area_id, project_id, due_date, status, sort, tags, column_id)
-    values (${title}, ${text.trim() === title ? "" : text.trim().slice(0, 4000)}, ${area}, ${proj?.id ?? null}, ${due}, 'todo', extract(epoch from now()),
+  const due = o.due !== undefined ? o.due : parsedDue ?? (o.followUp ? addDays(todayISO(), 3) : null)
+  const firstLine = text.trim().split("\n")[0]
+  const [t] = await sql<{ id: string; title: string }[]>`insert into loam_os.tasks (title, notes, area_id, project_id, due_date, repeat, status, sort, tags, column_id)
+    values (${title}, ${text.trim() === firstLine.trim() ? "" : text.trim().slice(0, 4000)}, ${area}, ${proj?.id ?? null}, ${due}, ${rep}, 'todo', extract(epoch from now()),
       ${o.followUp ? ["follow-up"] : []}, (select id from loam_os.board_columns where kind = 'todo' order by sort limit 1)) returning id, title`
   await sql`insert into loam_os.task_activity (task_id, kind, body) values (${t.id}, 'created', ${o.source ? "from " + o.source.type : ""})`
   for (const pid of people) await sql`insert into loam_os.task_links (task_id, kind, ref_id) values (${t.id}, 'person', ${pid}) on conflict do nothing`
@@ -224,7 +254,7 @@ export async function deleteTask(id: string) {
 // ---------- quick capture ----------
 
 /** "Call Sam tomorrow" → task in the inbox. Prefix "note:" or "person:" to file elsewhere. */
-export async function capture(text: string) {
+export async function capture(text: string, parsed?: { title: string; due: string | null; repeat: string | null }) {
   await requireOwner()
   const t = text.trim(); if (!t) return { href: null as string | null }
   const sql = db()
@@ -245,14 +275,9 @@ export async function capture(text: string) {
     }
     return { href: "/os/journal/write" }
   }
-  let due: string | null = null, title = t
-  const today = todayISO()
-  if (/\btoday$/i.test(title)) { due = today; title = title.replace(/\s*\btoday$/i, "") }
-  else if (/\btomorrow$/i.test(title)) {
-    const d = new Date(today + "T12:00:00Z"); d.setUTCDate(d.getUTCDate() + 1)
-    due = d.toISOString().slice(0, 10); title = title.replace(/\s*\btomorrow$/i, "")
-  }
-  await sql`insert into loam_os.tasks (title, due_date, sort) values (${title}, ${due}, extract(epoch from now()))`
+  const p = parsed ?? parseTask(t)
+  const due = p.due, title = p.title || t, rep = repeatOf(p.repeat)
+  await sql`insert into loam_os.tasks (title, due_date, repeat, sort, column_id) values (${title}, ${due}, ${rep}, extract(epoch from now()), (select id from loam_os.board_columns where kind = 'todo' order by sort limit 1))`
   back(); return { href: null }
 }
 
@@ -397,13 +422,14 @@ export async function draftFromEntry(entryId: string, channel: Channel = "Substa
   return promote(entryId, e.body, channel)
 }
 /** Adds the next step to a project that has none. */
-export async function addNextStep(projectId: string, title: string) {
+export async function addNextStep(projectId: string, title: string, parsed?: { due: string | null; repeat: string | null }) {
   await requireOwner()
-  const t = title.trim().slice(0, 300); if (!t) return null
+  const p = parsed ? { title: title.trim(), ...parsed } : parseTask(title.trim())
+  const t = p.title.slice(0, 300); if (!t) return null
   const sql = db()
-  const [p] = await sql<{ area_id: string | null }[]>`select area_id from loam_os.projects where id = ${projectId}`
-  const [r] = await sql<{ id: string }[]>`insert into loam_os.tasks (title, project_id, area_id, status, sort, column_id)
-    values (${t}, ${projectId}, ${p?.area_id ?? null}, 'todo', extract(epoch from now()), (select id from loam_os.board_columns where kind = 'todo' order by sort limit 1)) returning id`
+  const [pr] = await sql<{ area_id: string | null }[]>`select area_id from loam_os.projects where id = ${projectId}`
+  const [r] = await sql<{ id: string }[]>`insert into loam_os.tasks (title, project_id, area_id, due_date, repeat, status, sort, column_id)
+    values (${t}, ${projectId}, ${pr?.area_id ?? null}, ${p.due}, ${repeatOf(p.repeat)}, 'todo', extract(epoch from now()), (select id from loam_os.board_columns where kind = 'todo' order by sort limit 1)) returning id`
   back()
   return r
 }

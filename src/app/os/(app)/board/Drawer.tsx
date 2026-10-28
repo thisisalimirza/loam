@@ -9,6 +9,8 @@ import { Icon } from "../../_ui/icons"
 import { MentionChips, Mentions } from "../../_ui/Mentions"
 import { toast } from "../../_ui/Toast"
 import DateChip from "../../_ui/DateChip"
+import { dueText } from "../../_ui/SmartInput"
+import { parseTask } from "@/lib/os/parse"
 import { PRI, age } from "./Board"
 
 type Dep = { task_id: string; blocked_by: string }
@@ -21,6 +23,7 @@ export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOp
   const [activity, setActivity] = useState<Activity[] | null>(null)
   const [links, setLinks] = useState<{ kind: "person" | "note"; ref_id: string }[]>([])
   const [title, setTitle] = useState(t.title)
+  const tp = useMemo(() => title === t.title ? { title, due: null, repeat: null, spans: [] } : parseTask(title.trim()), [title, t.title])
   const [notes, setNotes] = useState(t.notes ?? "")
   const [comment, setComment] = useState("")
   const [newItem, setNewItem] = useState("")
@@ -84,7 +87,15 @@ export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOp
         <div className="drawer-b">
           <textarea className="dr-title" rows={1} value={title} aria-label="Title" onChange={e => setTitle(e.target.value)}
             onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); e.currentTarget.blur() } }}
-            onBlur={() => { const v = title.trim(); if (v && v !== t.title) save({ title: v }); else setTitle(t.title) }} />
+            onBlur={() => {
+              const v = title.trim(); if (!v || v === t.title) { setTitle(t.title); return }
+              if (tp.due || tp.repeat) { setTitle(tp.title); save({ title: tp.title, ...(tp.due ? { due_date: tp.due } : {}), ...(tp.repeat ? { repeat: tp.repeat } : {}) } as Patch) }
+              else save({ title: v })
+            }} />
+          {title !== t.title && (tp.due || tp.repeat) && <div className="sm-chips">
+            {tp.due && <span className="chip on"><Icon name="calendar" size={12} />Due {dueText(tp.due)}</span>}
+            {tp.repeat && <span className="chip on">↻ {REPEAT_LABEL[tp.repeat as keyof typeof REPEAT_LABEL]}</span>}
+          </div>}
           <MentionChips text={`${t.title}\n${t.notes ?? ""}`} />
 
           <dl className="dr-props">

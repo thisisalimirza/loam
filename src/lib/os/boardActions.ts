@@ -1,4 +1,5 @@
 "use server"
+import { parseTask } from "./parse"
 import { db } from "./db"
 import { requireOwner } from "./auth"
 import { setStatus } from "./taskStatus"
@@ -58,10 +59,12 @@ export async function bUpdate(id: string, patch: Patch) {
   })
 }
 
-export async function bCreate(title: string, columnId: string, extra: { area_id?: string | null; project_id?: string | null; tags?: string[]; priority?: string; due_date?: string | null } = {}) {
+export async function bCreate(title: string, columnId: string, extra: { area_id?: string | null; project_id?: string | null; tags?: string[]; priority?: string; due_date?: string | null; repeat?: string | null; parsed?: boolean } = {}) {
   return run(async () => {
     const sql = db()
-    const t = title.trim().slice(0, 300)
+    let t = title.trim().slice(0, 300)
+    if (!extra.parsed && !extra.due_date) { const p = parseTask(t); t = p.title; extra = { ...extra, due_date: p.due, repeat: extra.repeat ?? p.repeat } }
+    const repeat = ["daily", "weekdays", "weekly", "monthly", "yearly"].includes(extra.repeat ?? "") ? extra.repeat! : null
     if (!t) throw new Error("!Type a title first.")
     const [c] = await sql<{ kind: TaskStatus }[]>`select kind from loam_os.board_columns where id = ${uuid(columnId)}`
     if (!c) throw new Error("!That column is gone. Reload the board.")
@@ -70,8 +73,8 @@ export async function bCreate(title: string, columnId: string, extra: { area_id?
     if (project && !area) { const [pr] = await sql<{ area_id: string | null }[]>`select area_id from loam_os.projects where id = ${project}`; area = pr?.area_id ?? null }
     const [min] = await sql<{ m: number | null }[]>`select min(sort) m from loam_os.tasks where column_id = ${columnId}`
     const pr = ["urgent", "high", "normal", "low"].includes(extra.priority ?? "") ? extra.priority! : "normal"
-    const [row] = await sql<Task[]>`insert into loam_os.tasks (title, column_id, status, area_id, project_id, tags, priority, due_date, sort, done_at)
-      values (${t}, ${columnId}, ${c.kind}, ${area}, ${project}, ${extra.tags ?? []}, ${pr}, ${extra.due_date || null}, ${(min.m ?? 1000) - 1}, ${c.kind === "done" ? new Date() : null}) returning *`
+    const [row] = await sql<Task[]>`insert into loam_os.tasks (title, column_id, status, area_id, project_id, tags, priority, due_date, repeat, sort, done_at)
+      values (${t}, ${columnId}, ${c.kind}, ${area}, ${project}, ${extra.tags ?? []}, ${pr}, ${extra.due_date || null}, ${repeat}, ${(min.m ?? 1000) - 1}, ${c.kind === "done" ? new Date() : null}) returning *`
     await sql`insert into loam_os.task_activity (task_id, kind, body) values (${row.id}, 'created', '')`
     return normTask(row)
   })

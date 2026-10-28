@@ -18,8 +18,8 @@ export function PageHeader({ eyebrow, title, sub, actions, back }: {
   )
 }
 
-export function Card({ title, icon, meta, children, className = "", style }: {
-  title?: ReactNode; icon?: IconName; meta?: ReactNode; children: ReactNode; className?: string; style?: CSSProperties
+export function Card({ title, icon, meta, actions, children, className = "", style }: {
+  title?: ReactNode; icon?: IconName; meta?: ReactNode; actions?: ReactNode; children: ReactNode; className?: string; style?: CSSProperties
 }) {
   return (
     <section className={`card ${className}`} style={style}>
@@ -27,6 +27,7 @@ export function Card({ title, icon, meta, children, className = "", style }: {
         <div className="ch">
           <h2>{icon && <Icon name={icon} />}{title}</h2>
           {meta && <div className="meta">{meta}</div>}
+          {actions && <div className="ch-act">{actions}</div>}
         </div>
       )}
       {children}

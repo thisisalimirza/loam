@@ -1,11 +1,12 @@
 "use client"
+import SmartInput, { type SmartHandle, type SmartValue } from "./SmartInput"
 import Link from "next/link"
-import { useOptimistic, useState, useTransition, type CSSProperties } from "react"
+import { useOptimistic, useRef, useState, useTransition, type CSSProperties } from "react"
 import { useRouter } from "next/navigation"
 import { Icon } from "./icons"
 import Kanban from "./Kanban"
 import { createTask, deleteTask, moveTask, renameTask, toggleTask } from "@/lib/os/actions"
-import { relDue, splitDate, REPEATS, REPEAT_LABEL } from "@/lib/os/dates"
+import { relDue, REPEATS, REPEAT_LABEL } from "@/lib/os/dates"
 import DateChip from "./DateChip"
 import { toast } from "./Toast"
 import { Mentions } from "./Mentions"
@@ -56,36 +57,43 @@ export function TaskRow({ t, areas, today, hideArea }: { t: Task; areas: AreaLit
   )
 }
 
-export function AddTask({ areaId, projectId, areas, projects, status }: { areaId?: string; projectId?: string; status?: TaskStatus } & Partial<Ctx>) {
+export function AddTask({ areaId, projectId, areas, projects, status, placeholder = "Add a task. Try “Call mom fri” or “Gym every mon”" }: { areaId?: string; projectId?: string; status?: TaskStatus; placeholder?: string } & Partial<Ctx>) {
+  const [open, setOpen] = useState(false)
+  const [v, setV] = useState<SmartValue | null>(null)
+  const box = useRef<HTMLFormElement>(null)
+  const si = useRef<SmartHandle>(null)
+  const [due, setDue] = useState(""), [rep, setRep] = useState("")
+  const showArea = !areaId && !projectId && areas && areas.length > 0
+  const showProj = projects && projects.length > 0 && !projectId && !v?.project
   return (
-    <form className="addrow" action={async f => {
-      // "Call mom fri" sets the date when none was picked.
-      const s = splitDate(String(f.get("title") ?? ""))
-      if (s.date && s.title && !f.get("due_date")) { f.set("title", s.title); f.set("due_date", s.date) }
-      await createTask(f); (document.activeElement as HTMLElement)?.blur?.()
-    }}
-      onSubmit={e => { const form = e.currentTarget; setTimeout(() => form.reset(), 0) }}>
-      <input className="in" name="title" placeholder="Add a task. Try “Call mom fri”" required aria-label="Task title" />
+    <form ref={box} className={`addrow smart-add${open ? " open" : ""}`}
+      onFocus={() => setOpen(true)}
+      onBlur={e => { if (!box.current?.contains(e.relatedTarget as Node) && !si.current?.value().raw) setOpen(false) }}
+      action={async f => {
+        if (due) f.set("due_date", due); if (rep) f.set("repeat", rep)
+        await createTask(f); si.current?.clear(); setDue(""); setRep("")
+      }}>
+      <div className="sa-main">
+        <SmartInput ref={si} names placeholder={placeholder} aria-label="Task title" onValue={setV} />
+        <button className="btn pri sm" disabled={!v?.title}>Add</button>
+      </div>
       {areaId && <input type="hidden" name="area_id" value={areaId} />}
       {projectId && <input type="hidden" name="project_id" value={projectId} />}
       {status && <input type="hidden" name="status" value={status} />}
-      {!areaId && !projectId && areas && areas.length > 0 && (
-        <select className="in" name="area_id" defaultValue="" aria-label="Area">
-          <option value="">Inbox</option>
-          {areas.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
-        </select>
+      {open && (showArea || showProj || !v?.due || !v?.repeat) && (
+        <div className="sa-opts">
+          {showArea && <select className="in" name="area_id" defaultValue="" aria-label="Area">
+            <option value="">Inbox</option>{areas!.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
+          </select>}
+          {showProj && <select className="in" name="project_id" defaultValue="" aria-label="Project">
+            <option value="">No project</option>{projects!.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+          </select>}
+          {!v?.due && <DateChip label="Due" value={due} onChange={d => setDue(d ?? "")} />}
+          {!v?.repeat && <select className="in" value={rep} onChange={e => setRep(e.target.value)} aria-label="Repeat">
+            <option value="">Doesn’t repeat</option>{REPEATS.map(r => <option key={r} value={r}>{REPEAT_LABEL[r]}</option>)}
+          </select>}
+        </div>
       )}
-      {projects && projects.length > 0 && !projectId && (
-        <select className="in" name="project_id" defaultValue="" aria-label="Project">
-          <option value="">No project</option>
-          {projects.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-        </select>
-      )}
-      <DateChip label="Due" name="due_date" />
-      <label className="fld"><span>Repeat</span><select className="in" name="repeat" defaultValue="">
-        <option value="">Never</option>{REPEATS.map(r => <option key={r} value={r}>{REPEAT_LABEL[r]}</option>)}
-      </select></label>
-      <button className="btn pri sm">Add</button>
     </form>
   )
 }

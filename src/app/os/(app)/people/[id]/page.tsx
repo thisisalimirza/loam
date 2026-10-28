@@ -5,6 +5,7 @@ import { addDays, ago, fmtDate, relDue, todayISO } from "@/lib/os/dates"
 import { AreaSelect, Avatar, Card, Empty, PageHeader, Pill } from "../../../_ui/ui"
 import { Icon } from "../../../_ui/icons"
 import DateChip from "../../../_ui/DateChip"
+import Sheet from "../../../_ui/Sheet"
 import Confirm from "../../../_ui/Confirm"
 import Related from "../../../_ui/Related"
 import FollowUps from "../../../_ui/FollowUps"
@@ -25,7 +26,19 @@ export default async function PersonPage({ params }: { params: Promise<{ id: str
       <PageHeader back={{ href: "/os/people", label: "People" }}
         title={<span className="inline" style={{ gap: 14 }}><Avatar name={p.name} lg />{p.name}</span>}
         sub={[p.role, area?.name].filter(Boolean).join(" · ") || undefined}
-        actions={<a href="#log" className="btn pri"><Icon name="plus" />Log a conversation</a>} />
+        actions={<><a href="#log" className="btn pri"><Icon name="plus" />Log a conversation</a>
+          <Sheet label="Edit person" title={`Edit ${p.name}`} icon="more" iconOnly>
+            <form action={updatePerson} className="form">
+              <input type="hidden" name="id" value={p.id} />
+              <input type="hidden" name="follow_up" value={p.follow_up ?? ""} />
+              <label className="fld"><span>Name</span><input className="in" name="name" defaultValue={p.name} required aria-label="Name" /></label>
+              <label className="fld"><span>Who they are to you</span><input className="in" name="role" defaultValue={p.role} aria-label="Role" /></label>
+              <AreaSelect areas={areas} value={p.area_id ?? undefined} />
+              <textarea className="in" name="notes" rows={6} defaultValue={p.notes} placeholder="Family, interests, how you met, anything worth remembering" aria-label="Notes" />
+              <div><button className="btn pri">Save</button></div>
+            </form>
+            <div className="danger-zone"><Confirm action={deletePerson.bind(null, p.id)} label="Delete person" message={`Delete ${p.name} and every logged conversation?`} /></div>
+          </Sheet></>} />
       <div className="pgrid">
         <div className="stack">
           {last ? (
@@ -79,17 +92,8 @@ export default async function PersonPage({ params }: { params: Promise<{ id: str
               </div>
             </div>
           </Card>
-          <Card title="About" icon="notes">
-            <form action={updatePerson} className="form cb">
-              <input type="hidden" name="id" value={p.id} />
-              <input type="hidden" name="follow_up" value={p.follow_up ?? ""} />
-              <input className="in" name="name" defaultValue={p.name} required aria-label="Name" />
-              <input className="in" name="role" defaultValue={p.role} placeholder="Who they are to you" aria-label="Role" />
-              <AreaSelect areas={areas} value={p.area_id ?? undefined} />
-              <textarea className="in" name="notes" rows={6} defaultValue={p.notes} placeholder="Family, interests, how you met, anything worth remembering" aria-label="Notes" />
-              <div className="inline"><button className="btn pri sm">Save</button><Confirm action={deletePerson.bind(null, p.id)} label="Delete" message={`Delete ${p.name} and every logged conversation?`} /></div>
-            </form>
-          </Card>
+          {p.notes ? <section className="quiet-sec"><h3>About</h3><p style={{ margin: 0, whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}>{p.notes}</p></section>
+            : <p className="quiet-line">No notes on {p.name.split(" ")[0]} yet. Add family, interests or how you met from the ⋯ menu.</p>}
         </div>
       </div>
       <div style={{ marginTop: 16 }}><Related kind="person" id={p.id} /></div>
