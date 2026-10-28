@@ -58,7 +58,7 @@ export default async function Today() {
           <PinForm areas={areas.map(a => ({ id: a.id, name: a.name }))} compact />
         </div>
       )}
-      <PinIdeas ideas={ideas} />
+      <PinIdeas ideas={ideas}>{upcoming.length === 0 && <PinForm areas={areas.map(a => ({ id: a.id, name: a.name }))} compact />}</PinIdeas>
       <InMotion items={motion} today={today} />
 
       <div className="grid2">

@@ -1,6 +1,6 @@
 "use client"
 import Link from "next/link"
-import { useRef, useState, useTransition, type CSSProperties } from "react"
+import React, { useRef, useState, useTransition, type CSSProperties } from "react"
 import { useRouter } from "next/navigation"
 import type { Motion, PinIdea } from "@/lib/os/motion"
 import { addNextStep, pinDate, rollOver, toggleTask } from "@/lib/os/actions"
@@ -58,19 +58,20 @@ function MoCard({ m, today }: { m: Motion; today: string }) {
   )
 }
 
-export function PinIdeas({ ideas }: { ideas: PinIdea[] }) {
+export function PinIdeas({ ideas, children }: { ideas: PinIdea[]; children?: React.ReactNode }) {
   const [pending, start] = useTransition()
   const [hidden, setHidden] = useState<string[]>([])
   const left = ideas.filter(i => !hidden.includes(i.label + i.date))
-  if (!left.length) return null
+  if (!left.length && !children) return null
   return (
     <div className="pin-ideas">
-      <span className="meta">Count down to:</span>
+      {left.length > 0 && <span className="meta">Count down to:</span>}
       {left.map(i => (
         <button key={i.label + i.date} className="chip" disabled={pending} title={`From a ${i.from}`} onClick={() => start(async () => { setHidden(h => [...h, i.label + i.date]); await pinDate(i.label, i.date, i.area_id); toast(`Pinned ${i.label}`) })}>
           <Icon name="pin" size={12} />{i.label} · {fmtDate(i.date)}
         </button>
       ))}
+      {children}
     </div>
   )
 }
