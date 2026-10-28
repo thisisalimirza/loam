@@ -1,14 +1,15 @@
 import Link from "next/link"
-import { getAreas, getNotes } from "@/lib/os/data"
+import { getAreas, getNotes, getReading } from "@/lib/os/data"
 import { createNote } from "@/lib/os/actions"
 import { ago, todayISO } from "@/lib/os/dates"
 import { Card, Empty, PageHeader, Pill } from "../../_ui/ui"
 import { Icon } from "../../_ui/icons"
+import Reading from "./Reading"
 
 export const metadata = { title: "Notes" }
 
 export default async function Notes() {
-  const [notes, areas] = await Promise.all([getNotes(), getAreas(true)])
+  const [notes, areas, reading] = await Promise.all([getNotes(), getAreas(true), getReading()])
   const today = todayISO()
   return (
     <>
@@ -33,6 +34,9 @@ export default async function Notes() {
             })}
           </ul>
         )}
+      </Card>
+      <Card title="Reading list" icon="journal" meta={reading.filter(r => !r.read_at).length || undefined}>
+        <Reading items={reading} />
       </Card>
     </>
   )

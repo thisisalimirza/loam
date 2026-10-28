@@ -103,7 +103,7 @@ export async function getPerson(id: string) {
 
 export async function getNotes() {
   await requireOwner()
-  return db()<Note[]>`select * from loam_os.notes order by updated_at desc`
+  return db()<Note[]>`select * from loam_os.notes where kind = 'note' order by updated_at desc`
 }
 export async function getNote(id: string) {
   await requireOwner()
@@ -164,4 +164,13 @@ export async function search(q: string) {
     union all (select 'note', id, title from loam_os.notes where title ilike ${like} or body ilike ${like} limit 5)
     union all (select 'area', id, name from loam_os.areas where name ilike ${like} limit 5)
     union all (select 'draft', id, coalesce(nullif(title,''), left(body, 60)) from loam_os.drafts where title ilike ${like} or body ilike ${like} limit 5)`
+}
+
+export async function getIdeas() {
+  await requireOwner()
+  return db()<{ id: string; title: string; created_at: Date }[]>`select id, title, created_at from loam_os.notes where kind = 'idea' order by created_at desc`
+}
+export async function getReading() {
+  await requireOwner()
+  return db()<{ id: string; title: string; url: string | null; read_at: string | null }[]>`select id, title, url, read_at from loam_os.notes where kind = 'reading' and (read_at is null or read_at > current_date - 14) order by read_at nulls first, created_at desc`
 }

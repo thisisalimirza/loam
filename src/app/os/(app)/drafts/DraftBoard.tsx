@@ -5,7 +5,7 @@ import { moveDraft } from "@/lib/os/actions"
 import type { Stage } from "@/lib/os/types"
 
 type D = { id: string; col: string; sort: number; title: string; body: string; channel: string; url: string | null }
-const COLS = [{ id: "idea", label: "Idea" }, { id: "drafting", label: "Drafting" }, { id: "ready", label: "Ready" }, { id: "published", label: "Published" }]
+const COLS = [{ id: "idea", label: "Idea" }, { id: "drafting", label: "Drafting" }, { id: "ready", label: "Ready" }, { id: "scheduled", label: "Scheduled" }, { id: "published", label: "Published" }]
 
 export default function DraftBoard({ drafts }: { drafts: D[] }) {
   const router = useRouter()

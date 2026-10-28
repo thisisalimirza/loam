@@ -23,17 +23,17 @@ export type Conversation = {
 export type Note = { id: string; title: string; body: string; area_id: string | null; project_id: string | null; updated_at: Date }
 export type Entry = { id: string; entry_date: string; body: string; updated_at: Date }
 export type Channel = "Substack" | "X" | "LinkedIn" | "Newsletter"
-export type Stage = "idea" | "drafting" | "ready" | "published"
+export type Stage = "idea" | "drafting" | "ready" | "scheduled" | "published"
 export type Draft = {
   id: string; title: string; body: string; channel: Channel; stage: Stage
-  url: string | null; published_at: string | null; source_entry_id: string | null; sort: number; updated_at: Date
+  url: string | null; published_at: string | null; source_entry_id: string | null; scheduled_for?: string | null; sort: number; updated_at: Date
 }
 export type Pin = { id: string; label: string; pin_date: string; area_id: string | null }
 
 export const CHANNELS: Channel[] = ["Substack", "X", "LinkedIn", "Newsletter"]
 export const STAGES: { id: Stage; label: string }[] = [
   { id: "idea", label: "Idea" }, { id: "drafting", label: "Drafting" },
-  { id: "ready", label: "Ready" }, { id: "published", label: "Published" },
+  { id: "ready", label: "Ready" }, { id: "scheduled", label: "Scheduled" }, { id: "published", label: "Published" },
 ]
 export const TASK_COLS: { id: TaskStatus; label: string }[] = [
   { id: "todo", label: "To do" }, { id: "doing", label: "In progress" }, { id: "done", label: "Done" },

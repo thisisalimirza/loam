@@ -10,7 +10,7 @@ export default async function DraftPage({ params }: { params: Promise<{ id: stri
   const d = await getDraft(id)
   if (!d) notFound()
   return <>
-    <DraftEditor d={{ id: d.id, title: d.title, body: d.body, channel: d.channel, stage: d.stage, url: d.url, entry: d.source_entry_id, sort: Number(d.sort) }} />
+    <DraftEditor d={{ id: d.id, title: d.title, body: d.body, channel: d.channel, stage: d.stage, url: d.url, entry: d.source_entry_id, sort: Number(d.sort), scheduled_for: d.scheduled_for ? String(d.scheduled_for).slice(0, 10) : null }} />
     <div style={{ marginTop: 16 }}><Related kind="draft" id={id} /></div>
   </>
 }

@@ -1,14 +1,14 @@
 "use client"
 import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
-import { deleteDraft, moveDraft, saveDraft } from "@/lib/os/actions"
+import { deleteDraft, moveDraft, saveDraft, scheduleDraft } from "@/lib/os/actions"
 import { CHANNELS, type Channel, type Stage } from "@/lib/os/types"
 import { Icon } from "../../../_ui/icons"
 import Confirm from "../../../_ui/Confirm"
 
-const STAGES: { id: Stage; label: string }[] = [{ id: "idea", label: "Idea" }, { id: "drafting", label: "Drafting" }, { id: "ready", label: "Ready" }, { id: "published", label: "Published" }]
+const STAGES: { id: Stage; label: string }[] = [{ id: "idea", label: "Idea" }, { id: "drafting", label: "Drafting" }, { id: "ready", label: "Ready" }, { id: "scheduled", label: "Scheduled" }, { id: "published", label: "Published" }]
 
-export default function DraftEditor({ d }: { d: { id: string; title: string; body: string; channel: Channel; stage: Stage; url: string | null; entry: string | null; sort: number } }) {
+export default function DraftEditor({ d }: { d: { id: string; title: string; body: string; channel: Channel; stage: Stage; url: string | null; entry: string | null; sort: number; scheduled_for?: string | null } }) {
   const [title, setTitle] = useState(d.title)
   const [body, setBody] = useState(d.body)
   const [channel, setChannel] = useState<Channel>(d.channel)
@@ -44,6 +44,9 @@ export default function DraftEditor({ d }: { d: { id: string; title: string; bod
           <textarea className="editor" value={body} onChange={e => setBody(e.target.value)} placeholder={isX ? "Say it in 280." : "Write the draft."} aria-label="Draft body" style={isX ? { minHeight: 180 } : undefined} />
           <div className={`counter${isX && n > 280 ? " over" : ""}`}>{isX ? `${n} / 280` : `${body.trim() ? body.trim().split(/\s+/).length : 0} words`}</div>
         </section>
+        {stage === "scheduled" && (
+          <label className="field">Goes out on<input className="in" type="date" defaultValue={d.scheduled_for ?? ""} onChange={e => scheduleDraft(d.id, e.target.value || null)} /></label>
+        )}
         {stage === "published" && (
           <input className="in" type="url" value={url} onChange={e => setUrl(e.target.value)} placeholder="Published URL" aria-label="Published URL" />
         )}

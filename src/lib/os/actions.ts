@@ -262,7 +262,7 @@ export async function capture(text: string, parsed?: { title: string; due: strin
   await requireOwner()
   const t = text.trim(); if (!t) return { href: null as string | null }
   const sql = db()
-  const m = t.match(/^(note|person|journal|draft)\s*:\s*(.*)$/i)
+  const m = t.match(/^(note|person|journal|draft|idea|read)\s*:\s*(.*)$/i)
   if (m) {
     const kind = m[1].toLowerCase(), rest = m[2].trim()
     if (kind === "note") {
@@ -273,6 +273,11 @@ export async function capture(text: string, parsed?: { title: string; due: strin
       const [p] = await sql<{ id: string }[]>`insert into loam_os.people (name) values (${rest || "New person"}) returning id`
       back(); return { href: `/os/people/${p.id}` }
     }
+    if (kind === "idea") {
+      await sql`insert into loam_os.notes (title, kind) values (${rest || "Untitled idea"}, 'idea')`
+      back(); return { href: null }
+    }
+    if (kind === "read") { await addReadingRaw(rest); back(); return { href: null } }
     if (kind === "draft") {
       const [d] = await sql<{ id: string }[]>`insert into loam_os.drafts (body, channel, stage) values (${rest}, 'X', 'idea') returning id`
       back(); return { href: `/os/drafts/${d.id}` }
@@ -362,6 +367,11 @@ export async function moveDraft(id: string, stage: Stage, sort: number, url?: st
     url = coalesce(${url ?? null}, url),
     published_at = case when ${stage} = 'published' then coalesce(published_at, ${todayISO()}::date) else null end
     where id = ${id}`
+  back()
+}
+export async function scheduleDraft(id: string, day: string | null) {
+  await requireOwner()
+  await db()`update loam_os.drafts set scheduled_for = ${day || null}::date, stage = case when ${day || null}::date is null then stage else 'scheduled' end, updated_at = now() where id = ${id}`
   back()
 }
 export async function deleteDraft(id: string) {
@@ -469,4 +479,34 @@ export async function dismissPerson(id: string) {
   await db()`update loam_os.people set status = 'dismissed' where id = ${id} and status = 'suggested'`
   await db()`delete from loam_os.mentions where person_id = ${id}`
   back()
+}
+
+// ---------- ideas & reading ----------
+
+async function addReadingRaw(text: string) {
+  const t = text.trim(); if (!t) return
+  const url = t.match(/https?:\/\/\S+/)?.[0] ?? null
+  const title = (url ? t.replace(url, "").trim() : t) || url!.replace(/^https?:\/\/(www\.)?/, "").slice(0, 80)
+  await db()`insert into loam_os.notes (title, kind, url, area_id) values (${title}, 'reading', ${url},
+    (select id from loam_os.areas where name ilike 'med%' and not archived order by sort limit 1))`
+}
+export async function addReading(f: FormData) {
+  await requireOwner(); await addReadingRaw(String(f.get("text") ?? "")); revalidatePath("/os/notes")
+}
+export async function markRead(id: string, read: boolean) {
+  await requireOwner()
+  await db()`update loam_os.notes set read_at = ${read ? todayISO() : null}::date, updated_at = now() where id = ${id} and kind = 'reading'`
+  revalidatePath("/os/notes")
+}
+export async function ideaTo(id: string, to: "task" | "draft" | "note" | "drop") {
+  await requireOwner()
+  const sql = db()
+  const [n] = await sql<{ title: string; body: string }[]>`select title, body from loam_os.notes where id = ${id} and kind = 'idea'`
+  if (!n) return { href: null as string | null }
+  let href: string | null = null
+  if (to === "task") await sql`insert into loam_os.tasks (title, notes, sort, column_id) values (${n.title}, ${n.body}, extract(epoch from now()), (select id from loam_os.board_columns where kind = 'todo' order by sort limit 1))`
+  if (to === "draft") { const [d] = await sql<{ id: string }[]>`insert into loam_os.drafts (title, body, channel, stage, sort) values (${n.title}, ${n.body}, 'X', 'idea', extract(epoch from now())) returning id`; href = `/os/drafts/${d.id}` }
+  if (to === "note") { await sql`update loam_os.notes set kind = 'note', updated_at = now() where id = ${id}`; href = `/os/notes/${id}` }
+  else await sql`delete from loam_os.notes where id = ${id}`
+  back(); return { href }
 }

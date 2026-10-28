@@ -23,6 +23,7 @@ const NAV: { href: string; label: string; icon: IconName }[] = [
   { href: "/os/notes", label: "Notes", icon: "notes" },
   { href: "/os/areas", label: "Areas", icon: "areas" },
   { href: "/os/site", label: "Site", icon: "globe" },
+  { href: "/os/review", label: "Weekly review", icon: "calendar" },
   { href: "/os/settings", label: "Settings", icon: "info" },
 ]
 const TABS: { href: string; label: string; icon: IconName }[] = [

@@ -63,6 +63,7 @@ export default async function Today() {
         }
       />
       {hour >= 17 && <RollOver items={roll} />}
+      {[0, 1].includes(new Date(today + "T12:00:00").getDay()) && <Link href="/os/review" className="nudge"><Icon name="calendar" size={16} /><span><strong>Weekly review</strong> Look back at the week and pick what’s next.</span><Icon name="arrow" size={14} /></Link>}
       {pinsLeft.length > 0 && (
         <div className="countdowns">
           {pinsLeft.map(p => {
