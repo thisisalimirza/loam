@@ -15,6 +15,7 @@ import { relDue } from "@/lib/os/dates"
 import { Icon } from "../../_ui/icons"
 import { Mentions } from "../../_ui/Mentions"
 import { toast } from "../../_ui/Toast"
+import PanelBoundary from "../../_ui/PanelBoundary"
 import Drawer from "./Drawer"
 
 const PRI: Record<string, { label: string; c: string }> = {
@@ -376,11 +377,11 @@ export default function Board({ data, today, scope = {}, embedded }: { data: Boa
           setColEdit(null); router.refresh()
         }} />}
 
-      {open && <Drawer key={open.id} task={open} data={data} cols={cols} tasks={tasks} deps={deps} today={today}
+      {open && <PanelBoundary key={open.id} onClose={() => setOpenId(null)}><Drawer key={open.id} task={open} data={data} cols={cols} tasks={tasks} deps={deps} today={today}
         onClose={() => setOpenId(null)} onOpen={setOpenId}
         onChange={patchLocal} onDeps={setDeps}
         onMove={colId => { const top = cell("all", colId)[0]; return moveTo(open.id, colId, top ? top.sort - 1 : Date.now() / 1000) }}
-        onDeleted={() => { setTasks(ts => ts.filter(t => t.id !== open.id)); setOpenId(null) }} />}
+        onDeleted={() => { setTasks(ts => ts.filter(t => t.id !== open.id)); setOpenId(null) }} /></PanelBoundary>}
     </div>
   )
 }

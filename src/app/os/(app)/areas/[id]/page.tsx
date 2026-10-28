@@ -3,7 +3,7 @@ import { notFound } from "next/navigation"
 import type { CSSProperties } from "react"
 import { getArea, getAreas, getNotes, getPeople, getPins, getProjects, getTasks } from "@/lib/os/data"
 import { archiveArea, createProject, deleteArea, deletePin, updateArea } from "@/lib/os/actions"
-import { daysBetween, fmtDate, relDue, todayISO } from "@/lib/os/dates"
+import { daysBetween, fmtDate, todayISO } from "@/lib/os/dates"
 import { nextUp } from "@/lib/os/focus"
 import Sheet from "../../../_ui/Sheet"
 import DateChip from "../../../_ui/DateChip"
@@ -27,8 +27,6 @@ export default async function AreaPage({ params, searchParams }: { params: Promi
   const myPeople = people.filter(p => p.area_id === id)
   const myPins = pins.filter(p => p.area_id === id && p.pin_date >= today)
   const myNotes = notes.filter(n => n.area_id === id)
-  const nx = nextUp(open)
-  const stuck = projects.filter(p => p.status === "active" && !open.some(t => t.project_id === p.id))
   const edit = (
     <Sheet label="Edit area" title="Edit area" icon="more" iconOnly>
       <form action={updateArea} className="form">
@@ -57,26 +55,9 @@ export default async function AreaPage({ params, searchParams }: { params: Promi
     <>
       <PageHeader back={{ href: "/os/areas", label: "Areas" }}
         eyebrow={<span className="inline"><span className="dot" style={{ "--c": area.color, margin: 0 } as CSSProperties} />{area.archived ? "Archived area" : "Area"}</span>}
-        title={area.name} sub={`${open.length} open ${open.length === 1 ? "task" : "tasks"} · ${projects.filter(p => p.status === "active").length} active projects`}
+        title={area.name}
         actions={<><ViewToggle base={`/os/areas/${id}`} view={view} />{edit}</>} />
-      {myPins.length > 0 && (
-        <div className="countdowns">
-          {myPins.map(p => (
-            <div key={p.id} className="cd" style={{ "--c": area.color } as CSSProperties}>
-              <div className="num">{daysBetween(today, p.pin_date)}<small>days</small></div><span>{p.label}</span>
-              <form action={deletePin.bind(null, p.id)}><button className="btn ghost sm" aria-label="Unpin"><Icon name="x" size={14} /></button></form>
-            </div>
-          ))}
-        </div>
-      )}
-      <div className="stack">
-        {view === "list" && (nx ? (
-          <section className="card focus-card"><div className="fc-b">
-            <span className="eyebrow" style={{ width: "100%", margin: 0 }}>Next up</span>
-            <span className="fc-t">{nx.title}</span>
-            {nx.due_date && <span className="due">{relDue(nx.due_date, today).label}</span>}
-          </div></section>
-        ) : open.length === 0 && <p className="quiet-line">Nothing open here. Add the next thing below.</p>)}
+      <div className={view === "board" ? "stack" : "split"}><div className="stack">
         {view === "board" ? <Board data={await getBoard()} today={today} scope={{ areaId: id }} embedded /> : (
           <Card title="Tasks" icon="tasks" meta={open.length}>
             <AddTask areaId={id} projects={projects.filter(p => p.status === "active")} placeholder={`Add to ${area.name}. Try “… fri”`} />
@@ -90,7 +71,17 @@ export default async function AreaPage({ params, searchParams }: { params: Promi
             ) })}</ul>
           )}
         </Card>
-        {stuck.length > 0 && <p className="quiet-line">{stuck.length === 1 ? `${stuck[0].name} has` : `${stuck.length} projects have`} no next step. Open {stuck.length === 1 ? "it" : "one"} to add one.</p>}
+        </div><aside className="stack side-ctx">
+      {myPins.length > 0 && (
+        <div className="countdowns ctx-cd">
+          {myPins.map(p => (
+            <div key={p.id} className="cd" style={{ "--c": area.color } as CSSProperties}>
+              <div className="num">{daysBetween(today, p.pin_date)}<small>days</small></div><span>{p.label}</span>
+              <form action={deletePin.bind(null, p.id)}><button className="btn ghost sm" aria-label="Unpin"><Icon name="x" size={14} /></button></form>
+            </div>
+          ))}
+        </div>
+      )}
         {myPeople.length > 0 ? (
           <section className="quiet-sec"><h3>People</h3>
             <ul>{myPeople.map(p => <li key={p.id}><Link href={`/os/people/${p.id}`} className="row"><Avatar name={p.name} /><span className="tt">{p.name}</span><span className="due">{p.role}</span></Link></li>)}</ul>
@@ -102,7 +93,7 @@ export default async function AreaPage({ params, searchParams }: { params: Promi
           </section>
         )}
         <Related kind="area" id={id} />
-      </div>
+      </aside></div>
     </>
   )
 }

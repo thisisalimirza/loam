@@ -13,9 +13,15 @@ export type BoardData = {
 
 const iso = (d: unknown) => (d instanceof Date ? d.toISOString() : (d as string | null))
 
+export function asList<T>(v: unknown): T[] {
+  if (Array.isArray(v)) return v as T[]
+  if (typeof v === "string") { try { const p = JSON.parse(v); return Array.isArray(p) ? p : [] } catch { return [] } }
+  return []
+}
+
 export function normTask(t: Task): BoardTask {
   return { ...t, status_changed_at: iso(t.status_changed_at) ?? new Date().toISOString(), created_at: iso(t.created_at) ?? "", archived_at: iso(t.archived_at ?? null),
-    priority: t.priority ?? "normal", checklist: t.checklist ?? [], tags: t.tags ?? [] } as BoardTask
+    priority: t.priority ?? "normal", checklist: asList(t.checklist), tags: t.tags ?? [] } as BoardTask
 }
 
 export async function getBoard(): Promise<BoardData> {

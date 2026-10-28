@@ -30,7 +30,7 @@ function DueLabel({ t, today }: { t: Task; today: string }) {
 
 /** Quiet indicators: priority, checklist progress, notes. */
 function Quiet({ t }: { t: Task }) {
-  const c = t.checklist ?? [], d = c.filter(i => i.done).length
+  const c = Array.isArray(t.checklist) ? t.checklist : [], d = c.filter(i => i.done).length
   return <span className="qi">
     {(t.priority === "urgent" || t.priority === "high") && <span className={`qi-p p-${t.priority}`} aria-label={`${t.priority} priority`}>{t.priority === "urgent" ? "!!!" : "!!"}</span>}
     {c.length > 0 && <span className="qi-c" aria-label={`${d} of ${c.length} checklist items done`}><Icon name="list" size={12} />{d}/{c.length}</span>}
@@ -87,7 +87,7 @@ export function AddTask({ areaId, projectId, areas, projects, status, placeholde
       }}>
       <div className="sa-main">
         <SmartInput ref={si} names placeholder={placeholder} aria-label="Task title" onValue={setV} />
-        <button className="btn pri sm" disabled={!v?.title}>Add</button>
+        {v?.title && <button className="btn pri sm">Add</button>}
       </div>
       {areaId && <input type="hidden" name="area_id" value={areaId} />}
       {projectId && <input type="hidden" name="project_id" value={projectId} />}

@@ -55,7 +55,7 @@ export async function bUpdate(id: string, patch: Patch) {
     if (!keys.length && p.checklist === undefined) throw new Error("!Nothing to save")
     const cl = p.checklist as string | undefined
     const [t] = await sql<Task[]>`update loam_os.tasks set ${keys.length ? sql(p as Record<string, string>, keys) : sql`id = id`}
-      ${cl !== undefined ? sql`, checklist = ${cl}::jsonb` : sql``} where id = ${uuid(id)} returning *`
+      ${cl !== undefined ? sql`, checklist = ${cl}::text::jsonb` : sql``} where id = ${uuid(id)} returning *`
     if (!t) throw new Error("!That task was deleted.")
     return normTask(t)
   })
@@ -195,7 +195,7 @@ export async function bViewSave(name: string, filters: BoardFilters) {
     const clean: BoardFilters = {}
     for (const k of ["areas", "projects", "tags", "priorities"] as const) if (filters[k]?.length) clean[k] = filters[k]!.map(String).slice(0, 30)
     if (filters.due) clean.due = filters.due
-    const [v] = await db()<BoardView[]>`insert into loam_os.board_views (name, filters) values (${n}, ${JSON.stringify(clean)}::jsonb) returning id, name, filters`
+    const [v] = await db()<BoardView[]>`insert into loam_os.board_views (name, filters) values (${n}, ${JSON.stringify(clean)}::text::jsonb) returning id, name, filters`
     return v
   })
 }

@@ -25,8 +25,7 @@ export function Card({ title, icon, meta, actions, children, className = "", sty
     <section className={`card ${className}`} style={style}>
       {title && (
         <div className="ch">
-          <h2>{icon && <Icon name={icon} />}{title}</h2>
-          {meta && <div className="meta">{meta}</div>}
+          <h2>{icon && <Icon name={icon} />}{title}{meta !== undefined && meta !== null && meta !== false && <span className="meta">{meta}</span>}</h2>
           {actions && <div className="ch-act">{actions}</div>}
         </div>
       )}
