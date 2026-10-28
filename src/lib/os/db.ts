@@ -2,6 +2,7 @@ import "server-only"
 import { cache } from "react"
 import { after } from "next/server"
 import postgres from "postgres"
+import { AsyncLocalStorage } from "node:async_hooks"
 import { cookies, type UnsafeUnwrappedCookies } from "next/headers"
 
 // One short-lived connection per request. A pool kept on globalThis goes stale
@@ -15,7 +16,7 @@ function make() {
   return postgres(url.replace(":6543/", ":5432/"), {
     prepare: false,
     max: 1,
-    idle_timeout: 5,
+    idle_timeout: 60, // must outlive slow background work: a reconnect would drop the role and test mode
     connect_timeout: 6,
     ssl: { rejectUnauthorized: false },
     connection: { statement_timeout: 8000 },
@@ -35,21 +36,27 @@ function testMode() {
 
 type Job = () => unknown | Promise<unknown>
 const perRequest = cache(() => {
-  const sql = make() as ReturnType<typeof make> & { jobs: Job[] }
+  const sql = make() as ReturnType<typeof make> & { jobs: Job[]; mode: string }
   sql.jobs = []
   // max: 1 → one connection, queries run in order, so this lands first.
-  sql.unsafe(`set role loam_app; select set_config('loam.test', '${testMode() ? "on" : "off"}', false)`).execute()
+  const mode = `set role loam_app; select set_config('loam.test', '${testMode() ? "on" : "off"}', false)`
+  sql.mode = mode
+  sql.unsafe(mode).execute()
   // Background work (later()) runs first, on this same connection and mode; only then is it closed.
   try { after(async () => { for (let j; (j = sql.jobs.shift());) { try { await j() } catch (e) { console.error("later", e) } } await sql.unsafe("reset role; reset loam.test").catch(() => {}); await sql.end({ timeout: 2 }) }) } catch { /* outside a request: idle_timeout closes it */ }
   return sql
 })
 
+// Inside a later() job, db() is pinned to the connection (and test/real mode) of the request that queued it.
+const pinned = new AsyncLocalStorage<ReturnType<typeof perRequest>>()
+
 export function db() {
-  return perRequest()
+  return pinned.getStore() ?? perRequest()
 }
 
 /** Run work after the response, before this request's connection closes, in the same test/real mode.
  *  Use this instead of next/server after() for anything that touches the database. */
 export function later(fn: Job) {
-  perRequest().jobs.push(fn)
+  const sql = db()
+  sql.jobs.push(async () => { await sql.unsafe(sql.mode); return pinned.run(sql, fn) })  // re-assert mode in case the socket reconnected
 }
