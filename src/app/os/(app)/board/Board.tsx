@@ -12,6 +12,7 @@ import type { BoardData, BoardTask } from "@/lib/os/board"
 import type { BoardColumn, BoardFilters, BoardView, TaskStatus } from "@/lib/os/types"
 import { bArchiveDone, bColumnDelete, bColumnOrder, bColumnSave, bCreate, bMove, bUnarchiveAll, bUpdate, bViewDelete, bViewSave } from "@/lib/os/boardActions"
 import { relDue } from "@/lib/os/dates"
+import ColJump from "../../_ui/ColJump"
 import { Icon } from "../../_ui/icons"
 import { Mentions } from "../../_ui/Mentions"
 import { toast } from "../../_ui/Toast"
@@ -56,6 +57,7 @@ export default function Board({ data, today, scope = {}, embedded }: { data: Boa
   const [openId, setOpenId] = useState<string | null>(params.get("open"))
   const [panel, setPanel] = useState<null | "filter" | "help">(null)
   const [adding, setAdding] = useState<string | null>(null)
+  const scroller = useRef<HTMLDivElement>(null)
   const [colEdit, setColEdit] = useState<string | "new" | null>(null)
   const [active, setActive] = useState<string | null>(null)
   const searchRef = useRef<HTMLInputElement>(null)
@@ -321,7 +323,8 @@ export default function Board({ data, today, scope = {}, embedded }: { data: Boa
       {panel === "help" && <Help onClose={() => setPanel(null)} />}
 
       <DndContext sensors={sensors} collisionDetection={collide} onDragStart={onStart} onDragOver={onOver} onDragEnd={onEnd} onDragCancel={() => { setActive(null); setDrag(null) }}>
-        <div className="bd-scroll">
+        {!lanes && <ColJump scroller={scroller} sel=".bd-col" cols={cols.map(c => ({ id: c.id, label: c.name, count: cellView(laneList[0]?.id ?? "all", c.id).length }))} />}
+        <div className="bd-scroll hfade" ref={scroller}>
           {laneList.map(lane => (
             <section key={lane.id} className="bd-lane">
               {lanes && lane.id !== "all" && <h3 className="bd-laneh"><span className="dot" style={{ "--c": lane.color } as CSSProperties} />{lane.name}<span>{visible.filter(t => (t.area_id ?? NO_AREA) === lane.id && t.status !== "done").length}</span></h3>}

@@ -1,7 +1,7 @@
 "use client"
 import SmartInput, { type SmartHandle } from "./SmartInput"
 import { useEffect, useRef, useState, useTransition } from "react"
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { Icon } from "./icons"
 import { capture, searchAll } from "@/lib/os/actions"
 import { recentItems, remember, type Recent } from "./recent"
@@ -25,7 +25,12 @@ function Trigger() {
   )
 }
 
+// Pages that have their own add field: one add per page, so the floating bar steps aside (⌘K still works).
+const OWN_ADD = [/^\/os\/tasks$/, /^\/os\/drafts$/, /^\/os\/people$/, /^\/os\/inbox$/, /^\/os\/notes$/, /^\/os\/areas\/[^/]+$/, /^\/os\/projects\/[^/]+$/, /^\/os\/board$/]
+
 export default function Capture() {
+  const pathname = usePathname()
+  const ownAdd = OWN_ADD.some(r => r.test(pathname))
   const [open, setOpen] = useState(false)
   const [q, setQ] = useState("")
   const [hits, setHits] = useState<Hit[]>([])
@@ -77,9 +82,9 @@ export default function Capture() {
 
   return (
     <>
-      <button className="capture" onClick={() => setOpen(true)}>
+      {!ownAdd && <button className="capture" onClick={() => setOpen(true)}>
         <Icon name="plus" /><span>{flash || "Add a task, note, or person…"}</span><kbd>⌘K</kbd>
-      </button>
+      </button>}
       {open && (
         <div className="modal-bg" onMouseDown={e => { if (e.target === e.currentTarget) setOpen(false) }}>
           <div className="modal" role="dialog" aria-label="Capture">

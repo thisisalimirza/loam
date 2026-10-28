@@ -560,3 +560,16 @@ background:var(--bg);font:400 var(--t-body)/1.34 var(--font);letter-spacing:-.01
 .os .is-read .tt{text-decoration:line-through;opacity:.6}.os .add-row{display:flex;gap:8px;padding:10px 16px 14px}.os .add-row .in{flex:1;min-width:0}
 .os .row a.tt{color:inherit;overflow-wrap:anywhere}
 .os .dr-load{margin:24px;height:28px;border-radius:8px;background:var(--line);opacity:.5;animation:pulse 1.2s ease-in-out infinite}@keyframes pulse{50%{opacity:.25}}
+/* Wide boards: column switcher on narrow screens, fade on the edge that has more */
+.os .col-jump{display:none;margin:0 0 10px;width:max-content}.os .col-jump span{margin-left:6px;font-variant-numeric:tabular-nums;opacity:.7}
+@media (max-width:899px){.os .col-jump{display:flex}}
+.os .hfade[data-more="1"]{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 36px),transparent)}
+/* Task rows: area and date sit beside the title on wide screens, under it on phones, so the title never truncates */
+.os .trow .rmeta{display:contents}
+@media (max-width:599px){
+  .os li.trow{flex-wrap:wrap;row-gap:2px}
+  .os li.trow>.tt{flex:1 1 0;min-width:0;white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
+  .os li.trow .rmeta{display:flex;flex-basis:100%;gap:8px;align-items:center;padding-left:34px;min-width:0}
+  .os li.trow .rmeta:empty{display:none}
+  .os li.trow .rmeta .pill{max-width:none}
+}

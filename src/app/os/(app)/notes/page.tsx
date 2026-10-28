@@ -13,7 +13,7 @@ export default async function Notes() {
   const today = todayISO()
   return (
     <>
-      <PageHeader title="Notes" sub="Markdown. Meeting notes, plans, things to keep."
+      <PageHeader title="Notes" sub="Plans, meeting notes, things to keep."
         actions={<form action={createNote}><button className="btn pri"><Icon name="plus" />New note</button></form>} />
       <Card>
         {notes.length === 0 ? <Empty icon="notes" title="No notes yet">Write one here, or type “note: title” into ⌘K.</Empty> : (

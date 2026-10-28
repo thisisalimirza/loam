@@ -51,7 +51,7 @@ export function TaskRow({ t, areas, today, hideArea }: { t: Task; areas: AreaLit
     if (n && n !== t.title) start(async () => { setTitle(n); await renameTask(t.id, n) })
   }
   return (
-    <li className={`row hov${done ? " done" : ""}`}>
+    <li className={`row hov trow${done ? " done" : ""}`}>
       <button className="chk" aria-label={done ? "Mark not done" : "Mark done"} onClick={() => start(async () => {
         setDone(!done)
         const next = await toggleTask(t.id, !done)
@@ -62,8 +62,7 @@ export function TaskRow({ t, areas, today, hideArea }: { t: Task; areas: AreaLit
             onBlur={e => save(e.currentTarget.value)}
             onKeyDown={e => { if (e.key === "Enter") e.currentTarget.blur(); if (e.key === "Escape") setEditing(false) }} />
         : <button type="button" className="tt" aria-label={`Open ${title}`} onClick={() => open(t.id)} onDoubleClick={() => setEditing(true)}><Mentions text={title} />{t.repeat && <span className="rep" title={`Repeats ${t.repeat}`}> ↻</span>}<Quiet t={t} /></button>}
-      {!hideArea && <AreaPill id={t.area_id} areas={areas} />}
-      <DueLabel t={t} today={today} />
+      <span className="rmeta">{!hideArea && <AreaPill id={t.area_id} areas={areas} />}<DueLabel t={t} today={today} /></span>
       <button className="x" aria-label="Delete task" onClick={() => start(() => deleteTask(t.id))}><Icon name="x" size={14} /></button>
     </li>
   )
@@ -110,7 +109,9 @@ export function AddTask({ areaId, projectId, areas, projects, status, placeholde
   )
 }
 
-export function TaskList({ tasks, areas, today, hideArea, emptyTitle = "Nothing here", emptyText }: { tasks: Task[]; hideArea?: boolean; emptyTitle?: string; emptyText?: string } & Ctx) {
+export function TaskList({ tasks: all, areas, today, hideArea, unfiledOnly, emptyTitle = "Nothing here", emptyText }: { tasks: Task[]; hideArea?: boolean; unfiledOnly?: boolean; emptyTitle?: string; emptyText?: string } & Ctx) {
+  // In the inbox a task leaves the list the moment it gets an area or project.
+  const tasks = unfiledOnly ? all.filter(t => !t.area_id && !t.project_id) : all
   if (tasks.length === 0) return <div className="empty"><Icon name="check" className="ic" /><strong>{emptyTitle}</strong>{emptyText && <p>{emptyText}</p>}</div>
   return <ul>{tasks.map(t => <TaskRow key={t.id} t={t} areas={areas} today={today} hideArea={hideArea} />)}</ul>
 }

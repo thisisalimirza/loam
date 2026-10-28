@@ -1,5 +1,6 @@
 "use client"
-import { useEffect, useState, type ReactNode } from "react"
+import { useEffect, useRef, useState, type ReactNode } from "react"
+import ColJump from "./ColJump"
 import {
   DndContext, DragOverlay, PointerSensor, KeyboardSensor, TouchSensor, useSensor, useSensors, closestCorners,
   useDroppable, type DragEndEvent, type DragOverEvent, type DragStartEvent,
@@ -74,10 +75,12 @@ export default function Kanban<T extends KItem>({ cols, items: initial, render, 
     onMove(a, col, sort)
   }
   const activeItem = items.find(i => i.id === active)
+  const scroller = useRef<HTMLDivElement>(null)
 
   return (
     <DndContext sensors={sensors} collisionDetection={closestCorners} onDragStart={onStart} onDragOver={onOver} onDragEnd={onEnd} onDragCancel={() => setActive(null)}>
-      <div className="board">
+      <ColJump scroller={scroller} sel=".col" cols={cols.map(c => ({ id: c.id, label: c.label, count: byCol(c.id).length }))} />
+      <div className="board hfade" ref={scroller}>
         {cols.map(c => {
           const list = byCol(c.id)
           return (

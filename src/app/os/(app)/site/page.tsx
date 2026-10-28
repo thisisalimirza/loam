@@ -28,7 +28,7 @@ export default async function Site({ searchParams }: { searchParams: Promise<{ q
   const href = (o: { s?: string; q?: string }) => { const p = new URLSearchParams(); const ss = o.s ?? s, qq = o.q ?? q; if (ss) p.set("s", ss); if (qq) p.set("q", qq); const t = p.toString(); return `/os/site${t ? "?" + t : ""}` }
   return (
     <>
-      <PageHeader title="Site" sub={<>Everything on thisisalimirza.com. Saving commits to GitHub and goes live in about a minute.</>}
+      <PageHeader title="Site" sub={<>Everything on thisisalimirza.com. Changes go live in about a minute.</>}
         actions={<><a className="btn" href="/" target="_blank" rel="noreferrer"><Icon name="link" />View site</a><Link className="btn pri" href={`/os/site/new${s && s !== "_pages" ? `?section=${s}` : ""}`}><Icon name="plus" />New post</Link></>} />
       {deleted && <p className="banner">Deleted. The site updates in about a minute.</p>}
       <nav className="chips" aria-label="Sections">
