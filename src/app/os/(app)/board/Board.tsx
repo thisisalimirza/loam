@@ -184,10 +184,15 @@ export default function Board({ data, today, scope = {}, embedded }: { data: Boa
     const t = tasks.find(x => x.id === id)
     if (t) setDrag({ id, lane: lanes ? (t.area_id ?? NO_AREA) : "all", col: colOf(t).id })
   }
+  // Moving the preview card changes the layout, which can flip `over` back and forth.
+  // Ignore the card itself and apply at most one move per frame so it can't loop.
+  const overFrame = useRef(0)
   function onOver(e: DragOverEvent) {
-    if (!drag || !e.over) return
+    if (!drag || !e.over || e.over.id === e.active.id) return
     const w = where(String(e.over.id)); if (!w) return
-    if (w.col !== drag.col || w.lane !== drag.lane) setDrag({ ...drag, ...w })
+    if (w.col === drag.col && w.lane === drag.lane) return
+    cancelAnimationFrame(overFrame.current)
+    overFrame.current = requestAnimationFrame(() => setDrag(d => d && (d.col !== w.col || d.lane !== w.lane) ? { ...d, ...w } : d))
   }
   function onEnd(e: DragEndEvent) {
     const id = String(e.active.id); setActive(null)
