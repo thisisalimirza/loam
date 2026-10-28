@@ -8,7 +8,7 @@ const GROUPS: [keyof Awaited<ReturnType<typeof getRelated>>, string][] = [
 
 /** "Connected" card: what other parts of the OS point at this thing. Renders nothing when empty. */
 export default async function Related({ kind, id, title = "Connected" }: { kind: Parameters<typeof getRelated>[0]; id: string; title?: string }) {
-  const r = await getRelated(kind, id).catch(() => null)
+  const r = await getRelated(kind, id).catch(e => { console.error("related failed", kind, e?.message); return null })
   if (!r) return null
   const groups = GROUPS.filter(([k]) => r[k].length > 0)
   if (!groups.length) return null
