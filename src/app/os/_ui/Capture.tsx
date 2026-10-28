@@ -1,0 +1,105 @@
+"use client"
+import { useEffect, useRef, useState, useTransition } from "react"
+import { useRouter } from "next/navigation"
+import { Icon } from "./icons"
+import { capture, searchAll } from "@/lib/os/actions"
+
+const OPEN = "loam:capture"
+const KIND_HREF: Record<string, string> = { task: "/os/tasks", person: "/os/people/", note: "/os/notes/", area: "/os/areas/", draft: "/os/drafts/" }
+const JUMPS = [
+  { label: "Write in the journal", href: "/os/journal/write", key: "⌘J" },
+  { label: "Tasks board", href: "/os/tasks?view=board" },
+  { label: "Drafts", href: "/os/drafts" },
+  { label: "People", href: "/os/people" },
+]
+
+type Hit = { kind: string; id: string; title: string }
+
+function Trigger() {
+  return (
+    <button className="cmd" onClick={() => window.dispatchEvent(new Event(OPEN))}>
+      <Icon name="search" /><span>Search or capture</span><kbd>⌘K</kbd>
+    </button>
+  )
+}
+
+export default function Capture() {
+  const [open, setOpen] = useState(false)
+  const [q, setQ] = useState("")
+  const [hits, setHits] = useState<Hit[]>([])
+  const [sel, setSel] = useState(0)
+  const [flash, setFlash] = useState("")
+  const [pending, start] = useTransition()
+  const router = useRouter()
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); setOpen(o => !o) }
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "j") { e.preventDefault(); router.push("/os/journal/write") }
+      if (e.key === "Escape") setOpen(false)
+    }
+    const onOpen = () => setOpen(true)
+    window.addEventListener("keydown", onKey)
+    window.addEventListener(OPEN, onOpen)
+    return () => { window.removeEventListener("keydown", onKey); window.removeEventListener(OPEN, onOpen) }
+  }, [router])
+
+  useEffect(() => { if (open) { setQ(""); setHits([]); setSel(0); setTimeout(() => inputRef.current?.focus(), 10) } }, [open])
+
+  useEffect(() => {
+    if (!open || q.trim().length < 2 || q.includes(":")) { setHits([]); return }
+    const t = setTimeout(() => { searchAll(q).then(setHits).catch(() => setHits([])) }, 160)
+    return () => clearTimeout(t)
+  }, [q, open])
+
+  const jumps = q ? JUMPS.filter(j => j.label.toLowerCase().includes(q.toLowerCase())) : JUMPS
+  const items: { label: string; sub: string; go: () => void }[] = [
+    ...(q.trim() ? [{ label: `Capture “${q.trim()}”`, sub: q.includes(":") ? "" : "Inbox", go: () => submit() }] : []),
+    ...hits.map(h => ({ label: h.title, sub: h.kind, go: () => { setOpen(false); router.push(h.kind === "task" ? KIND_HREF.task : KIND_HREF[h.kind] + h.id) } })),
+    ...jumps.map(j => ({ label: j.label, sub: j.key ?? "Go", go: () => { setOpen(false); router.push(j.href) } })),
+  ]
+
+  function submit() {
+    const text = q.trim(); if (!text) return
+    start(async () => {
+      const r = await capture(text)
+      setOpen(false)
+      if (r.href) router.push(r.href)
+      else { setFlash("Added to Inbox"); router.refresh(); setTimeout(() => setFlash(""), 1800) }
+    })
+  }
+
+  return (
+    <>
+      <button className="capture" onClick={() => setOpen(true)}>
+        <Icon name="plus" /><span>{flash || "Capture a task, note, or person…"}</span><kbd>⌘K</kbd>
+      </button>
+      {open && (
+        <div className="modal-bg" onMouseDown={e => { if (e.target === e.currentTarget) setOpen(false) }}>
+          <div className="modal" role="dialog" aria-label="Capture">
+            <div className="mi">
+              <Icon name="plus" />
+              <input ref={inputRef} value={q} placeholder="Add a task, or type to search…" onChange={e => { setQ(e.target.value); setSel(0) }}
+                onKeyDown={e => {
+                  if (e.key === "ArrowDown") { e.preventDefault(); setSel(s => Math.min(s + 1, items.length - 1)) }
+                  if (e.key === "ArrowUp") { e.preventDefault(); setSel(s => Math.max(s - 1, 0)) }
+                  if (e.key === "Enter") { e.preventDefault(); items[sel]?.go() }
+                }} disabled={pending} />
+              <kbd>esc</kbd>
+            </div>
+            <ul>
+              {items.map((it, i) => (
+                <li key={i}><button className={i === sel ? "on" : ""} onMouseEnter={() => setSel(i)} onClick={it.go}>
+                  <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{it.label}</span><small>{it.sub}</small>
+                </button></li>
+              ))}
+            </ul>
+            <div className="hint"><span>End with “today” or “tomorrow” to set a due date</span><span>note: · person: · draft:</span></div>
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
+Capture.Trigger = Trigger
