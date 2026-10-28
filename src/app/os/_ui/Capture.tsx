@@ -29,7 +29,7 @@ function Trigger() {
 }
 
 // Pages that have their own add field: one add per page, so the floating bar steps aside (⌘K still works).
-const OWN_ADD = [/^\/os\/tasks$/, /^\/os\/drafts$/, /^\/os\/people$/, /^\/os\/inbox$/, /^\/os\/notes$/, /^\/os\/areas\/[^/]+$/, /^\/os\/projects\/[^/]+$/, /^\/os\/board$/]
+const OWN_ADD = [/^\/os\/tasks$/, /^\/os\/drafts$/, /^\/os\/people$/, /^\/os\/inbox$/, /^\/os\/notes$/, /^\/os\/areas\/[^/]+$/, /^\/os\/projects\/[^/]+$/, /^\/os\/board$/, /^\/os\/(drafts|people|notes|journal)\/[^/]+$/]
 
 export default function Capture() {
   const pathname = usePathname()
