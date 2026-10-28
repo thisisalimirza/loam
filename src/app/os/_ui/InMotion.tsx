@@ -3,7 +3,7 @@ import Link from "next/link"
 import React, { useRef, useState, useTransition, type CSSProperties } from "react"
 import { useRouter } from "next/navigation"
 import type { Motion, PinIdea } from "@/lib/os/motion"
-import { addNextStep, pinDate, rollOver, toggleTask } from "@/lib/os/actions"
+import { addNextStep, deletePin, pinDate, rollOver, toggleTask } from "@/lib/os/actions"
 import { fmtDate, relDue } from "@/lib/os/dates"
 import SmartInput, { dueText, type SmartHandle, type SmartValue } from "./SmartInput"
 import { Icon } from "./icons"
@@ -52,6 +52,12 @@ function MoCard({ m, today }: { m: Motion; today: string }) {
         </div>
       ) : (
         <div className="mo-add"><SmartInput ref={si} placeholder="What’s the next step?" aria-label={`Next step for ${m.name}`} onSubmit={add} disabled={pending} /></div>
+      )}
+      {m.due && m.daysLeft !== null && m.daysLeft >= 0 && (
+        <button className={`mo-pin${m.pinId ? " on" : ""}`} disabled={pending} aria-label={m.pinId ? `Unpin ${m.name}` : `Pin ${m.name} countdown`}
+          onClick={() => start(async () => { if (m.pinId) await deletePin(m.pinId); else await pinDate(m.name, m.due!, m.areaId); router.refresh() })}>
+          <Icon name="pin" size={12} />{m.pinId ? "Pinned" : "Pin countdown"}
+        </button>
       )}
       {m.risk && <p className="mo-risk"><Icon name="clock" size={12} />{m.risk}</p>}
     </li>

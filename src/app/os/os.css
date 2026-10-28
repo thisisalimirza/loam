@@ -461,3 +461,6 @@ min-height:100vh;background:radial-gradient(1200px 400px at 70% -10%,#eef0ff,tra
 .os .rollover span{flex:1;min-width:0}
 .os .focus-line{margin:0 0 14px;font-size:15px;color:var(--tx);padding:10px 14px;background:var(--accsoft);border-radius:var(--r)}
 .os .pin-ideas .cd.add{height:30px;padding:0 10px;font-size:13px;min-height:0}.os .pin-ideas form.cd{width:100%}
+.os .mo-pin{align-self:flex-start;display:inline-flex;gap:4px;align-items:center;font-size:12px;color:var(--mute);background:none;border:0;padding:0;cursor:pointer}
+.os .mo-pin.on{color:var(--acc)}
+.os .mo-pin:hover{color:var(--acc)}

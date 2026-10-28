@@ -2,8 +2,8 @@ import { db } from "./db"
 import { addDays, daysBetween, fmtDate, todayISO } from "./dates"
 
 export type Motion = {
-  id: string; name: string; area: string | null; color: string | null; due: string | null
-  daysLeft: number | null; open: number; done: number; elapsed: number | null; progress: number
+  areaId: string | null; id: string; name: string; area: string | null; color: string | null; due: string | null
+  daysLeft: number | null; pinId: string | null; open: number; done: number; elapsed: number | null; progress: number
   next: { id: string; title: string; due_date: string | null } | null
   score: number; why: string[]; risk: string | null
 }
@@ -11,7 +11,7 @@ export type PinIdea = { label: string; date: string; area_id: string | null; fro
 
 type Row = {
   id: string; name: string; area: string | null; color: string | null; area_id: string | null; due: string | null; created: string
-  open: number; done: number; done7: number; done14: number; touched7: number; due7: number; doing: number; last: string | null; pinned: boolean
+  pin_id: string | null; open: number; done: number; done7: number; done14: number; touched7: number; due7: number; doing: number; last: string | null; 
   next_id: string | null; next_title: string | null; next_due: string | null
 }
 
@@ -28,7 +28,7 @@ export async function getInMotion(limit = 4): Promise<Motion[]> {
       count(t.id) filter (where t.status <> 'done' and t.due_date <= ${addDays(today, 7)})::int due7,
       count(t.id) filter (where t.status = 'doing')::int doing,
       greatest(j.created_at, max(t.done_at), max(t.created_at), max(t.status_changed_at))::date::text last,
-      exists (select 1 from loam_os.pins p where p.pin_date >= ${today} and lower(p.label) like '%' || lower(j.name) || '%') pinned,
+      (select p.id from loam_os.pins p where p.pin_date >= ${today} and (lower(p.label) = lower(j.name) or p.pin_date = j.due_date) limit 1) pin_id,
       n.id next_id, n.title next_title, n.due_date::text next_due
     from loam_os.projects j
     left join loam_os.areas a on a.id = j.area_id
@@ -46,7 +46,7 @@ export async function getInMotion(limit = 4): Promise<Motion[]> {
     if (r.doing) { const p = Math.min(r.doing * 10, 20); score += p; why.push(`${r.doing} in progress on the board (+${p})`) }
     if (r.done7) { const p = Math.min(r.done7 * 6, 30); score += p; why.push(`${r.done7} done this week (+${p})`) }
     if (r.touched7) { const p = Math.min(r.touched7 * 3, 15); score += p; why.push(`${r.touched7} added or moved this week (+${p})`) }
-    if (r.pinned) { score += 15; why.push("Pinned (+15)") }
+    if (r.pin_id) { score += 15; why.push("Pinned (+15)") }
     const total = r.open + r.done
     const elapsed = r.due && daysBetween(r.created, r.due) > 0 ? Math.max(0, Math.min(1, daysBetween(r.created, today) / daysBetween(r.created, r.due))) : null
     const progress = total ? r.done / total : 0
@@ -61,7 +61,7 @@ export async function getInMotion(limit = 4): Promise<Motion[]> {
     if (!risk && idle >= 10 && r.open > 0) risk = `No activity in ${idle} days`
     if (!risk && elapsed !== null && total >= 3 && elapsed - progress > 0.3) risk = `${Math.round(elapsed * 100)}% of the time gone, ${Math.round(progress * 100)}% done`
     return {
-      id: r.id, name: r.name, area: r.area, color: r.color, due: r.due, daysLeft, open: r.open, done: r.done, elapsed, progress,
+      id: r.id, name: r.name, area: r.area, pinId: r.pin_id, areaId: r.area_id, color: r.color, due: r.due, daysLeft, open: r.open, done: r.done, elapsed, progress,
       next: r.next_id ? { id: r.next_id, title: r.next_title!, due_date: r.next_due } : null, score, why, risk,
     } satisfies Motion
   })
@@ -96,10 +96,10 @@ export async function getRollover() {
     and coalesce(scheduled_date, due_date) <= ${today} and repeat is null order by sort limit 50`
 }
 
+/** Only speaks up when it adds something the cards don't: a risk on one project outranking the rest. */
 export function focusLine(ms: Motion[]) {
-  const m = ms[0]; if (!m) return null
-  const step = m.next ? `“${m.next.title}”` : "a next step"
-  if (m.risk) return `${m.name} needs attention: ${m.risk.charAt(0).toLowerCase() + m.risk.slice(1)}. Start with ${step}.`
-  if (m.daysLeft !== null && m.daysLeft >= 0) return `${m.daysLeft} days left on ${m.name}. Start with ${step}.`
-  return `Keep ${m.name} moving. Start with ${step}.`
+  const risky = ms.filter(m => m.risk)
+  if (ms.length < 2 || !risky.length) return null
+  const m = risky[0]
+  return `If you only get to one project today, make it ${m.name}.`
 }
