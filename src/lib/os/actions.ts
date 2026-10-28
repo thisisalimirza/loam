@@ -316,15 +316,13 @@ export async function startEntry() {
   await requireOwner()
   const today = todayISO()
   const sql = db()
-  const [e] = await sql<{ id: string }[]>`select id from loam_os.journal_entries where entry_date = ${today} order by created_at limit 1`
-  if (e) redirect(`/os/journal/${e.id}`)
-  const [n] = await sql<{ id: string }[]>`insert into loam_os.journal_entries (entry_date) values (${today}) returning id`
-  redirect(`/os/journal/${n.id}`)
+  // One entry per day: a second open (or a double keypress) reuses it.
+  await sql`insert into loam_os.journal_entries (entry_date) values (${today}) on conflict do nothing`
+  const [e] = await sql<{ id: string }[]>`select id from loam_os.journal_entries where entry_date = ${today} limit 1`
+  redirect(`/os/journal/${e.id}`)
 }
 export async function newEntry() {
-  await requireOwner()
-  const [n] = await db()<{ id: string }[]>`insert into loam_os.journal_entries (entry_date) values (${todayISO()}) returning id`
-  redirect(`/os/journal/${n.id}`)
+  return startEntry()
 }
 export async function saveEntry(id: string, body: string) {
   await requireOwner()
