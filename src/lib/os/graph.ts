@@ -7,7 +7,7 @@ import { addDays, todayISO } from "./dates"
 export const getMentionIndex = cache(async () => {
   const sql = db()
   const [people, projects] = await Promise.all([
-    sql<{ id: string; name: string }[]>`select id, name from loam_os.people order by length(name) desc`,
+    sql<{ id: string; name: string }[]>`select id, name from loam_os.people where status = 'active' order by length(name) desc`,
     sql<{ id: string; name: string }[]>`select id, name from loam_os.projects where status <> 'done' order by length(name) desc`,
   ])
   return { people: [...people], projects: [...projects] }
@@ -110,9 +110,9 @@ export async function getSuggestions(): Promise<Suggestion[]> {
   const [overdue, follow, quiet, stuck, stalled, seeds, bare] = await Promise.all([
     sql<{ id: string; title: string; due_date: string }[]>`select id, title, due_date::text from loam_os.tasks
       where status <> 'done' and archived_at is null and due_date < ${today} order by due_date limit 5`,
-    sql<{ id: string; name: string; follow_up: string }[]>`select id, name, follow_up::text from loam_os.people where follow_up <= ${addDays(today, 1)} order by follow_up limit 5`,
+    sql<{ id: string; name: string; follow_up: string }[]>`select id, name, follow_up::text from loam_os.people where status = 'active' and follow_up <= ${addDays(today, 1)} order by follow_up limit 5`,
     sql<{ id: string; name: string; last: string | null }[]>`select p.id, p.name, max(c.happened_on)::text last from loam_os.people p
-      left join loam_os.conversations c on c.person_id = p.id where p.follow_up is null group by p.id
+      left join loam_os.conversations c on c.person_id = p.id where p.status = 'active' and p.follow_up is null group by p.id
       having max(c.happened_on) < ${addDays(today, -45)} order by max(c.happened_on) limit 3`,
     sql<{ id: string; title: string; days: number; col: string }[]>`select t.id, t.title, (current_date - t.status_changed_at::date) days, coalesce(c.name, 'Doing') col
       from loam_os.tasks t left join loam_os.board_columns c on c.id = t.column_id

@@ -4,6 +4,8 @@ import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache"
 import { timingSafeEqual, createHash } from "node:crypto"
 import { db } from "./db"
+import { after } from "next/server"
+import { enrich } from "./enrich"
 import { requireOwner } from "./auth"
 import { createToken, SESSION_COOKIE, SESSION_TTL } from "./session"
 import { parseTask } from "./parse"
@@ -174,8 +176,9 @@ export async function createTask(f: FormData) {
   const repeat = repeatOf(opt(f, "repeat"))
   let due = opt(f, "due_date")
   if (repeat && !due && !opt(f, "scheduled_date")) due = todayISO()
-  await sql`insert into loam_os.tasks (title, area_id, project_id, due_date, scheduled_date, status, sort, repeat)
-    values (${title}, ${area}, ${project}, ${due}, ${opt(f, "scheduled_date")}, ${(opt(f, "status") as TaskStatus) ?? "todo"}, extract(epoch from now()), ${repeat})`
+  const [nt] = await sql<{ id: string }[]>`insert into loam_os.tasks (title, area_id, project_id, due_date, scheduled_date, status, sort, repeat)
+    values (${title}, ${area}, ${project}, ${due}, ${opt(f, "scheduled_date")}, ${(opt(f, "status") as TaskStatus) ?? "todo"}, extract(epoch from now()), ${repeat}) returning id`
+  after(() => enrich("task", nt.id, title))
   back()
 }
 export async function updateTask(f: FormData) {
@@ -233,6 +236,7 @@ export async function makeTask(text: string, o: { followUp?: boolean; due?: stri
   const [t] = await sql<{ id: string; title: string }[]>`insert into loam_os.tasks (title, notes, area_id, project_id, due_date, repeat, status, sort, tags, column_id)
     values (${title}, ${text.trim() === firstLine.trim() ? "" : text.trim().slice(0, 4000)}, ${area}, ${proj?.id ?? null}, ${due}, ${rep}, 'todo', extract(epoch from now()),
       ${o.followUp ? ["follow-up"] : []}, (select id from loam_os.board_columns where kind = 'todo' order by sort limit 1)) returning id, title`
+  if (!o.personId) after(() => enrich("task", t.id, t.title))
   await sql`insert into loam_os.task_activity (task_id, kind, body) values (${t.id}, 'created', ${o.source ? "from " + o.source.type : ""})`
   for (const pid of people) await sql`insert into loam_os.task_links (task_id, kind, ref_id) values (${t.id}, 'person', ${pid}) on conflict do nothing`
   if (o.source && o.source.type !== "person") await sql`insert into loam_os.links (from_type, from_id, to_type, to_id) values (${o.source.type}, ${o.source.id}, 'task', ${t.id})`
@@ -277,7 +281,8 @@ export async function capture(text: string, parsed?: { title: string; due: strin
   }
   const p = parsed ?? parseTask(t)
   const due = p.due, title = p.title || t, rep = repeatOf(p.repeat)
-  await sql`insert into loam_os.tasks (title, due_date, repeat, sort, column_id) values (${title}, ${due}, ${rep}, extract(epoch from now()), (select id from loam_os.board_columns where kind = 'todo' order by sort limit 1))`
+  const [nt] = await sql<{ id: string }[]>`insert into loam_os.tasks (title, due_date, repeat, sort, column_id) values (${title}, ${due}, ${rep}, extract(epoch from now()), (select id from loam_os.board_columns where kind = 'todo' order by sort limit 1)) returning id`
+  after(() => enrich("task", nt.id, title))
   back(); return { href: null }
 }
 
@@ -291,6 +296,7 @@ export async function createNote(f?: FormData) {
 export async function saveNote(id: string, title: string, body: string, areaId: string | null) {
   await requireOwner()
   await db()`update loam_os.notes set title = ${title || "Untitled"}, body = ${body}, area_id = ${areaId}, updated_at = now() where id = ${id}`
+  debounced("note:" + id, () => enrich("note", id, `${title}\n${body}`))
   revalidatePath("/os/notes")
 }
 export async function deleteNote(id: string) {
@@ -318,6 +324,7 @@ export async function newEntry() {
 export async function saveEntry(id: string, body: string) {
   await requireOwner()
   const [r] = await db()<{ updated_at: Date }[]>`update loam_os.journal_entries set body = ${body}, updated_at = now() where id = ${id} returning updated_at`
+  debounced("entry:" + id, () => enrich("entry", id, body))
   return { savedAt: r?.updated_at?.toISOString() ?? null }
 }
 export async function deleteEntry(id: string) {
@@ -432,4 +439,34 @@ export async function addNextStep(projectId: string, title: string, parsed?: { d
     values (${t}, ${projectId}, ${pr?.area_id ?? null}, ${p.due}, ${repeatOf(p.repeat)}, 'todo', extract(epoch from now()), (select id from loam_os.board_columns where kind = 'todo' order by sort limit 1)) returning id`
   back()
   return r
+}
+
+// Autosave fires often; run enrichment at most once every 20s per item (per instance).
+const lastRun = new Map<string, number>()
+function debounced(key: string, fn: () => Promise<void>) {
+  const now = Date.now(); if (now - (lastRun.get(key) ?? 0) < 20000) return
+  lastRun.set(key, now); after(fn)
+}
+
+export async function confirmPerson(id: string) {
+  await requireOwner()
+  await db()`update loam_os.people set status = 'active' where id = ${id} and status = 'suggested'`
+  back()
+}
+/** Folds a suggestion into an existing person: their mentions move over, the suggestion goes. */
+export async function mergePerson(id: string, into: string) {
+  await requireOwner()
+  if (!into || into === id) return
+  const sql = db()
+  await sql`insert into loam_os.mentions (person_id, source_type, source_id, snippet)
+    select ${into}, source_type, source_id, snippet from loam_os.mentions where person_id = ${id} on conflict do nothing`
+  await sql`update loam_os.people set status = 'dismissed', follow_up = null where id = ${id} and status = 'suggested'`
+  back()
+}
+/** "Not a person": kept as dismissed so the same name isn't suggested again. */
+export async function dismissPerson(id: string) {
+  await requireOwner()
+  await db()`update loam_os.people set status = 'dismissed' where id = ${id} and status = 'suggested'`
+  await db()`delete from loam_os.mentions where person_id = ${id}`
+  back()
 }

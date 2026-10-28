@@ -9,6 +9,9 @@ export async function POST() {
   await requireOwner()
   const p = "^ZZT[0-9]"
   const out = await db().begin(async sql => {
+    // Suggested contacts born from test text, and any mention rows quoting it.
+    const sugg = await sql`delete from loam_os.people where context ~ ${'ZZT[0-9]'} returning id`
+    const mentions = await sql`delete from loam_os.mentions where snippet ~ ${'ZZT[0-9]'} returning id`
     const tasks = await sql`delete from loam_os.tasks where title ~ ${p} or project_id in (select id from loam_os.projects where name ~ ${p}) or area_id in (select id from loam_os.areas where name ~ ${p}) returning id`
     const convos = await sql`delete from loam_os.conversations where person_id in (select id from loam_os.people where name ~ ${p}) returning id`
     const people = await sql`delete from loam_os.people where name ~ ${p} returning id`
@@ -26,7 +29,7 @@ export async function POST() {
     const areas = await sql`delete from loam_os.areas where name ~ ${p} returning id`
     const ids = [...tasks, ...people, ...notes, ...drafts, ...entries, ...projects, ...areas].map(r => r.id)
     if (ids.length) await sql`delete from loam_os.links where from_id in ${sql(ids)} or to_id in ${sql(ids)}`
-    return { tasks: tasks.length, convos: convos.length, people: people.length, notes: notes.length, drafts: drafts.length, entries: entries.length, pins: pins.length, projects: projects.length, cols: cols.length, views: views.length, areas: areas.length }
+    return { tasks: tasks.length, convos: convos.length, people: people.length + sugg.length, mentions: mentions.length, notes: notes.length, drafts: drafts.length, entries: entries.length, pins: pins.length, projects: projects.length, cols: cols.length, views: views.length, areas: areas.length }
   })
   return NextResponse.json(out)
 }

@@ -28,7 +28,7 @@ export async function getBoard(): Promise<BoardData> {
     sql<Area[]>`select * from loam_os.areas where not archived order by sort, created_at`,
     sql<Project[]>`select * from loam_os.projects order by status, created_at`,
     sql<BoardView[]>`select id, name, filters from loam_os.board_views order by created_at`,
-    sql<{ id: string; name: string }[]>`select id, name from loam_os.people order by name`,
+    sql<{ id: string; name: string }[]>`select id, name from loam_os.people where status = 'active' order by name`,
     sql<{ id: string; title: string }[]>`select id, title from loam_os.notes order by updated_at desc limit 300`,
     sql<{ n: number }[]>`select count(*)::int n from loam_os.tasks where archived_at is not null`,
   ])

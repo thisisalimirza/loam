@@ -1,28 +1,33 @@
 import Link from "next/link"
-import { getAreas, getPeople } from "@/lib/os/data"
-import { createPerson } from "@/lib/os/actions"
+import { getAreas, getPeople, getSuggestedPeople } from "@/lib/os/data"
+import { confirmPerson, createPerson, dismissPerson, mergePerson } from "@/lib/os/actions"
 import { ago, relDue, todayISO } from "@/lib/os/dates"
 import { AreaSelect, Avatar, Card, Empty, PageHeader } from "../../_ui/ui"
+import Sheet from "../../_ui/Sheet"
 
 export const metadata = { title: "People" }
 
+const SRC: Record<string, string> = { task: "/os/board?open=", note: "/os/notes/", entry: "/os/journal/" }
+const SRC_LABEL: Record<string, string> = { task: "Task", note: "Note", entry: "Journal" }
+
 export default async function People() {
-  const [people, areas] = await Promise.all([getPeople(), getAreas()])
+  const [people, areas, suggested] = await Promise.all([getPeople(), getAreas(), getSuggestedPeople()])
   const today = todayISO()
+  const merge = async (f: FormData) => { "use server"; await mergePerson(String(f.get("id")), String(f.get("into"))) }
   return (
     <>
-      <PageHeader title="People" sub="Who you talk to, what they said, when to check back." />
-      <div className="stack">
-        <Card title="Add someone" icon="plus">
-          <form action={createPerson} className="frow cb">
-            <input className="in" name="name" placeholder="Name" required aria-label="Name" />
-            <input className="in" name="role" placeholder="Who they are to you" aria-label="Role" />
+      <PageHeader title="People" sub="Who you talk to, what they said, when to check back."
+        actions={<Sheet label="Add person" icon="plus" primary>
+          <form action={createPerson} className="form">
+            <label className="fld"><span>Name</span><input className="in" name="name" required aria-label="Name" autoFocus /></label>
+            <label className="fld"><span>Who they are to you</span><input className="in" name="role" aria-label="Role" placeholder="Mentor, classmate, friend…" /></label>
             <AreaSelect areas={areas} />
-            <button className="btn pri">Add</button>
+            <div><button className="btn pri">Add</button></div>
           </form>
-        </Card>
+        </Sheet>} />
+      <div className="stack">
         <Card meta={people.length} title="Everyone" icon="people">
-          {people.length === 0 ? <Empty icon="people" title="No one yet">Add a mentor, a friend, a collaborator. Log what you talk about.</Empty> : (
+          {people.length === 0 ? <Empty icon="people" title="No one yet">Add a mentor, a friend, a collaborator. Names you mention in tasks, notes and your journal will show up below to add in one tap.</Empty> : (
             <ul>{people.map(p => {
               const due = p.follow_up && p.follow_up <= today
               return (
@@ -38,6 +43,37 @@ export default async function People() {
             })}</ul>
           )}
         </Card>
+        {suggested.length > 0 && (
+          <section className="quiet-sec" aria-label="From your notes">
+            <h2 className="sec-h">From your notes <span className="meta">Names you mentioned. Add them, or tell me who they are.</span></h2>
+            <ul className="sp-list">{suggested.map(s => {
+              const m = s.mentions[0]
+              return (
+                <li key={s.id} className="sp">
+                  <Avatar name={s.name} />
+                  <div className="sp-b">
+                    <strong>{s.name}</strong>{s.role && <small> · {s.role}</small>}
+                    {m && <p className="meta">{SRC_LABEL[m.type]}: <Link href={SRC[m.type] + m.id}>{m.snippet}</Link>{s.mentions.length > 1 && ` +${s.mentions.length - 1} more`}</p>}
+                  </div>
+                  <div className="sp-a">
+                    <form action={confirmPerson.bind(null, s.id)}><button className="btn sm pri" aria-label={`Add ${s.name}`}>Add</button></form>
+                    {people.length > 0 && (
+                      <form action={merge} className="inline">
+                        <input type="hidden" name="id" value={s.id} />
+                        <select className="in sm" name="into" aria-label={`${s.name} is`} defaultValue="" required>
+                          <option value="" disabled>Same as…</option>
+                          {people.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                        </select>
+                        <button className="btn sm">Merge</button>
+                      </form>
+                    )}
+                    <form action={dismissPerson.bind(null, s.id)}><button className="btn sm ghost" aria-label={`${s.name} is not a person`}>Not a person</button></form>
+                  </div>
+                </li>
+              )
+            })}</ul>
+          </section>
+        )}
       </div>
     </>
   )

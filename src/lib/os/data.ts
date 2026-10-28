@@ -67,7 +67,21 @@ export async function getPeople() {
     select p.*, c.happened_on last_on, c.summary last_summary
     from loam_os.people p
     left join lateral (select happened_on, summary from loam_os.conversations where person_id = p.id order by happened_on desc, created_at desc limit 1) c on true
+    where p.status = 'active'
     order by p.name`
+}
+/** People the app noticed in tasks, notes and journal entries, waiting for a yes/no. */
+export async function getSuggestedPeople() {
+  await requireOwner()
+  return db()<{ id: string; name: string; role: string | null; context: string | null; mentions: { type: string; id: string; snippet: string }[] }[]>`
+    select p.id, p.name, p.role, p.context,
+      coalesce((select json_agg(json_build_object('type', m.source_type, 'id', m.source_id, 'snippet', m.snippet) order by m.created_at desc) from loam_os.mentions m where m.person_id = p.id), '[]') mentions
+    from loam_os.people p where p.status = 'suggested' order by p.created_at desc limit 20`
+}
+export async function getMentions(personId: string) {
+  await requireOwner()
+  return db()<{ source_type: string; source_id: string; snippet: string; created_at: Date }[]>`
+    select source_type, source_id, snippet, created_at from loam_os.mentions where person_id = ${personId} order by created_at desc limit 30`
 }
 export async function getFollowUps(day: string) {
   await requireOwner()
@@ -75,7 +89,7 @@ export async function getFollowUps(day: string) {
     select p.*, c.happened_on last_on, c.summary last_summary, c.their_update last_update
     from loam_os.people p
     left join lateral (select happened_on, summary, their_update from loam_os.conversations where person_id = p.id order by happened_on desc, created_at desc limit 1) c on true
-    where p.follow_up is not null and p.follow_up <= ${day}
+    where p.status = 'active' and p.follow_up is not null and p.follow_up <= ${day}
     order by p.follow_up`
 }
 export async function getPerson(id: string) {
@@ -146,7 +160,7 @@ export async function search(q: string) {
   const like = "%" + q + "%"
   return sql<{ kind: string; id: string; title: string }[]>`
     (select 'task' kind, id, title from loam_os.tasks where title ilike ${like} limit 5)
-    union all (select 'person', id, name from loam_os.people where name ilike ${like} limit 5)
+    union all (select 'person', id, name from loam_os.people where status = 'active' and name ilike ${like} limit 5)
     union all (select 'note', id, title from loam_os.notes where title ilike ${like} or body ilike ${like} limit 5)
     union all (select 'area', id, name from loam_os.areas where name ilike ${like} limit 5)
     union all (select 'draft', id, coalesce(nullif(title,''), left(body, 60)) from loam_os.drafts where title ilike ${like} or body ilike ${like} limit 5)`
