@@ -13,8 +13,8 @@ export default async function Drafts() {
   return (
     <>
       <PageHeader title="Drafts" sub="Ideas on their way out. Drag a card to move it along."
-        actions={<form action={createDraft} className="inline">
-          <input className="in" name="title" placeholder="New idea" aria-label="Draft title" style={{ width: 180 }} />
+        actions={<form action={createDraft} className="inline" style={{ flexWrap: "nowrap" }}>
+          <input className="in" name="title" placeholder="New idea" aria-label="Draft title" style={{ width: 160 }} />
           <select className="in" name="channel" aria-label="Channel" style={{ width: 130 }} defaultValue={usual}>{[...CHANNELS].sort((a, b) => (use[b] ?? 0) - (use[a] ?? 0)).map(c => <option key={c}>{c}</option>)}</select>
           <button className="btn pri">Add</button>
         </form>} />
