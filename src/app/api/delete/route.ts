@@ -1,10 +1,11 @@
+import { isAdmin } from '@/lib/os/apiAuth';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
   const { password, path, sha } = body;
 
-  if (password !== process.env.ADMIN_PASSWORD) {
+  if (!(await isAdmin(request, password))) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
