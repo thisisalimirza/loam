@@ -15,6 +15,9 @@ const JUMPS = [
   { label: "People", href: "/os/people" },
 ]
 
+/** Open the task panel over the current page (shallow URL change, no server round trip). */
+const openTask = (id: string) => { const u = new URL(location.href); u.searchParams.set("task", id); window.history.pushState(null, "", u.pathname + u.search) }
+
 type Hit = { kind: string; id: string; title: string }
 
 function Trigger() {
@@ -64,8 +67,8 @@ export default function Capture() {
   const jumps = q ? JUMPS.filter(j => j.label.toLowerCase().includes(q.toLowerCase())) : JUMPS
   const items: { label: string; sub: string; go: () => void }[] = [
     ...(q.trim() ? [{ label: `Add “${q.trim()}”`, sub: q.includes(":") ? "" : "Inbox", go: () => submit() }] : []),
-    ...(q.trim() ? [] : rec.map(r => ({ label: r.title!, sub: "Recent " + r.kind, go: () => { setOpen(false); remember(r.kind, r.id, r.title); router.push(r.kind === "task" ? `${location.pathname}?task=${r.id}` : KIND_HREF[r.kind] + r.id) } }))),
-    ...hits.map(h => ({ label: h.title, sub: h.kind, go: () => { setOpen(false); remember(h.kind, h.id, h.title); router.push(h.kind === "task" ? `${location.pathname}?task=${h.id}` : KIND_HREF[h.kind] + h.id) } })),
+    ...(q.trim() ? [] : rec.map(r => ({ label: r.title!, sub: "Recent " + r.kind, go: () => { setOpen(false); remember(r.kind, r.id, r.title); if (r.kind === "task") openTask(r.id); else router.push(KIND_HREF[r.kind] + r.id) } }))),
+    ...hits.map(h => ({ label: h.title, sub: h.kind, go: () => { setOpen(false); remember(h.kind, h.id, h.title); if (h.kind === "task") openTask(h.id); else router.push(KIND_HREF[h.kind] + h.id) } })),
     ...jumps.map(j => ({ label: j.label, sub: j.key ?? "Go", go: () => { setOpen(false); router.push(j.href) } })),
   ]
 

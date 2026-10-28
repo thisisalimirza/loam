@@ -1,7 +1,7 @@
 "use client"
 import SmartInput, { type SmartHandle, type SmartValue } from "./SmartInput"
 import Link from "next/link"
-import { useOptimistic, useRef, useState, useTransition, type CSSProperties } from "react"
+import { useEffect, useOptimistic, useRef, useState, useTransition, type CSSProperties } from "react"
 import { useRouter } from "next/navigation"
 import { Icon } from "./icons"
 import Kanban from "./Kanban"
@@ -72,13 +72,24 @@ export function AddTask({ areaId, projectId, areas, projects, status, placeholde
   const [v, setV] = useState<SmartValue | null>(null)
   const box = useRef<HTMLFormElement>(null)
   const si = useRef<SmartHandle>(null)
+  const down = useRef(false)
+  useEffect(() => {
+    const d = () => { down.current = true }, u = () => { setTimeout(() => { down.current = false }, 0) }
+    document.addEventListener("pointerdown", d, true); document.addEventListener("pointerup", u, true)
+    return () => { document.removeEventListener("pointerdown", d, true); document.removeEventListener("pointerup", u, true) }
+  }, [])
   const [due, setDue] = useState(""), [rep, setRep] = useState("")
   const showArea = !areaId && !projectId && areas && areas.length > 0
   const showProj = projects && projects.length > 0 && !projectId && !v?.project
   return (
     <form ref={box} className={`addrow smart-add${open ? " open" : ""}`}
       onFocus={() => setOpen(true)}
-      onBlur={e => { if (!box.current?.contains(e.relatedTarget as Node) && !si.current?.value().raw) setOpen(false) }}
+      onBlur={e => {
+        if (box.current?.contains(e.relatedTarget as Node) || si.current?.value().raw) return
+        // Mid-click elsewhere: collapse after the click lands, or the row under the pointer jumps away from it.
+        if (down.current) document.addEventListener("click", () => setTimeout(() => setOpen(false), 0), { once: true, capture: false })
+        else setOpen(false)
+      }}
       action={async f => {
         if (due) f.set("due_date", due); if (rep) f.set("repeat", rep)
         await createTask(f); si.current?.clear(); setDue(""); setRep("")
