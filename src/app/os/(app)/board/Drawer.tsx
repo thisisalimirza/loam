@@ -3,7 +3,9 @@ import Link from "next/link"
 import { useEffect, useMemo, useRef, useState } from "react"
 import type { BoardData, BoardTask } from "@/lib/os/board"
 import type { Activity, BoardColumn, CheckItem, Priority } from "@/lib/os/types"
-import { bComment, bDelete, bDeleteComment, bDep, bDetail, bLink, bUpdate, type Patch } from "@/lib/os/boardActions"
+import Checklist from "./Checklist"
+import { recent, remember } from "../../_ui/recent"
+import { bCreate, bEditComment, bComment, bDelete, bDeleteComment, bDep, bDetail, bLink, bUpdate, type Patch } from "@/lib/os/boardActions"
 import { REPEATS, REPEAT_LABEL } from "@/lib/os/dates"
 import { Icon } from "../../_ui/icons"
 import { MentionChips, Mentions } from "../../_ui/Mentions"
@@ -26,7 +28,6 @@ export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOp
   const tp = useMemo(() => title === t.title ? { title, due: null, repeat: null, spans: [] } : parseTask(title.trim()), [title, t.title])
   const [notes, setNotes] = useState(t.notes ?? "")
   const [comment, setComment] = useState("")
-  const [newItem, setNewItem] = useState("")
   const [tagIn, setTagIn] = useState("")
   const [depQ, setDepQ] = useState("")
   const panel = useRef<HTMLElement>(null)
@@ -58,11 +59,24 @@ export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOp
   const checklist: CheckItem[] = Array.isArray(t.checklist) ? t.checklist : []
   const blockedBy = deps.filter(d => d.task_id === t.id).map(d => tasks.find(x => x.id === d.blocked_by)).filter(Boolean) as BoardTask[]
   const blocks = deps.filter(d => d.blocked_by === t.id).map(d => tasks.find(x => x.id === d.task_id)).filter(Boolean) as BoardTask[]
-  const depHits = useMemo(() => {
-    const q = depQ.trim().toLowerCase(); if (!q) return []
+  const depGroups = useMemo(() => {
+    const q = depQ.trim().toLowerCase()
     const taken = new Set([t.id, ...blockedBy.map(b => b.id)])
-    return tasks.filter(x => !taken.has(x.id) && x.title.toLowerCase().includes(q)).slice(0, 6)
-  }, [depQ, tasks, t.id, blockedBy])
+    const pool = tasks.filter(x => !taken.has(x.id) && x.status !== "done")
+    if (q) return [{ h: "", items: pool.filter(x => x.title.toLowerCase().includes(q)).slice(0, 8) }]
+    const used = new Set<string>(); const take = (l: BoardTask[], n = 4) => l.filter(x => !used.has(x.id)).slice(0, n).map(x => (used.add(x.id), x))
+    const words = new Set(t.title.toLowerCase().split(/\W+/).filter(w => w.length > 3))
+    const rec = recent("task")
+    return [
+      { h: t.project_id ? "Same project" : "Same area", items: take(pool.filter(x => t.project_id ? x.project_id === t.project_id : t.area_id && x.area_id === t.area_id)) },
+      { h: "Recent", items: take(rec.map(id => pool.find(x => x.id === id)).filter(Boolean) as BoardTask[]) },
+      { h: "Similar titles", items: take(pool.filter(x => x.title.toLowerCase().split(/\W+/).some(w => words.has(w)))) },
+      { h: "Due before this", items: take(t.due_date ? pool.filter(x => x.due_date && x.due_date < t.due_date!).sort((a, b) => a.due_date!.localeCompare(b.due_date!)) : []) },
+    ].filter(g => g.items.length)
+  }, [depQ, tasks, t, blockedBy])
+  const depHits = depGroups.flatMap(g => g.items)
+  const [depOpen, setDepOpen] = useState(false)
+  useEffect(() => { remember("task", t.id) }, [t.id])
 
   async function dep(other: string, on: boolean) {
     const r = await bDep(t.id, other, on)
@@ -134,17 +148,12 @@ export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOp
           <section className="dr-sec">
             <h3>Checklist {checklist.length > 0 && <span className="meta">{checklist.filter(c => c.done).length}/{checklist.length}</span>}</h3>
             {checklist.length > 0 && <div className="dr-bar"><i style={{ width: `${(checklist.filter(c => c.done).length / checklist.length) * 100}%` }} /></div>}
-            <ul className="dr-check">
-              {checklist.map((c, i) => (
-                <li key={i}>
-                  <label className="check"><input type="checkbox" checked={c.done} onChange={() => save({ checklist: checklist.map((x, j) => j === i ? { ...x, done: !x.done } : x) }, true)} /><span className={c.done ? "struck" : ""}>{c.text}</span></label>
-                  <button className="bd-icon" aria-label="Remove item" onClick={() => save({ checklist: checklist.filter((_, j) => j !== i) }, true)}><Icon name="x" size={12} /></button>
-                </li>
-              ))}
-            </ul>
-            <form className="inline" onSubmit={e => { e.preventDefault(); if (newItem.trim()) { save({ checklist: [...checklist, { text: newItem.trim(), done: false }] }, true); setNewItem("") } }}>
-              <input className="in" value={newItem} onChange={e => setNewItem(e.target.value)} placeholder="Add an item" aria-label="New checklist item" />
-            </form>
+            <Checklist items={checklist} onSave={next => save({ checklist: next }, true)} onPromote={async i => {
+              const it = checklist[i]; const col = cols.find(c => c.kind === "todo") ?? cols[0]
+              const r = await bCreate(it.text, col.id, { area_id: t.area_id, project_id: t.project_id, parsed: true })
+              if (!r.ok) { toast({ text: r.error, tone: "err" }); return }
+              await save({ checklist: checklist.filter((_, j) => j !== i) }, true); toast({ text: `“${it.text}” is now its own task` })
+            }} />
           </section>
 
           <section className="dr-sec">
@@ -155,9 +164,9 @@ export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOp
                 <button className="bd-icon" aria-label="Remove dependency" onClick={() => dep(b.id, false)}><Icon name="x" size={12} /></button></li>
             ))}</ul>
             <div className="bd-dep">
-              <input className="in" value={depQ} onChange={e => setDepQ(e.target.value)} placeholder="Search cards to wait on" aria-label="Search cards to wait on"
+              <input className="in" value={depQ} onChange={e => setDepQ(e.target.value)} placeholder="Search cards to wait on" aria-label="Search cards to wait on" onFocus={() => setDepOpen(true)} onBlur={() => setTimeout(() => setDepOpen(false), 150)}
                 onKeyDown={e => { if (e.key === "Enter" && depHits[0]) { e.preventDefault(); dep(depHits[0].id, true) } if (e.key === "Escape") setDepQ("") }} />
-              {depHits.length > 0 && <ul className="bd-dep-results">{depHits.map(h => <li key={h.id}><button onClick={() => dep(h.id, true)}>{h.title}</button></li>)}</ul>}
+              {(depOpen || depQ) && depHits.length > 0 && <ul className="bd-dep-results" aria-label="Suggestions">{depGroups.map(g => <li key={g.h || "hits"}>{g.h && <span className="pk-h">{g.h}</span>}<ul>{g.items.map(h => <li key={h.id}><button onMouseDown={e => e.preventDefault()} onClick={() => dep(h.id, true)}>{h.title}</button></li>)}</ul></li>)}</ul>}
             </div>
             {blocks.length > 0 && <>
               <h3 className="sub-h">Unblocks</h3>
@@ -186,7 +195,7 @@ export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOp
                 {activity.map(a => (
                   <li key={a.id} className={a.kind === "comment" ? "cmt" : ""}>
                     {a.kind === "comment" ? <><p><Mentions text={a.body} /></p><span className="meta">{age(a.created_at)} ago
-                      <button className="lnk" onClick={async () => { const r = await bDeleteComment(a.id); if (r.ok) setActivity(x => x!.filter(y => y.id !== a.id)) }}>Delete</button></span></>
+                      <button className="lnk" onClick={async () => { const v = window.prompt("Edit comment", a.body); if (v == null || !v.trim() || v === a.body) return; const r = await bEditComment(a.id, v); if (r.ok) setActivity(x => x!.map(y => y.id === a.id ? { ...y, body: v.trim() } : y)) }}>Edit</button> <button className="lnk" onClick={async () => { const r = await bDeleteComment(a.id); if (r.ok) setActivity(x => x!.filter(y => y.id !== a.id)) }}>Delete</button></span></>
                       : <span className="meta">{a.kind === "created" ? `Created${a.body ? " " + a.body : ""}` : a.kind === "move" ? `Moved to ${a.body}` : `Edited ${a.body}`} · {age(a.created_at)} ago</span>}
                   </li>
                 ))}

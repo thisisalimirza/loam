@@ -134,6 +134,12 @@ export async function bComment(taskId: string, body: string) {
     return act(a)
   })
 }
+export async function bEditComment(id: string, body: string) {
+  return run(async () => {
+    const b = body.trim().slice(0, 4000); if (!b) throw new Error("!Write something first.")
+    await db()`update loam_os.task_activity set body = ${b} where id = ${uuid(id)} and kind = 'comment'`; return true
+  })
+}
 export async function bDeleteComment(id: string) {
   return run(async () => { await db()`delete from loam_os.task_activity where id = ${uuid(id)} and kind = 'comment'`; return true })
 }
