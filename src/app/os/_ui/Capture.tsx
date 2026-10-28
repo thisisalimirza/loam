@@ -56,7 +56,7 @@ export default function Capture() {
 
   const jumps = q ? JUMPS.filter(j => j.label.toLowerCase().includes(q.toLowerCase())) : JUMPS
   const items: { label: string; sub: string; go: () => void }[] = [
-    ...(q.trim() ? [{ label: `Capture “${q.trim()}”`, sub: q.includes(":") ? "" : "Inbox", go: () => submit() }] : []),
+    ...(q.trim() ? [{ label: `Add “${q.trim()}”`, sub: q.includes(":") ? "" : "Inbox", go: () => submit() }] : []),
     ...hits.map(h => ({ label: h.title, sub: h.kind, go: () => { setOpen(false); router.push(h.kind === "task" ? KIND_HREF.task : KIND_HREF[h.kind] + h.id) } })),
     ...jumps.map(j => ({ label: j.label, sub: j.key ?? "Go", go: () => { setOpen(false); router.push(j.href) } })),
   ]
@@ -75,7 +75,7 @@ export default function Capture() {
   return (
     <>
       <button className="capture" onClick={() => setOpen(true)}>
-        <Icon name="plus" /><span>{flash || "Capture a task, note, or person…"}</span><kbd>⌘K</kbd>
+        <Icon name="plus" /><span>{flash || "Add a task, note, or person…"}</span><kbd>⌘K</kbd>
       </button>
       {open && (
         <div className="modal-bg" onMouseDown={e => { if (e.target === e.currentTarget) setOpen(false) }}>

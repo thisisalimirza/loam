@@ -33,7 +33,7 @@ export default function Suggestions({ items, limit = 6 }: { items: Suggestion[];
   const dismiss = (k: string) => { const n = { ...hidden, [k]: Date.now() }; setHidden(n); try { localStorage.setItem(KEY, JSON.stringify(n)) } catch {} }
   return (
     <section className="card">
-      <div className="ch"><h2><Icon name="sparkle" />Worth a look</h2><span className="meta">{shown.length}</span></div>
+      <div className="ch"><h2><Icon name="sparkle" />Suggestions</h2><span className="meta">{shown.length}</span></div>
       <ul className="sugg" style={{ padding: 6 }}>
         {(all ? shown : shown.slice(0, limit)).map(s => <Row key={s.key} s={s} onDismiss={() => dismiss(s.key)} />)}
       </ul>

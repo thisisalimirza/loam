@@ -12,7 +12,7 @@ export default async function Inbox() {
     <>
       <PageHeader title="Inbox" sub="Everything captured without a home. File it into an area or just get it done." />
       <Card title="Unfiled" icon="inbox" meta={`${tasks.length}`}>
-        <TaskList tasks={tasks} areas={areas} today={todayISO()} emptyTitle="Inbox zero" emptyText="Captures from ⌘K land here until you file them." />
+        <TaskList tasks={tasks} areas={areas} today={todayISO()} emptyTitle="Nothing to sort" emptyText="Anything you add with ⌘K and don’t give an area shows up here." />
         {tasks.length > 0 && areas.length > 0 && <FileTo tasks={tasks.map(t => ({ id: t.id, title: t.title }))} areas={areas.map(a => ({ id: a.id, name: a.name }))} />}
         <AddTask />
       </Card>

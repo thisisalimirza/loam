@@ -313,7 +313,7 @@ export default function Board({ data, today, scope = {}, embedded }: { data: Boa
       <div className="bd-stats">
         <span><b>{scoped.length - doneCount}</b> open</span><span><b>{doing}</b> in progress</span>
         {overdue > 0 && <button className="warn" onClick={() => setFilters(f => ({ ...f, due: "overdue" }))}><b>{overdue}</b> overdue</button>}
-        {stale > 0 && <span className="warn"><b>{stale}</b> stuck over a week</span>}
+        {stale > 0 && <span className="warn"><b>{stale}</b> in progress for over a week</span>}
         {nFilters > 0 || q ? <span>Showing {visible.length}</span> : null}
       </div>
 

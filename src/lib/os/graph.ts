@@ -127,13 +127,13 @@ export async function getSuggestions(): Promise<Suggestion[]> {
       and not exists (select 1 from loam_os.tasks t where t.project_id = j.id and t.status <> 'done' and t.archived_at is null) limit 3`,
   ])
   const out: Suggestion[] = []
-  for (const t of overdue) out.push({ key: `o:${t.id}:${t.due_date}`, kind: "overdue", text: t.title, sub: `Was due ${t.due_date}`, href: `/os/board?open=${t.id}` })
+  for (const t of overdue) out.push({ key: `o:${t.id}:${t.due_date}`, kind: "overdue", text: t.title, sub: `Overdue since ${t.due_date}`, href: `/os/board?open=${t.id}` })
   for (const p of follow) out.push({ key: `f:${p.id}:${p.follow_up}`, kind: "followup", text: `Follow up with ${p.name}`, sub: p.follow_up < today ? `Since ${p.follow_up}` : p.follow_up === today ? "Today" : "Tomorrow", href: `/os/people/${p.id}`, personId: p.id })
   for (const b of bare) out.push({ key: `n:${b.id}`, kind: "next", text: `${b.name} has no next step`, sub: "Add one", projectId: b.id, href: `/os/projects/${b.id}` })
   for (const c of stuck) out.push({ key: `s:${c.id}`, kind: "stuck", text: c.title, sub: `${c.days} days in ${c.col}`, href: `/os/board?open=${c.id}` })
-  for (const j of stalled) out.push({ key: `p:${j.id}:${Math.floor(j.days / 7)}`, kind: "stalled", text: `${j.name} has gone quiet`, sub: `Nothing moved in ${j.days} days`, href: `/os/projects/${j.id}` })
+  for (const j of stalled) out.push({ key: `p:${j.id}:${Math.floor(j.days / 7)}`, kind: "stalled", text: `${j.name}: nothing done lately`, sub: `Nothing moved in ${j.days} days`, href: `/os/projects/${j.id}` })
   for (const p of quiet) out.push({ key: `q:${p.id}:${p.last}`, kind: "quiet", text: `Check in with ${p.name}`, sub: `Last talked ${p.last}`, href: `/os/people/${p.id}`, personId: p.id })
-  for (const e of seeds) out.push({ key: `d:${e.id}`, kind: "seed", text: firstLine(e.body), sub: `Journal, ${e.entry_date}. Not drafted yet`, href: `/os/journal/${e.id}`, entryId: e.id })
+  for (const e of seeds) out.push({ key: `d:${e.id}`, kind: "seed", text: firstLine(e.body), sub: `Journal, ${e.entry_date}. Could become a post`, href: `/os/journal/${e.id}`, entryId: e.id })
   return out
 }
 

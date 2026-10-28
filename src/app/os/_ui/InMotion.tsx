@@ -12,8 +12,8 @@ import { toast } from "./Toast"
 export function InMotion({ items, today }: { items: Motion[]; today: string }) {
   if (!items.length) return null
   return (
-    <section className="motion" aria-label="In motion">
-      <h2 className="sec-h">In motion</h2>
+    <section className="motion" aria-label="Your projects">
+      <h2 className="sec-h">Your projects</h2>
       <ul className="mo-grid">{items.map(m => <MoCard key={m.id} m={m} today={today} />)}</ul>
     </section>
   )

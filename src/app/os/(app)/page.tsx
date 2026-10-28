@@ -44,7 +44,7 @@ export default async function Today() {
   const areaColor = (id: string | null) => areas.find(a => a.id === id)?.color
   const hour = Number(new Intl.DateTimeFormat("en-US", { hour: "numeric", hour12: false, timeZone: "America/New_York" }).format(new Date()))
   const sub = [
-    openToday ? `${openToday} due today` : motion.length ? `${motion.length} ${motion.length === 1 ? "project" : "projects"} in motion` : "Nothing due today",
+    openToday ? `${openToday} due today` : motion.length ? `${motion.length} ${motion.length === 1 ? "project" : "projects"} active` : "Nothing due today",
     people.length ? `${people.length} to follow up with` : null,
   ].filter(Boolean).join(" · ")
 
