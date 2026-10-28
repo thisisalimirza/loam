@@ -15,6 +15,11 @@ const back = () => revalidatePath("/os", "layout")
 
 // ---------- session ----------
 
+// Never let a slow database hold up sign-in
+function within<T>(p: Promise<T>, ms = 3000): Promise<T> {
+  return Promise.race([p, new Promise<T>((_, rej) => setTimeout(() => rej(Object.assign(new Error("timeout"), { code: "TIMEOUT" })), ms))])
+}
+
 export async function login(_prev: { error?: string } | undefined, f: FormData) {
   const h = await headers()
   const ip = (h.get("x-forwarded-for") ?? "").split(",")[0].trim() || "unknown"
@@ -23,8 +28,8 @@ export async function login(_prev: { error?: string } | undefined, f: FormData) 
   // (so /admin stays usable) but without the limit, and the failure is logged.
   let dbOk = true
   try {
-    const [{ n }] = await sql<{ n: number }[]>`
-      select count(*)::int n from loam_os.login_attempts where ip = ${ip} and not ok and at > now() - interval '15 minutes'`
+    const [{ n }] = await within(sql<{ n: number }[]>`
+      select count(*)::int n from loam_os.login_attempts where ip = ${ip} and not ok and at > now() - interval '15 minutes'`.execute())
     if (n >= 5) return { error: "Too many attempts. Try again in 15 minutes." }
   } catch (e) {
     dbOk = false
@@ -37,8 +42,8 @@ export async function login(_prev: { error?: string } | undefined, f: FormData) 
   const ok = timingSafeEqual(given, createHash("sha256").update(real).digest())
   if (dbOk) {
     try {
-      await sql`insert into loam_os.login_attempts (ip, ok) values (${ip}, ${ok})`
-      if (ok) await sql`delete from loam_os.login_attempts where (ip = ${ip} and not ok) or at < now() - interval '7 days'`
+      await within(sql`insert into loam_os.login_attempts (ip, ok) values (${ip}, ${ok})`.execute())
+      if (ok) await within(sql`delete from loam_os.login_attempts where (ip = ${ip} and not ok) or at < now() - interval '7 days'`.execute())
     } catch (e) { console.error("login: attempt log failed", (e as { code?: string }).code ?? "unknown") }
   }
   if (!ok) return { error: "That password didn't match." }

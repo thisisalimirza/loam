@@ -9,6 +9,7 @@ const LINKS: { href: string; label: string; icon: IconName }[] = [
   { href: "/os/drafts", label: "Drafts", icon: "drafts" },
   { href: "/os/notes", label: "Notes", icon: "notes" },
   { href: "/os/areas", label: "Areas & projects", icon: "areas" },
+  { href: "/admin", label: "Site (edit and publish)", icon: "pen" },
 ]
 export default function More() {
   return (

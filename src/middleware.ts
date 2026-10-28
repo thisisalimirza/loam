@@ -9,7 +9,8 @@ export async function middleware(req: NextRequest) {
   if (pathname.startsWith("/api/")) return NextResponse.json({ error: "unauthorized" }, { status: 401 })
   const url = req.nextUrl.clone()
   url.pathname = "/os/login"
-  url.search = `?next=${encodeURIComponent(pathname)}`
+  // Signing in always lands in Loam OS; the site editor lives at Site in the sidebar
+  url.search = pathname.startsWith("/admin") || pathname === "/os" ? "" : `?next=${encodeURIComponent(pathname)}`
   return NextResponse.redirect(url)
 }
 

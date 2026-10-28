@@ -16,6 +16,7 @@ const NAV: { href: string; label: string; icon: IconName }[] = [
   { href: "/os/people", label: "People", icon: "people" },
   { href: "/os/notes", label: "Notes", icon: "notes" },
   { href: "/os/areas", label: "Areas", icon: "areas" },
+  { href: "/admin", label: "Site", icon: "pen" },
 ]
 const TABS: { href: string; label: string; icon: IconName }[] = [
   { href: "/os", label: "Today", icon: "today" },
