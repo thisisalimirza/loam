@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import type { BoardData, BoardTask } from "@/lib/os/board"
 import { bData, bMove } from "@/lib/os/boardActions"
@@ -14,10 +14,12 @@ export default function TaskPanel({ today }: { today: string }) {
   const [tasks, setTasks] = useState<BoardTask[]>([])
   const [deps, setDeps] = useState<BoardData["deps"]>([])
   const [miss, setMiss] = useState(0)
+  // Edits made while a reload is in flight win over the (older) reloaded rows.
+  const edited = useRef(new Map<string, BoardTask>())
   // Load once on mount so the first open is instant, then refresh whenever a different task opens.
   useEffect(() => {
-    let live = true
-    bData().then(r => { if (live && r.ok) { setData(r.data); setTasks(r.data.tasks); setDeps(r.data.deps) } })
+    let live = true; edited.current.clear()
+    bData().then(r => { if (live && r.ok) { setData(r.data); setTasks(r.data.tasks.map(x => edited.current.get(x.id) ?? x)); setDeps(r.data.deps) } })
     return () => { live = false }
   }, [id, miss])
   const t = id ? tasks.find(x => x.id === id) : undefined
@@ -33,7 +35,7 @@ export default function TaskPanel({ today }: { today: string }) {
   return (
     <PanelBoundary key={t.id} onClose={() => setId(null)}><Drawer key={t.id} task={t} data={data} cols={data.columns} tasks={tasks} deps={deps} today={today}
       onClose={() => setId(null)} onOpen={setId}
-      onChange={n => setTasks(ts => ts.map(x => x.id === n.id ? n : x))} onDeps={setDeps}
+      onChange={n => { edited.current.set(n.id, n); setTasks(ts => ts.map(x => x.id === n.id ? n : x)) }} onDeps={setDeps}
       onMove={async colId => { await bMove(t.id, colId, Date.now() / -1000); setTasks(ts => ts.map(x => x.id === t.id ? { ...x, column_id: colId } : x)) }}
       onDeleted={() => { setTasks(ts => ts.filter(x => x.id !== t.id)); setId(null) }} /></PanelBoundary>
   )

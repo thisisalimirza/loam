@@ -40,13 +40,15 @@ export async function getRelated(kind: Kind, id: string): Promise<Related> {
   if (kind === "person") {
     const [tasks, notes, entries, drafts, projects] = await Promise.all([
       sql.unsafe(`select distinct t.id, t.title, t.status, t.due_date::text from loam_os.tasks t, loam_os.people p where p.id = $1 and t.archived_at is null and
-        (t.title || ' ' || t.notes ~* ${personRe} or exists (select 1 from loam_os.task_links l where l.task_id = t.id and l.kind = 'person' and l.ref_id = p.id)) order by t.status desc limit 12`, [id]),
-      sql.unsafe(`select n.id, n.title from loam_os.notes n, loam_os.people p where p.id = $1 and (n.title || ' ' || n.body ~* ${personRe}
-        or exists (select 1 from loam_os.links l where l.from_type='note' and l.from_id=n.id and l.to_type='person' and l.to_id=p.id)) order by n.updated_at desc limit 8`, [id]),
+        ((t.title || ' ' || coalesce(t.notes, '')) ~* ${personRe} or exists (select 1 from loam_os.task_links l where l.task_id = t.id and l.kind = 'person' and l.ref_id = p.id)
+        or exists (select 1 from loam_os.mentions m where m.person_id = p.id and m.source_type = 'task' and m.source_id = t.id)) order by t.status desc limit 12`, [id]),
+      sql.unsafe(`select n.id, n.title from loam_os.notes n, loam_os.people p where p.id = $1 and ((n.title || ' ' || coalesce(n.body, '')) ~* ${personRe}
+        or exists (select 1 from loam_os.links l where l.from_type='note' and l.from_id=n.id and l.to_type='person' and l.to_id=p.id)
+        or exists (select 1 from loam_os.mentions m where m.person_id = p.id and m.source_type = 'note' and m.source_id = n.id)) order by n.updated_at desc limit 8`, [id]),
       sql.unsafe(`select e.id, e.entry_date::text, e.body from loam_os.journal_entries e, loam_os.people p where p.id = $1 and e.body ~* ${personRe} order by e.entry_date desc limit 8`, [id]),
       sql.unsafe(`select d.id, d.title, d.body, d.channel from loam_os.drafts d, loam_os.people p where p.id = $1 and (d.title || ' ' || d.body) ~* ${personRe} limit 6`, [id]),
       sql.unsafe(`select distinct j.id, j.name from loam_os.projects j join loam_os.tasks t on t.project_id = j.id, loam_os.people p where p.id = $1 and
-        (t.title || ' ' || t.notes ~* ${personRe} or exists (select 1 from loam_os.task_links l where l.task_id = t.id and l.kind='person' and l.ref_id = p.id)) limit 6`, [id]),
+        ((t.title || ' ' || coalesce(t.notes, '')) ~* ${personRe} or exists (select 1 from loam_os.task_links l where l.task_id = t.id and l.kind='person' and l.ref_id = p.id)) limit 6`, [id]),
     ])
     r.tasks = tasks.map(t => task(t as never)); r.notes = notes.map(n => note(n as never)); r.entries = entries.map(e => entry(e as never))
     r.drafts = drafts.map(d => draft(d as never)); r.projects = projects.map(j => ({ id: j.id, title: j.name, href: `/os/projects/${j.id}` }))
@@ -55,7 +57,7 @@ export async function getRelated(kind: Kind, id: string): Promise<Related> {
     const [notes, entries, people, drafts] = await Promise.all([
       sql.unsafe(`select n.id, n.title from loam_os.notes n, loam_os.projects j where j.id = $1 and (n.project_id = j.id or (n.title || ' ' || n.body) ~* ${projectRe}) order by n.updated_at desc limit 8`, [id]),
       sql.unsafe(`select e.id, e.entry_date::text, e.body from loam_os.journal_entries e, loam_os.projects j where j.id = $1 and e.body ~* ${projectRe} order by e.entry_date desc limit 8`, [id]),
-      sql.unsafe(`select distinct p.id, p.name from loam_os.people p join loam_os.tasks t on t.project_id = $1 where t.title || ' ' || t.notes ~* ${personRe}
+      sql.unsafe(`select distinct p.id, p.name from loam_os.people p join loam_os.tasks t on t.project_id = $1 where (t.title || ' ' || coalesce(t.notes, '')) ~* ${personRe}
         or exists (select 1 from loam_os.task_links l where l.task_id = t.id and l.kind='person' and l.ref_id = p.id) limit 8`, [id]),
       sql.unsafe(`select d.id, d.title, d.body, d.channel from loam_os.drafts d, loam_os.projects j where j.id = $1 and (d.title || ' ' || d.body) ~* ${projectRe} limit 6`, [id]),
     ])

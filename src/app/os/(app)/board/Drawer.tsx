@@ -47,12 +47,14 @@ export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOp
     return () => { document.body.style.overflow = prev; document.body.classList.remove("has-panel"); window.removeEventListener("keydown", k) }
   }, [onClose])
 
+  const seq = useRef(0)
   async function save(p: Patch, quiet = false) {
-    const before = t
+    const before = t, n = ++seq.current
     if (p.checklist !== undefined || p.priority !== undefined) onChange({ ...t, ...p } as BoardTask)
     const r = await bUpdate(t.id, p)
-    if (!r.ok) { onChange(before); toast({ text: r.error, tone: "err" }); return }
-    onChange(r.data)
+    if (!r.ok) { if (n === seq.current) onChange(before); toast({ text: r.error, tone: "err" }); return }
+    // A newer edit is already on screen; an older reply must not roll it back.
+    if (n === seq.current) onChange(r.data)
     if (!quiet) setActivity(a => a && [...a, { id: "local" + Date.now(), task_id: t.id, kind: "edit", body: Object.keys(p).join(", "), created_at: new Date().toISOString() }])
   }
   const col = cols.find(c => c.id === t.column_id && c.kind === t.status) ?? cols.find(c => c.kind === t.status)
