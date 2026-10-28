@@ -7,7 +7,7 @@ export default function Sheet({ label, title, icon, primary, iconOnly, children 
   const [open, setOpen] = useState(false)
   const box = useRef<HTMLDivElement>(null)
   const opener = useRef<HTMLButtonElement>(null)
-  const done = () => { const f = box.current?.querySelector("form"); if (f) f.requestSubmit(); else setOpen(false) }
+  const done = () => { const f = box.current?.querySelector<HTMLFormElement>("form:has(.btn.pri)") ?? box.current?.querySelector("form"); if (f) { f.requestSubmit(); setTimeout(() => setOpen(false), 50) }; else setOpen(false) }
   useEffect(() => {
     if (!open) { return }
     const k = (e: KeyboardEvent) => {

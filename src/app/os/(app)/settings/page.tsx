@@ -3,6 +3,7 @@ import type { CSSProperties } from "react"
 import { getAreas, getPins } from "@/lib/os/data"
 import { createArea, deletePin, logout } from "@/lib/os/actions"
 import { fmtDate } from "@/lib/os/dates"
+import { aiStatus } from "@/lib/os/ai"
 import { PageHeader } from "../../_ui/ui"
 import { Icon } from "../../_ui/icons"
 import Sheet from "../../_ui/Sheet"
@@ -12,7 +13,7 @@ export const metadata = { title: "Settings" }
 export const dynamic = "force-dynamic"
 
 export default async function Settings() {
-  const [areas, pins] = await Promise.all([getAreas(true), getPins()])
+  const [areas, pins, ai] = await Promise.all([getAreas(true), getPins(), aiStatus()])
   return (
     <>
       <PageHeader title="Settings" />
@@ -53,8 +54,9 @@ export default async function Settings() {
           <li><Link href="/os/site" className="row"><Icon name="globe" /><span className="tt">Website</span><Icon name="arrow" /></Link></li>
           <li className="row"><Icon name="calendar" /><span className="tt">Google Calendar</span><small className="meta">Not connected</small></li>
           <li className="row"><Icon name="sparkle" /><span className="tt">Smart suggestions</span><small className="meta">On</small></li>
+          <li className="row" data-ai={ai.ok ? "ok" : "off"}><Icon name="sparkle" /><span className="tt">AI help</span><small className="meta">{ai.ok ? "Working" : ai.why}</small></li>
         </ul>
-        <p className="grp-f">Suggestions find people and dates in what you write. They run on the server and never touch the public site.</p>
+        <p className="grp-f">Suggestions find people and dates in what you write, with or without AI. AI help catches names the basic check misses. Both run on the server and never touch the public site.</p>
       </section>
       <section className="grp" aria-label="Account">
         <ul className="card grp-l">
