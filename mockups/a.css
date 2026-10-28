@@ -1,0 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&display=swap');@import url(base.css);
+:root{--font:'Inter',system-ui,sans-serif;--bg:#f6f7fb;--side:#fbfbfd;--card:#fff;--tx:#14161f;--tx2:#454a5c;--mute:#8a8fa3;--line:#e8eaf1;--line2:#f0f1f6;--kbd:#f2f3f8;
+--acc:#4f5bd5;--accsoft:#eef0ff;--onacc:#fff;--logo:linear-gradient(135deg,#6a74ef,#4f5bd5);--navon:#fff;--navsh:0 1px 2px rgba(20,22,40,.06),0 0 0 1px #e8eaf1;
+--school:#3b82f6;--rounds:#10a37f;--mdplus:#e0653a;--warn:#d9443b;--chk:#c9ccd8;--pa:12%;--avbg:#eef0ff;--avtx:#4f5bd5;--r:14px;
+--sh1:0 1px 2px rgba(20,22,40,.05);--sh2:0 1px 2px rgba(20,22,40,.04),0 4px 16px -6px rgba(20,22,40,.06);--sh3:0 12px 32px -8px rgba(20,22,40,.18),0 2px 6px rgba(20,22,40,.06);
+--capbg:rgba(255,255,255,.88);--capline:#e3e5ee;--capmute:#8a8fa3;--tabbg:rgba(251,251,253,.9)}
+body{background:radial-gradient(1200px 400px at 70% -10%,#eef0ff,transparent),var(--bg)}

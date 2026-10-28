@@ -16,7 +16,7 @@ const NAV: { href: string; label: string; icon: IconName }[] = [
   { href: "/os/people", label: "People", icon: "people" },
   { href: "/os/notes", label: "Notes", icon: "notes" },
   { href: "/os/areas", label: "Areas", icon: "areas" },
-  { href: "/admin", label: "Site", icon: "pen" },
+  { href: "/os/site", label: "Site", icon: "globe" },
 ]
 const TABS: { href: string; label: string; icon: IconName }[] = [
   { href: "/os", label: "Today", icon: "today" },
@@ -32,7 +32,7 @@ export function isOn(path: string, href: string) {
 
 export default function Shell({ areas, inbox, children }: { areas: A[]; inbox: number; children: ReactNode }) {
   const path = usePathname()
-  const moreOn = ["/os/more", "/os/inbox", "/os/drafts", "/os/notes", "/os/areas", "/os/projects"].some(h => isOn(path, h))
+  const moreOn = ["/os/more", "/os/inbox", "/os/drafts", "/os/notes", "/os/areas", "/os/projects", "/os/site"].some(h => isOn(path, h))
   return (
     <div className="app">
       <aside className="side">

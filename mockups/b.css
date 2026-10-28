@@ -1,0 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400..700&display=swap');@import url(base.css);
+:root{--font:'Geist',system-ui,sans-serif;--bg:#0d1110;--side:#0a0d0c;--card:#141917;--tx:#ecefe9;--tx2:#b5bcb4;--mute:#7b847c;--line:#222a26;--line2:#1b221f;--kbd:#1c2320;
+--acc:#c6f36b;--accsoft:rgba(198,243,107,.08);--onacc:#10140c;--logo:linear-gradient(135deg,#d6ff8a,#8fcf3a);--navon:#18201c;--navsh:inset 0 0 0 1px #26302b;
+--school:#7fb2ff;--rounds:#5fe0b4;--mdplus:#ffab7a;--warn:#ff8a7a;--chk:#3a4540;--pa:14%;--avbg:#1f2924;--avtx:#c6f36b;--r:16px;
+--sh1:0 1px 0 rgba(255,255,255,.03) inset;--sh2:0 1px 0 rgba(255,255,255,.04) inset,0 8px 24px -12px rgba(0,0,0,.6);--sh3:0 16px 40px -10px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.06);
+--capbg:rgba(28,35,32,.85);--capline:#2c3632;--capmute:#8d978f;--tabbg:rgba(10,13,12,.88)}
+body{background:radial-gradient(900px 420px at 80% -10%,rgba(198,243,107,.07),transparent),var(--bg)}
+.logo{color:#10140c}h1{font-weight:600}.cd .num{font-weight:600}

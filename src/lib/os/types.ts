@@ -5,6 +5,7 @@ export type Task = {
   id: string; title: string; notes: string; status: TaskStatus
   area_id: string | null; project_id: string | null
   due_date: string | null; scheduled_date: string | null; sort: number
+  repeat: "daily" | "weekdays" | "weekly" | "monthly" | "yearly" | null
 }
 export type Person = { id: string; name: string; role: string; area_id: string | null; notes: string; follow_up: string | null }
 export type Conversation = {

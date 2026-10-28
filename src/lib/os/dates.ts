@@ -37,3 +37,18 @@ export function ago(iso: string, today = todayISO()) {
   if (n < 365) return `${Math.round(n / 30)}mo ago`
   return `${Math.round(n / 365)}y ago`
 }
+
+export type Repeat = "daily" | "weekdays" | "weekly" | "monthly" | "yearly"
+export const REPEATS: Repeat[] = ["daily", "weekdays", "weekly", "monthly", "yearly"]
+export const REPEAT_LABEL: Record<Repeat, string> = { daily: "Every day", weekdays: "Weekdays", weekly: "Every week", monthly: "Every month", yearly: "Every year" }
+
+/** Next occurrence after `iso` for a repeat rule. */
+export function nextDate(iso: string, r: Repeat) {
+  const d = new Date(iso + "T12:00:00Z")
+  if (r === "daily") d.setUTCDate(d.getUTCDate() + 1)
+  else if (r === "weekly") d.setUTCDate(d.getUTCDate() + 7)
+  else if (r === "weekdays") { do d.setUTCDate(d.getUTCDate() + 1); while (d.getUTCDay() === 0 || d.getUTCDay() === 6) }
+  else if (r === "monthly") { const day = d.getUTCDate(); d.setUTCDate(1); d.setUTCMonth(d.getUTCMonth() + 1); const last = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0)).getUTCDate(); d.setUTCDate(Math.min(day, last)) }
+  else { const m = d.getUTCMonth(); d.setUTCFullYear(d.getUTCFullYear() + 1); if (d.getUTCMonth() !== m) d.setUTCDate(0) }
+  return d.toISOString().slice(0, 10)
+}

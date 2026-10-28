@@ -6,8 +6,8 @@ import { timingSafeEqual, createHash } from "node:crypto"
 import { db } from "./db"
 import { requireOwner } from "./auth"
 import { createToken, SESSION_COOKIE, SESSION_TTL } from "./session"
-import { todayISO } from "./dates"
-import { CHANNELS, type Channel, type Stage, type TaskStatus } from "./types"
+import { todayISO, nextDate, REPEATS, type Repeat } from "./dates"
+import { CHANNELS, type Channel, type Stage, type Task, type TaskStatus } from "./types"
 
 const str = (f: FormData, k: string) => String(f.get(k) ?? "").trim()
 const opt = (f: FormData, k: string) => str(f, k) || null
@@ -131,8 +131,11 @@ export async function createTask(f: FormData) {
     const [p] = await sql<{ area_id: string | null }[]>`select area_id from loam_os.projects where id = ${project}`
     area = p?.area_id ?? null
   }
-  await sql`insert into loam_os.tasks (title, area_id, project_id, due_date, scheduled_date, status, sort)
-    values (${title}, ${area}, ${project}, ${opt(f, "due_date")}, ${opt(f, "scheduled_date")}, ${(opt(f, "status") as TaskStatus) ?? "todo"}, extract(epoch from now()))`
+  const repeat = repeatOf(opt(f, "repeat"))
+  let due = opt(f, "due_date")
+  if (repeat && !due && !opt(f, "scheduled_date")) due = todayISO()
+  await sql`insert into loam_os.tasks (title, area_id, project_id, due_date, scheduled_date, status, sort, repeat)
+    values (${title}, ${area}, ${project}, ${due}, ${opt(f, "scheduled_date")}, ${(opt(f, "status") as TaskStatus) ?? "todo"}, extract(epoch from now()), ${repeat})`
   back()
 }
 export async function updateTask(f: FormData) {
@@ -140,6 +143,12 @@ export async function updateTask(f: FormData) {
   const id = str(f, "id")
   await db()`update loam_os.tasks set title = ${str(f, "title")}, notes = ${str(f, "notes")}, area_id = ${opt(f, "area_id")},
     project_id = ${opt(f, "project_id")}, due_date = ${opt(f, "due_date")}, scheduled_date = ${opt(f, "scheduled_date")} where id = ${id}`
+  if (f.has("repeat")) {
+    const repeat = repeatOf(opt(f, "repeat"))
+    await db()`update loam_os.tasks set repeat = ${repeat},
+      due_date = case when ${repeat}::text is not null and due_date is null and scheduled_date is null then ${todayISO()}::date else due_date end where id = ${id}`
+  }
+  if (f.has("status")) await setStatus(id, (opt(f, "status") as TaskStatus) ?? "todo")
   back()
 }
 export async function renameTask(id: string, title: string) {
@@ -151,13 +160,13 @@ export async function renameTask(id: string, title: string) {
 }
 export async function toggleTask(id: string, done: boolean) {
   await requireOwner()
-  await db()`update loam_os.tasks set status = ${done ? "done" : "todo"}, done_at = ${done ? new Date() : null} where id = ${id}`
+  await setStatus(id, done ? "done" : "todo")
   back()
 }
 export async function moveTask(id: string, status: TaskStatus, sort: number) {
   await requireOwner()
-  await db()`update loam_os.tasks set status = ${status}, sort = ${sort},
-    done_at = case when ${status} = 'done' then coalesce(done_at, now()) else null end where id = ${id}`
+  await db()`update loam_os.tasks set sort = ${sort} where id = ${id}`
+  await setStatus(id, status)
   back()
 }
 export async function deleteTask(id: string) {
@@ -328,4 +337,22 @@ export async function searchAll(q: string) {
   await requireOwner()
   const { search } = await import("./data")
   return q.trim().length < 2 ? [] : search(q.trim())
+}
+
+function repeatOf(v: string | null): Repeat | null {
+  return v && (REPEATS as string[]).includes(v) ? (v as Repeat) : null
+}
+/** Sets status; completing a repeating task hands its rule to a fresh copy on the next date. */
+async function setStatus(id: string, status: TaskStatus) {
+  const sql = db()
+  const [t] = await sql<Task[]>`update loam_os.tasks set status = ${status},
+    done_at = case when ${status} = 'done' then coalesce(done_at, now()) else null end where id = ${id} returning *`
+  if (!t || status !== "done" || !t.repeat) return
+  const base = (d: string | null) => (d && d > todayISO() ? d : todayISO())
+  const anchor = t.due_date ?? t.scheduled_date
+  const shift = (d: string | null) => (d ? nextDate(base(d), t.repeat!) : null)
+  const due = t.due_date ? shift(t.due_date) : anchor ? null : nextDate(todayISO(), t.repeat)
+  await sql`insert into loam_os.tasks (title, notes, area_id, project_id, due_date, scheduled_date, status, sort, repeat)
+    values (${t.title}, ${t.notes}, ${t.area_id}, ${t.project_id}, ${due}, ${shift(t.scheduled_date)}, 'todo', extract(epoch from now()), ${t.repeat})`
+  await sql`update loam_os.tasks set repeat = null where id = ${id}`
 }
