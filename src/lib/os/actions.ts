@@ -18,41 +18,46 @@ const back = () => revalidatePath("/os", "layout")
 export async function login(_prev: { error?: string } | undefined, f: FormData) {
   const h = await headers()
   const ip = (h.get("x-forwarded-for") ?? "").split(",")[0].trim() || "unknown"
-  const t0 = Date.now()
-  console.log("login: start")
   const sql = db()
-  let n: number
+  // Rate limit lives in the database. If the database is down, sign-in still works
+  // (so /admin stays usable) but without the limit, and the failure is logged.
+  let dbOk = true
   try {
-    ;[{ n }] = await sql<{ n: number }[]>`
+    const [{ n }] = await sql<{ n: number }[]>`
       select count(*)::int n from loam_os.login_attempts where ip = ${ip} and not ok and at > now() - interval '15 minutes'`
+    if (n >= 5) return { error: "Too many attempts. Try again in 15 minutes." }
   } catch (e) {
-    const err = e as { code?: string; message?: string }
-    console.error("loam_os db error", err.code, err.message?.replace(/postgres(ql)?:\/\/\S+/g, "[url]"))
-    return { error: "Can't reach the database right now." }
+    dbOk = false
+    console.error("login: rate limit check failed", (e as { code?: string }).code ?? "unknown")
   }
-  console.log("login: counted", Date.now() - t0)
-  if (n >= 5) return { error: "Too many attempts. Try again in 15 minutes." }
 
+  const real = process.env.ADMIN_PASSWORD
+  if (!real || !process.env.SESSION_SECRET) return { error: "Sign-in isn't configured on this deployment." }
   const given = createHash("sha256").update(str(f, "password")).digest()
-  const real = createHash("sha256").update(process.env.ADMIN_PASSWORD ?? "\u0000unset").digest()
-  const ok = !!process.env.ADMIN_PASSWORD && timingSafeEqual(given, real)
-  await sql`insert into loam_os.login_attempts (ip, ok) values (${ip}, ${ok})`
-  await sql`delete from loam_os.login_attempts where at < now() - interval '7 days'`
-  console.log("login: logged", Date.now() - t0, ok)
+  const ok = timingSafeEqual(given, createHash("sha256").update(real).digest())
+  if (dbOk) {
+    try {
+      await sql`insert into loam_os.login_attempts (ip, ok) values (${ip}, ${ok})`
+      if (ok) await sql`delete from loam_os.login_attempts where (ip = ${ip} and not ok) or at < now() - interval '7 days'`
+    } catch (e) { console.error("login: attempt log failed", (e as { code?: string }).code ?? "unknown") }
+  }
   if (!ok) return { error: "That password didn't match." }
 
   const jar = await cookies()
   jar.set(SESSION_COOKIE, await createToken(), {
     httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax", path: "/", maxAge: SESSION_TTL,
   })
-  const next = str(f, "next")
-  redirect(next.startsWith("/os") || next.startsWith("/admin") ? next : "/os")
+  redirect(safeNext(str(f, "next")))
+}
+
+function safeNext(next: string) {
+  return /^\/(os|admin)(\/|$|\?)/.test(next) && !next.startsWith("//") ? next : "/os"
 }
 
 export async function logout() {
   const jar = await cookies()
   jar.delete(SESSION_COOKIE)
-  redirect("/os/login")
+  redirect("/os/login?out=1")
 }
 
 // ---------- areas, projects, pins ----------

@@ -11,7 +11,8 @@ function make() {
   return postgres(url, {
     prepare: false, // transaction pooler
     max: 3,
-    idle_timeout: 20,
+    idle_timeout: 10,
+    max_lifetime: 60 * 5,
     connect_timeout: 8,
     ssl: { rejectUnauthorized: false },
     types: {

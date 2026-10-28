@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { logout } from '@/lib/os/actions';
 
 type Status = { type: 'success' | 'error'; message: string } | null;
 type ContentFile = { path: string; section: string; slug: string };
@@ -37,8 +38,9 @@ function parseFrontmatter(raw: string): ParsedFrontmatter {
 }
 
 export default function AdminPage() {
-  const [password, setPassword] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // Middleware only lets a signed-in owner reach this page; the API routes check the session cookie.
+  const password = '';
+  const isLoggedIn = true;
   const [tab, setTab] = useState<'new' | 'browse'>('new');
 
   // New form
@@ -68,26 +70,14 @@ export default function AdminPage() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [editStatus, setEditStatus] = useState<Status>(null);
 
-  useEffect(() => {
-    const saved = sessionStorage.getItem('admin_pw');
-    if (saved) { setPassword(saved); setIsLoggedIn(true); }
-  }, []);
+  useEffect(() => { sessionStorage.removeItem('admin_pw'); }, []);
 
   useEffect(() => {
     if (!isLoggedIn) return;
     fetch('/api/sections').then(r => r.json()).then(d => setSections(d.sections ?? []));
   }, [isLoggedIn]);
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    sessionStorage.setItem('admin_pw', password);
-    setIsLoggedIn(true);
-  };
-
-  const handleLogout = () => {
-    sessionStorage.removeItem('admin_pw');
-    setPassword(''); setIsLoggedIn(false);
-  };
+  const handleLogout = () => { void logout(); };
 
   const handleTitleChange = useCallback((value: string) => {
     setTitle(value);
@@ -219,23 +209,6 @@ export default function AdminPage() {
     }
   };
 
-  if (!isLoggedIn) {
-    return (
-      <div className="page-layout" style={{ maxWidth: 400, marginTop: '4rem' }}>
-        <h1 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '1.5rem' }}>Admin</h1>
-        <form onSubmit={handleLogin}>
-          <div className="admin-field">
-            <input
-              type="password" value={password} onChange={e => setPassword(e.target.value)}
-              placeholder="Password" autoFocus required
-              style={{ width: '100%', padding: '0.5rem 0.75rem' }}
-            />
-          </div>
-          <button type="submit" className="admin-btn">Sign in</button>
-        </form>
-      </div>
-    );
-  }
 
   // Grouped files for browse view
   const grouped = files.reduce<Record<string, ContentFile[]>>((acc, f) => {
