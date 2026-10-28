@@ -33,14 +33,23 @@ function testMode() {
   try { return (cookies() as unknown as UnsafeUnwrappedCookies).get("loam_test")?.value === "1" } catch { return false }
 }
 
+type Job = () => unknown | Promise<unknown>
 const perRequest = cache(() => {
-  const sql = make()
+  const sql = make() as ReturnType<typeof make> & { jobs: Job[] }
+  sql.jobs = []
   // max: 1 → one connection, queries run in order, so this lands first.
   sql.unsafe(`set role loam_app; select set_config('loam.test', '${testMode() ? "on" : "off"}', false)`).execute()
-  try { after(async () => { await sql.unsafe("reset role; reset loam.test").catch(() => {}); await sql.end({ timeout: 2 }) }) } catch { /* outside a request: idle_timeout closes it */ }
+  // Background work (later()) runs first, on this same connection and mode; only then is it closed.
+  try { after(async () => { for (let j; (j = sql.jobs.shift());) { try { await j() } catch (e) { console.error("later", e) } } await sql.unsafe("reset role; reset loam.test").catch(() => {}); await sql.end({ timeout: 2 }) }) } catch { /* outside a request: idle_timeout closes it */ }
   return sql
 })
 
 export function db() {
   return perRequest()
+}
+
+/** Run work after the response, before this request's connection closes, in the same test/real mode.
+ *  Use this instead of next/server after() for anything that touches the database. */
+export function later(fn: Job) {
+  perRequest().jobs.push(fn)
 }

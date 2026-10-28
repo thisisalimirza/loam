@@ -1,7 +1,6 @@
 "use server"
 import { parseTask } from "./parse"
-import { db } from "./db"
-import { after } from "next/server"
+import { db, later } from "./db"
 import { enrich } from "./enrich"
 import { requireOwner } from "./auth"
 import { setStatus } from "./taskStatus"
@@ -78,7 +77,7 @@ export async function bCreate(title: string, columnId: string, extra: { area_id?
     const [row] = await sql<Task[]>`insert into loam_os.tasks (title, column_id, status, area_id, project_id, tags, priority, due_date, repeat, sort, done_at)
       values (${t}, ${columnId}, ${c.kind}, ${area}, ${project}, ${extra.tags ?? []}, ${pr}, ${extra.due_date || null}, ${repeat}, ${(min.m ?? 1000) - 1}, ${c.kind === "done" ? new Date() : null}) returning *`
     await sql`insert into loam_os.task_activity (task_id, kind, body) values (${row.id}, 'created', '')`
-    after(() => enrich("task", row.id, row.title))
+    later(() => enrich("task", row.id, row.title))
     return normTask(row)
   })
 }

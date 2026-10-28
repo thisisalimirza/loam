@@ -43,8 +43,7 @@ export function TaskRow({ t, areas, today, hideArea }: { t: Task; areas: AreaLit
   const [, start] = useTransition()
   const [title, setTitle] = useOptimistic(t.title)
   const [editing, setEditing] = useState(false)
-  const router = useRouter()
-  const open = (id: string) => { const u = new URL(location.href); u.searchParams.set("task", id); router.push(u.pathname + u.search, { scroll: false }) }
+  const open = (id: string) => { const u = new URL(location.href); u.searchParams.set("task", id); window.history.pushState(null, "", u.pathname + u.search) } // shallow: no server round trip, and it can't get stuck behind a pending refresh
   const save = (v: string) => {
     setEditing(false)
     const n = v.trim()

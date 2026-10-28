@@ -27,7 +27,7 @@ export default function TaskPanel({ today }: { today: string }) {
   if (!data || !t) return miss >= 4 && data ? null : <div className="drawer-bg"><aside className="drawer loading" aria-busy="true" aria-label="Loading task"><div className="dr-load" /></aside></div>
   const setId = (n: string | null) => {
     const q = new URLSearchParams(sp.toString()); if (n) q.set("task", n); else q.delete("task")
-    router.replace(`${path}${q.size ? "?" + q : ""}`, { scroll: false })
+    window.history.replaceState(null, "", `${path}${q.size ? "?" + q : ""}`)
     if (!n) router.refresh()
   }
   return (

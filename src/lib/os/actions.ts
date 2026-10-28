@@ -3,8 +3,7 @@ import { cookies, headers } from "next/headers"
 import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache"
 import { timingSafeEqual, createHash } from "node:crypto"
-import { db } from "./db"
-import { after } from "next/server"
+import { db, later } from "./db"
 import { enrich } from "./enrich"
 import { requireOwner } from "./auth"
 import { createToken, SESSION_COOKIE, SESSION_TTL } from "./session"
@@ -178,7 +177,7 @@ export async function createTask(f: FormData) {
   if (repeat && !due && !opt(f, "scheduled_date")) due = todayISO()
   const [nt] = await sql<{ id: string }[]>`insert into loam_os.tasks (title, area_id, project_id, due_date, scheduled_date, status, sort, repeat)
     values (${title}, ${area}, ${project}, ${due}, ${opt(f, "scheduled_date")}, ${(opt(f, "status") as TaskStatus) ?? "todo"}, extract(epoch from now()), ${repeat}) returning id`
-  after(() => enrich("task", nt.id, title))
+  later(() => enrich("task", nt.id, title))
   back()
 }
 export async function updateTask(f: FormData) {
@@ -236,7 +235,7 @@ export async function makeTask(text: string, o: { followUp?: boolean; due?: stri
   const [t] = await sql<{ id: string; title: string }[]>`insert into loam_os.tasks (title, notes, area_id, project_id, due_date, repeat, status, sort, tags, column_id)
     values (${title}, ${text.trim() === firstLine.trim() ? "" : text.trim().slice(0, 4000)}, ${area}, ${proj?.id ?? null}, ${due}, ${rep}, 'todo', extract(epoch from now()),
       ${o.followUp ? ["follow-up"] : []}, (select id from loam_os.board_columns where kind = 'todo' order by sort limit 1)) returning id, title`
-  if (!o.personId) after(() => enrich("task", t.id, t.title))
+  if (!o.personId) later(() => enrich("task", t.id, t.title))
   await sql`insert into loam_os.task_activity (task_id, kind, body) values (${t.id}, 'created', ${o.source ? "from " + o.source.type : ""})`
   for (const pid of people) await sql`insert into loam_os.task_links (task_id, kind, ref_id) values (${t.id}, 'person', ${pid}) on conflict do nothing`
   if (o.source && o.source.type !== "person") await sql`insert into loam_os.links (from_type, from_id, to_type, to_id) values (${o.source.type}, ${o.source.id}, 'task', ${t.id})`
@@ -287,7 +286,7 @@ export async function capture(text: string, parsed?: { title: string; due: strin
   const p = parsed ?? parseTask(t)
   const due = p.due, title = p.title || t, rep = repeatOf(p.repeat)
   const [nt] = await sql<{ id: string }[]>`insert into loam_os.tasks (title, due_date, repeat, sort, column_id) values (${title}, ${due}, ${rep}, extract(epoch from now()), (select id from loam_os.board_columns where kind = 'todo' order by sort limit 1)) returning id`
-  after(() => enrich("task", nt.id, title))
+  later(() => enrich("task", nt.id, title))
   back(); return { href: null }
 }
 
@@ -453,7 +452,7 @@ export async function addNextStep(projectId: string, title: string, parsed?: { d
 const lastRun = new Map<string, number>()
 function debounced(key: string, fn: () => Promise<void>) {
   const now = Date.now(); if (now - (lastRun.get(key) ?? 0) < 20000) return
-  lastRun.set(key, now); after(fn)
+  lastRun.set(key, now); later(fn)
 }
 
 export async function confirmPerson(id: string) {
