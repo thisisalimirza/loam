@@ -46,14 +46,16 @@ export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOp
   }, [onClose])
 
   async function save(p: Patch, quiet = false) {
+    const before = t
+    if (p.checklist !== undefined || p.priority !== undefined) onChange({ ...t, ...p } as BoardTask)
     const r = await bUpdate(t.id, p)
-    if (!r.ok) { toast({ text: r.error, tone: "err" }); return }
+    if (!r.ok) { onChange(before); toast({ text: r.error, tone: "err" }); return }
     onChange(r.data)
     if (!quiet) setActivity(a => a && [...a, { id: "local" + Date.now(), task_id: t.id, kind: "edit", body: Object.keys(p).join(", "), created_at: new Date().toISOString() }])
   }
   const col = cols.find(c => c.id === t.column_id && c.kind === t.status) ?? cols.find(c => c.kind === t.status)
   const projects = data.projects.filter(p => p.status !== "done" && (!t.area_id || !p.area_id || p.area_id === t.area_id))
-  const checklist: CheckItem[] = t.checklist ?? []
+  const checklist: CheckItem[] = Array.isArray(t.checklist) ? t.checklist : []
   const blockedBy = deps.filter(d => d.task_id === t.id).map(d => tasks.find(x => x.id === d.blocked_by)).filter(Boolean) as BoardTask[]
   const blocks = deps.filter(d => d.blocked_by === t.id).map(d => tasks.find(x => x.id === d.task_id)).filter(Boolean) as BoardTask[]
   const depHits = useMemo(() => {
