@@ -1,13 +1,15 @@
 import { getAreas, getProjects, getTasks } from "@/lib/os/data"
 import { todayISO } from "@/lib/os/dates"
 import { Card, PageHeader, Seg } from "../../_ui/ui"
+import { redirect } from "next/navigation"
 import { AddTask, TaskBoard, TaskList, ViewToggle } from "../../_ui/Tasks"
 
 export const metadata = { title: "Tasks" }
 
 export default async function TasksPage({ searchParams }: { searchParams: Promise<{ view?: string; area?: string; show?: string }> }) {
   const sp = await searchParams
-  const view = sp.view === "board" ? "board" : "list"
+  if (sp.view === "board") redirect(sp.area ? `/os/board?area=${encodeURIComponent(sp.area)}` : "/os/board")
+  const view = "list" as "list" | "board"
   const today = todayISO()
   const [areas, projects, all] = await Promise.all([getAreas(), getProjects(), getTasks({ areaId: sp.area })])
   const showDone = sp.show === "done"

@@ -6,7 +6,15 @@ export type Task = {
   area_id: string | null; project_id: string | null
   due_date: string | null; scheduled_date: string | null; sort: number
   repeat: "daily" | "weekdays" | "weekly" | "monthly" | "yearly" | null
+  column_id?: string | null; priority?: Priority; checklist?: CheckItem[]; tags?: string[]
+  status_changed_at?: string | Date; archived_at?: string | Date | null; created_at?: string | Date
 }
+export type Priority = "urgent" | "high" | "normal" | "low"
+export type CheckItem = { text: string; done: boolean }
+export type BoardColumn = { id: string; name: string; kind: TaskStatus; wip: number | null; sort: number }
+export type BoardFilters = { areas?: string[]; projects?: string[]; tags?: string[]; priorities?: string[]; due?: "overdue" | "week" | "none" | "" }
+export type BoardView = { id: string; name: string; filters: BoardFilters }
+export type Activity = { id: string; task_id: string; kind: "created" | "move" | "comment" | "edit"; body: string; created_at: string }
 export type Person = { id: string; name: string; role: string; area_id: string | null; notes: string; follow_up: string | null }
 export type Conversation = {
   id: string; person_id: string; happened_on: string; channel: string

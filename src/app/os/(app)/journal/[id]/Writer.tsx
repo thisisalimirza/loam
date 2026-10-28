@@ -5,6 +5,8 @@ import { deleteEntry, promote, saveEntry } from "@/lib/os/actions"
 import { fmtDate } from "@/lib/os/dates"
 import { CHANNELS, type Channel } from "@/lib/os/types"
 import { Icon } from "../../../_ui/icons"
+import MakeFrom from "../../../_ui/MakeFrom"
+import { MentionChips } from "../../../_ui/Mentions"
 
 type Local = { body: string; at: number }
 
@@ -94,18 +96,16 @@ export default function Writer({ entry, drafts: initialDrafts }: {
         </div>
         <button className="btn ghost sm" aria-label="Delete entry" onClick={async () => { if (confirm("Delete this entry?")) { localStorage.removeItem(key); dirty.current = false; await deleteEntry(entry.id) } }}><Icon name="trash" size={14} /></button>
       </div>
-      <div className="writer-date">{fmtDate(entry.date, { weekday: "long", month: "long", day: "numeric", year: "numeric" })}</div>
+      <div className="writer-date">{fmtDate(entry.date, { weekday: "long", month: "long", day: "numeric", year: "numeric" })}<MentionChips text={body} label="" /></div>
       <div className="writer-body">
-        <textarea ref={ta} value={body} placeholder="What’s on your mind?" aria-label="Journal entry"
+        <textarea ref={ta} value={body} placeholder="What’s on your mind? Mention @people and #projects. Select a line to turn it into a task, follow-up or draft." aria-label="Journal entry"
           onChange={e => { dirty.current = true; setBody(e.target.value) }}
           onSelect={readSel} onKeyUp={readSel} onMouseUp={readSel} onBlur={() => { if (dirty.current) flush(body) }} />
       </div>
-      {(sel || made || drafts.length > 0) && (
+      {sel ? <MakeFrom text={sel} source={{ type: "entry", id: entry.id }} entryId={entry.id} label="Make from selection"
+          onDone={() => { setSel(""); if (dirty.current) flush(body) }} /> : (made || drafts.length > 0) && (
         <div className="promote">
-          {sel ? (<>
-            <span>Make a draft from selection</span>
-            {CHANNELS.map(c => <button key={c} onMouseDown={e => e.preventDefault()} onClick={() => doPromote(c, sel)}>{c}</button>)}
-          </>) : made ? (<>
+          {made ? (<>
             <span>{made.channel} draft created</span>
             <Link href={`/os/drafts/${made.id}`}><button>Open</button></Link>
             <button onClick={() => setMade(null)} aria-label="Dismiss"><Icon name="x" size={14} /></button>

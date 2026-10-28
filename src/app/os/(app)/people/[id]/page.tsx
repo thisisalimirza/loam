@@ -4,7 +4,11 @@ import { deleteConversation, deletePerson, logConversation, setFollowUp, updateP
 import { addDays, ago, fmtDate, relDue, todayISO } from "@/lib/os/dates"
 import { AreaSelect, Avatar, Card, Empty, PageHeader, Pill } from "../../../_ui/ui"
 import { Icon } from "../../../_ui/icons"
+import DateChip from "../../../_ui/DateChip"
 import Confirm from "../../../_ui/Confirm"
+import Related from "../../../_ui/Related"
+import FollowUps from "../../../_ui/FollowUps"
+import { extractActions } from "@/lib/os/graph"
 
 const CH = ["In person", "Call", "Video", "Text", "Email", "DM"]
 
@@ -34,19 +38,20 @@ export default async function PersonPage({ params }: { params: Promise<{ id: str
             </Card>
           ) : <Card><Empty icon="people" title="No conversations yet">Log the first one below so next time you remember where you left off.</Empty></Card>}
 
+          {last && <FollowUps personId={p.id} convoId={last.id} items={extractActions(`${last.follow_ups}\n${last.summary}`)} />}
           <Card title="Log a conversation" icon="plus" style={{ scrollMarginTop: 20 }}>
             <form id="log" action={logConversation} className="form cb">
               <input type="hidden" name="person_id" value={p.id} />
               <div className="frow">
-                <input className="in" type="date" name="happened_on" defaultValue={today} aria-label="Date" />
+                <DateChip label="When" name="happened_on" defaultValue={today} clearable={false} quick={[["Today", 0], ["Yesterday", -1]]} />
                 <select className="in" name="channel" aria-label="Channel">{CH.map(c => <option key={c}>{c}</option>)}</select>
               </div>
               <textarea className="in" name="summary" rows={3} placeholder="What you talked about" required aria-label="Summary" />
               <textarea className="in" name="their_update" rows={2} placeholder="What they’re up to" aria-label="What they're up to" />
               <textarea className="in" name="follow_ups" rows={2} placeholder="Things to follow up on" aria-label="Follow-ups" />
               <div className="frow">
-                <label className="meta" style={{ alignSelf: "center" }}>Check back</label>
-                <input className="in" type="date" name="next_follow_up" defaultValue={addDays(today, 30)} aria-label="Next follow-up" />
+                <DateChip label="Check back" name="next_follow_up" defaultValue={addDays(today, 30)} quick={[["In 2 weeks", 14], ["In a month", 30], ["In 3 months", 91]]} />
+                <span className="grow" />
                 <button className="btn pri">Save</button>
               </div>
             </form>
@@ -87,6 +92,7 @@ export default async function PersonPage({ params }: { params: Promise<{ id: str
           </Card>
         </div>
       </div>
+      <div style={{ marginTop: 16 }}><Related kind="person" id={p.id} /></div>
     </>
   )
 }

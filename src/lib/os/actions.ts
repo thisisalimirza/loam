@@ -6,8 +6,9 @@ import { timingSafeEqual, createHash } from "node:crypto"
 import { db } from "./db"
 import { requireOwner } from "./auth"
 import { createToken, SESSION_COOKIE, SESSION_TTL } from "./session"
-import { todayISO, nextDate, REPEATS, type Repeat } from "./dates"
-import { CHANNELS, type Channel, type Stage, type Task, type TaskStatus } from "./types"
+import { addDays, todayISO, REPEATS, type Repeat } from "./dates"
+import { setStatus } from "./taskStatus"
+import { CHANNELS, type Channel, type Stage, type TaskStatus } from "./types"
 
 const str = (f: FormData, k: string) => String(f.get(k) ?? "").trim()
 const opt = (f: FormData, k: string) => str(f, k) || null
@@ -162,6 +163,39 @@ export async function toggleTask(id: string, done: boolean) {
   await requireOwner()
   await setStatus(id, done ? "done" : "todo")
   back()
+  if (!done) return null
+  const { nextAfter } = await import("./graph")
+  return nextAfter(id)
+}
+
+/**
+ * One-step "make this a task" from any text (a journal line, a note selection, a conversation).
+ * Mentioned @people and #projects get linked; follow-ups get a date three days out.
+ */
+export async function makeTask(text: string, o: { followUp?: boolean; due?: string | null; source?: { type: "entry" | "note" | "draft" | "conversation" | "person"; id: string }; personId?: string } = {}) {
+  await requireOwner()
+  const sql = db()
+  const { getMentionIndex } = await import("./graph")
+  const title = text.trim().split("\n")[0].replace(/^([-*•]|\[ \]|\d+[.)])\s+/, "").slice(0, 200)
+  if (!title) return null
+  const idx = await getMentionIndex()
+  const low = text.toLowerCase()
+  const has = (k: string) => { const i = low.indexOf(k.toLowerCase()); return i >= 0 && !/[\p{L}\p{N}]/u.test(low[i + k.length] ?? "") }
+  const people = idx.people.filter(p => has("@" + p.name) || has("@" + p.name.split(/\s+/)[0])).map(p => p.id)
+  if (o.personId && !people.includes(o.personId)) people.push(o.personId)
+  const proj = idx.projects.find(p => has("#" + p.name) || has("#" + p.name.toLowerCase().replace(/\s+/g, "-")))
+  let area: string | null = null
+  if (proj) { const [r] = await sql<{ area_id: string | null }[]>`select area_id from loam_os.projects where id = ${proj.id}`; area = r?.area_id ?? null }
+  else if (people[0]) { const [r] = await sql<{ area_id: string | null }[]>`select area_id from loam_os.people where id = ${people[0]}`; area = r?.area_id ?? null }
+  const due = o.due !== undefined ? o.due : o.followUp ? addDays(todayISO(), 3) : null
+  const [t] = await sql<{ id: string; title: string }[]>`insert into loam_os.tasks (title, notes, area_id, project_id, due_date, status, sort, tags, column_id)
+    values (${title}, ${text.trim() === title ? "" : text.trim().slice(0, 4000)}, ${area}, ${proj?.id ?? null}, ${due}, 'todo', extract(epoch from now()),
+      ${o.followUp ? ["follow-up"] : []}, (select id from loam_os.board_columns where kind = 'todo' order by sort limit 1)) returning id, title`
+  await sql`insert into loam_os.task_activity (task_id, kind, body) values (${t.id}, 'created', ${o.source ? "from " + o.source.type : ""})`
+  for (const pid of people) await sql`insert into loam_os.task_links (task_id, kind, ref_id) values (${t.id}, 'person', ${pid}) on conflict do nothing`
+  if (o.source && o.source.type !== "person") await sql`insert into loam_os.links (from_type, from_id, to_type, to_id) values (${o.source.type}, ${o.source.id}, 'task', ${t.id})`
+  back()
+  return t
 }
 export async function moveTask(id: string, status: TaskStatus, sort: number) {
   await requireOwner()
@@ -342,17 +376,22 @@ export async function searchAll(q: string) {
 function repeatOf(v: string | null): Repeat | null {
   return v && (REPEATS as string[]).includes(v) ? (v as Repeat) : null
 }
-/** Sets status; completing a repeating task hands its rule to a fresh copy on the next date. */
-async function setStatus(id: string, status: TaskStatus) {
+
+/** Starts a draft from a whole journal entry (used by Today's "not drafted yet" nudge). */
+export async function draftFromEntry(entryId: string, channel: Channel = "Substack") {
+  await requireOwner()
+  const [e] = await db()<{ body: string }[]>`select body from loam_os.journal_entries where id = ${entryId}`
+  if (!e) return null
+  return promote(entryId, e.body, channel)
+}
+/** Adds the next step to a project that has none. */
+export async function addNextStep(projectId: string, title: string) {
+  await requireOwner()
+  const t = title.trim().slice(0, 300); if (!t) return null
   const sql = db()
-  const [t] = await sql<Task[]>`update loam_os.tasks set status = ${status},
-    done_at = case when ${status} = 'done' then coalesce(done_at, now()) else null end where id = ${id} returning *`
-  if (!t || status !== "done" || !t.repeat) return
-  const base = (d: string | null) => (d && d > todayISO() ? d : todayISO())
-  const anchor = t.due_date ?? t.scheduled_date
-  const shift = (d: string | null) => (d ? nextDate(base(d), t.repeat!) : null)
-  const due = t.due_date ? shift(t.due_date) : anchor ? null : nextDate(todayISO(), t.repeat)
-  await sql`insert into loam_os.tasks (title, notes, area_id, project_id, due_date, scheduled_date, status, sort, repeat)
-    values (${t.title}, ${t.notes}, ${t.area_id}, ${t.project_id}, ${due}, ${shift(t.scheduled_date)}, 'todo', extract(epoch from now()), ${t.repeat})`
-  await sql`update loam_os.tasks set repeat = null where id = ${id}`
+  const [p] = await sql<{ area_id: string | null }[]>`select area_id from loam_os.projects where id = ${projectId}`
+  const [r] = await sql<{ id: string }[]>`insert into loam_os.tasks (title, project_id, area_id, status, sort, column_id)
+    values (${t}, ${projectId}, ${p?.area_id ?? null}, 'todo', extract(epoch from now()), (select id from loam_os.board_columns where kind = 'todo' order by sort limit 1)) returning id`
+  back()
+  return r
 }

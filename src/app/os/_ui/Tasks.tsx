@@ -5,7 +5,10 @@ import { useRouter } from "next/navigation"
 import { Icon } from "./icons"
 import Kanban from "./Kanban"
 import { createTask, deleteTask, moveTask, renameTask, toggleTask } from "@/lib/os/actions"
-import { relDue } from "@/lib/os/dates"
+import { relDue, splitDate, REPEATS, REPEAT_LABEL } from "@/lib/os/dates"
+import DateChip from "./DateChip"
+import { toast } from "./Toast"
+import { Mentions } from "./Mentions"
 import { TASK_COLS, type Task, type TaskStatus } from "@/lib/os/types"
 
 export type AreaLite = { id: string; name: string; color: string }
@@ -36,12 +39,16 @@ export function TaskRow({ t, areas, today, hideArea }: { t: Task; areas: AreaLit
   }
   return (
     <li className={`row hov${done ? " done" : ""}`}>
-      <button className="chk" aria-label={done ? "Mark not done" : "Mark done"} onClick={() => start(async () => { setDone(!done); await toggleTask(t.id, !done) })} />
+      <button className="chk" aria-label={done ? "Mark not done" : "Mark done"} onClick={() => start(async () => {
+        setDone(!done)
+        const next = await toggleTask(t.id, !done)
+        if (!done) toast(next ? { text: `Done. Next up: ${next.title}`, href: `/os/board?open=${next.id}`, cta: "Open" } : t.repeat ? "Done. The next one is scheduled." : "Done.")
+      })} />
       {editing
         ? <input className="in tt" autoFocus defaultValue={title} aria-label="Edit task"
             onBlur={e => save(e.currentTarget.value)}
             onKeyDown={e => { if (e.key === "Enter") e.currentTarget.blur(); if (e.key === "Escape") setEditing(false) }} />
-        : <button type="button" className="tt" title="Click to edit" onClick={() => setEditing(true)}>{title}</button>}
+        : <button type="button" className="tt" title="Click to edit" onClick={() => setEditing(true)}><Mentions text={title} />{t.repeat && <span className="rep" title={`Repeats ${t.repeat}`}> ↻</span>}</button>}
       {!hideArea && <AreaPill id={t.area_id} areas={areas} />}
       <DueLabel t={t} today={today} />
       <button className="x" aria-label="Delete task" onClick={() => start(() => deleteTask(t.id))}><Icon name="x" size={14} /></button>
@@ -51,9 +58,14 @@ export function TaskRow({ t, areas, today, hideArea }: { t: Task; areas: AreaLit
 
 export function AddTask({ areaId, projectId, areas, projects, status }: { areaId?: string; projectId?: string; status?: TaskStatus } & Partial<Ctx>) {
   return (
-    <form className="addrow" action={async f => { await createTask(f); (document.activeElement as HTMLElement)?.blur?.() }}
+    <form className="addrow" action={async f => {
+      // "Call mom fri" sets the date when none was picked.
+      const s = splitDate(String(f.get("title") ?? ""))
+      if (s.date && s.title && !f.get("due_date")) { f.set("title", s.title); f.set("due_date", s.date) }
+      await createTask(f); (document.activeElement as HTMLElement)?.blur?.()
+    }}
       onSubmit={e => { const form = e.currentTarget; setTimeout(() => form.reset(), 0) }}>
-      <input className="in" name="title" placeholder="Add a task" required aria-label="Task title" />
+      <input className="in" name="title" placeholder="Add a task. Try “Call mom fri”" required aria-label="Task title" />
       {areaId && <input type="hidden" name="area_id" value={areaId} />}
       {projectId && <input type="hidden" name="project_id" value={projectId} />}
       {status && <input type="hidden" name="status" value={status} />}
@@ -69,7 +81,10 @@ export function AddTask({ areaId, projectId, areas, projects, status }: { areaId
           {projects.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
         </select>
       )}
-      <input className="in" type="date" name="due_date" aria-label="Due date" />
+      <DateChip label="Due" name="due_date" />
+      <label className="fld"><span>Repeat</span><select className="in" name="repeat" defaultValue="">
+        <option value="">Never</option>{REPEATS.map(r => <option key={r} value={r}>{REPEAT_LABEL[r]}</option>)}
+      </select></label>
       <button className="btn pri sm">Add</button>
     </form>
   )

@@ -5,6 +5,7 @@ import { logout } from "@/lib/os/actions"
 
 export const metadata = { title: "More" }
 const LINKS: { href: string; label: string; icon: IconName }[] = [
+  { href: "/os/people", label: "People", icon: "people" },
   { href: "/os/inbox", label: "Inbox", icon: "inbox" },
   { href: "/os/drafts", label: "Drafts", icon: "drafts" },
   { href: "/os/notes", label: "Notes", icon: "notes" },

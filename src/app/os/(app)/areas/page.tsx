@@ -4,6 +4,7 @@ import { getAreas, getProjects, getTasks } from "@/lib/os/data"
 import { createArea, createProject } from "@/lib/os/actions"
 import { AreaSelect, Card, Empty, PageHeader, Pill } from "../../_ui/ui"
 import { Swatches } from "../../_ui/AreaForm"
+import DateChip from "../../_ui/DateChip"
 import { Icon } from "../../_ui/icons"
 
 export const metadata = { title: "Areas" }
@@ -43,7 +44,7 @@ export default async function Areas() {
           <Card title="New project" icon="flag">
             <form action={createProject} className="form cb">
               <input className="in" name="name" placeholder="e.g. Surgery clerkship" required aria-label="Project name" />
-              <div className="frow"><AreaSelect areas={live} /><input className="in" type="date" name="due_date" aria-label="Due date" /></div>
+              <div className="frow"><AreaSelect areas={live} /><DateChip label="Deadline" name="due_date" /></div>
               <div><button className="btn pri">Create project</button></div>
             </form>
           </Card>

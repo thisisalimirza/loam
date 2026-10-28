@@ -5,6 +5,8 @@ import { marked } from "marked"
 import { deleteNote, saveNote } from "@/lib/os/actions"
 import { Icon } from "../../../_ui/icons"
 import Confirm from "../../../_ui/Confirm"
+import MakeFrom from "../../../_ui/MakeFrom"
+import { MentionChips } from "../../../_ui/Mentions"
 
 marked.setOptions({ gfm: true, breaks: true })
 const escapeHtml = (s: string) => s.replace(/</g, "&lt;")
@@ -15,6 +17,7 @@ export default function NoteEditor({ note, areas }: { note: { id: string; title:
   const [area, setArea] = useState(note.area_id ?? "")
   const [mode, setMode] = useState<"write" | "read">(note.body ? "read" : "write")
   const [status, setStatus] = useState("Saved")
+  const [sel, setSel] = useState("")
   const first = useRef(true)
 
   useEffect(() => {
@@ -38,10 +41,13 @@ export default function NoteEditor({ note, areas }: { note: { id: string; title:
       </header>
       <section className="card cb" style={{ marginBottom: 16 }}>
         {mode === "write"
-          ? <textarea className="editor" value={body} onChange={e => setBody(e.target.value)} placeholder="Start writing. Markdown works: # headings, - lists, **bold**, [links](https://…)" autoFocus={!note.body} />
+          ? <textarea className="editor" value={body} onChange={e => setBody(e.target.value)}
+              onSelect={e => { const t = e.currentTarget; setSel(t.value.slice(t.selectionStart, t.selectionEnd)) }} onBlur={() => setTimeout(() => setSel(""), 150)} placeholder="Start writing. Markdown works. Mention @people and #projects; link notes with [[Note title]]. Select text to turn it into a task or draft." autoFocus={!note.body} />
           : body.trim() ? <div className="md" dangerouslySetInnerHTML={{ __html: marked.parse(escapeHtml(body)) as string }} /> : <p className="muted">Empty note.</p>}
       </section>
-      <div className="inline">
+      <MentionChips text={`${title}\n${body}`} />
+      {sel.trim().length > 2 && <MakeFrom text={sel} source={{ type: "note", id: note.id }} onDone={() => setSel("")} />}
+      <div className="inline" style={{ marginTop: 12 }}>
         <select className="in" value={area} onChange={e => setArea(e.target.value)} style={{ flex: "0 1 200px" }} aria-label="Area">
           <option value="">No area</option>{areas.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
         </select>

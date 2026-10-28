@@ -6,13 +6,15 @@ import { Avatar, Card, Empty, PageHeader } from "../_ui/ui"
 import { Icon } from "../_ui/icons"
 import { TaskList } from "../_ui/Tasks"
 import PinForm from "../_ui/PinForm"
+import Suggestions from "../_ui/Suggestions"
+import { getSuggestions } from "@/lib/os/graph"
 
 export const metadata = { title: "Today" }
 
 export default async function Today() {
   const today = todayISO()
-  const [areas, tasks, pins, people, entry] = await Promise.all([
-    getAreas(), getTasksForDay(today), getPins(), getFollowUps(today), getEntryForDay(today),
+  const [areas, tasks, pins, people, entry, sugg] = await Promise.all([
+    getAreas(), getTasksForDay(today), getPins(), getFollowUps(today), getEntryForDay(today), getSuggestions().catch(() => []),
   ])
   const upcoming = pins.filter(p => p.pin_date >= today)
   const open = tasks.filter(t => t.status !== "done").length
@@ -48,6 +50,7 @@ export default async function Today() {
       </div>
 
       <div className="grid2">
+        {sugg.length > 0 && <div className="span"><Suggestions items={sugg.filter(s => s.kind !== "followup")} /></div>}
         <Card title="Agenda" icon="calendar">
           <Empty icon="calendar" title="No calendar connected">Events will show here once Google Calendar is hooked up.</Empty>
         </Card>

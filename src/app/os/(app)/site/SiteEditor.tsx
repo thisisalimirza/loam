@@ -4,6 +4,7 @@ import { useActionState, useEffect, useRef, useState } from "react"
 import { marked } from "marked"
 import { deleteSitePost, saveSitePost, type SaveState } from "@/lib/os/siteActions"
 import { Icon } from "../../_ui/icons"
+import DateChip from "../../_ui/DateChip"
 import Confirm from "../../_ui/Confirm"
 
 marked.setOptions({ gfm: true, breaks: false })
@@ -75,7 +76,7 @@ export default function SiteEditor({ post, sections, defaultSection, created }: 
             {section === "_new" && <label className="f">New section name<input className="in" name="new_section" placeholder="e.g. letters" /></label>}
             <label className="f">Slug<input className="in" name="slug" placeholder={title ? title.toLowerCase().replace(/[^\w\s-]/g, "").trim().replace(/\s+/g, "-") : "from the title"} /></label>
           </>)}
-          <label className="f">Date<input className="in" type="date" name="date" defaultValue={post.date} /></label>
+          <div className="f">Date<div><DateChip label="Published" name="date" defaultValue={post.date || null} clearable={false} quick={[["Today", 0], ["Yesterday", -1]]} /></div></div>
           <label className="f">Summary<textarea className="in" name="summary" rows={3} defaultValue={post.summary} placeholder="One line for lists and link previews" /></label>
           <label className="f">Tags<input className="in" name="tags" defaultValue={post.tags.join(", ")} placeholder="comma, separated" /></label>
           <label className="check"><input type="checkbox" name="published" checked={published} onChange={e => setPublished(e.target.checked)} />Visible on the site</label>

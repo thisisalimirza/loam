@@ -6,9 +6,12 @@ import { archiveArea, createProject, deleteArea, deletePin, updateArea } from "@
 import { daysBetween, fmtDate, todayISO } from "@/lib/os/dates"
 import { Avatar, Card, Empty, PageHeader, Pill } from "../../../_ui/ui"
 import { Swatches } from "../../../_ui/AreaForm"
-import { AddTask, TaskBoard, TaskList, ViewToggle } from "../../../_ui/Tasks"
+import { AddTask, TaskList, ViewToggle } from "../../../_ui/Tasks"
 import { Icon } from "../../../_ui/icons"
 import Confirm from "../../../_ui/Confirm"
+import Related from "../../../_ui/Related"
+import Board from "../../board/Board"
+import { getBoard } from "@/lib/os/board"
 
 export default async function AreaPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ view?: string }> }) {
   const { id } = await params
@@ -38,7 +41,7 @@ export default async function AreaPage({ params, searchParams }: { params: Promi
         </div>
       )}
       <div className="stack">
-        {view === "board" ? <TaskBoard tasks={tasks} areas={areas} today={today} areaId={id} /> : (
+        {view === "board" ? <Board data={await getBoard()} today={today} scope={{ areaId: id }} embedded /> : (
           <Card title="Tasks" icon="tasks" meta={open.length}>
             <TaskList tasks={open} areas={areas} today={today} hideArea emptyTitle="No open tasks here" />
             <AddTask areaId={id} projects={projects.filter(p => p.status === "active")} />
@@ -65,6 +68,7 @@ export default async function AreaPage({ params, searchParams }: { params: Promi
               <ul>{myNotes.map(n => <li key={n.id}><Link href={`/os/notes/${n.id}`} className="row"><span className="tt">{n.title}</span></Link></li>)}</ul>
             </Card>
           )}
+          <Related kind="area" id={id} />
           <Card title="Settings" className="span">
             <form action={updateArea} className="form cb">
               <input type="hidden" name="id" value={id} />

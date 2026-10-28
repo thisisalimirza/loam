@@ -3,8 +3,11 @@ import { getAreas, getProject, getTasks } from "@/lib/os/data"
 import { deleteProject, setProjectStatus } from "@/lib/os/actions"
 import { fmtDate, todayISO } from "@/lib/os/dates"
 import { Card, PageHeader } from "../../../_ui/ui"
-import { AddTask, TaskBoard, TaskList, ViewToggle } from "../../../_ui/Tasks"
+import { AddTask, TaskList, ViewToggle } from "../../../_ui/Tasks"
 import Confirm from "../../../_ui/Confirm"
+import Related from "../../../_ui/Related"
+import Board from "../../board/Board"
+import { getBoard } from "@/lib/os/board"
 
 export default async function ProjectPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ view?: string }> }) {
   const { id } = await params
@@ -25,12 +28,13 @@ export default async function ProjectPage({ params, searchParams }: { params: Pr
           ))}
           <Confirm action={deleteProject.bind(null, id)} label="Delete" message="Delete this project? Its tasks stay in the area." />
         </>} />
-      {view === "board" ? <TaskBoard tasks={tasks} areas={areas} today={today} projectId={id} areaId={p.area_id ?? undefined} /> : (
+      {view === "board" ? <Board data={await getBoard()} today={today} scope={{ projectId: id }} embedded /> : (
         <Card title="Tasks" icon="tasks">
           <TaskList tasks={tasks} areas={areas} today={today} hideArea emptyTitle="No tasks yet" />
           <AddTask projectId={id} areaId={p.area_id ?? undefined} />
         </Card>
       )}
+      <div style={{ marginTop: 16 }}><Related kind="project" id={id} /></div>
     </>
   )
 }
