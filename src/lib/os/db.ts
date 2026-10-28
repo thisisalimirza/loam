@@ -9,8 +9,10 @@ import postgres from "postgres"
 function make() {
   const url = process.env.LOAM_DATABASE_URL
   if (!url) throw new Error("LOAM_DATABASE_URL is missing")
-  return postgres(url, {
-    prepare: false, // transaction pooler
+  // Session mode (5432). Transaction mode (6543) deadlocks when postgres.js
+  // pipelines the parallel queries a page makes.
+  return postgres(url.replace(":6543/", ":5432/"), {
+    prepare: false,
     max: 1,
     idle_timeout: 5,
     connect_timeout: 6,
