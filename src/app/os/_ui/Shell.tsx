@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation"
 import type { CSSProperties, ReactNode } from "react"
 import { Icon, type IconName } from "./icons"
 import Capture from "./Capture"
+import Shortcuts from "./Shortcuts"
 import { ToastHost } from "./Toast"
 import { MentionProvider, type MIndex } from "./Mentions"
 import { logout } from "@/lib/os/actions"
@@ -62,6 +63,7 @@ export default function Shell({ areas, inbox, mentions, children }: { areas: A[]
       </aside>
       <main className="m">{children}</main>
       <Capture />
+      <Shortcuts />
       <ToastHost />
       <nav className="tabs">
         {TABS.map(t => (

@@ -13,7 +13,6 @@ export const dynamic = "force-dynamic"
 
 export default async function Settings() {
   const [areas, pins] = await Promise.all([getAreas(true), getPins()])
-  const ai = !!(process.env.VERCEL_OIDC_TOKEN || process.env.AI_GATEWAY_API_KEY)
   return (
     <>
       <PageHeader title="Settings" />
@@ -53,7 +52,7 @@ export default async function Settings() {
         <ul className="card grp-l">
           <li><Link href="/os/site" className="row"><Icon name="globe" /><span className="tt">Website</span><Icon name="arrow" /></Link></li>
           <li className="row"><Icon name="calendar" /><span className="tt">Google Calendar</span><small className="meta">Not connected</small></li>
-          <li className="row"><Icon name="sparkle" /><span className="tt">Smart suggestions</span><small className="meta">{ai ? "On" : "Off"}</small></li>
+          <li className="row"><Icon name="sparkle" /><span className="tt">Smart suggestions</span><small className="meta">On</small></li>
         </ul>
         <p className="grp-f">Suggestions find people and dates in what you write. They run on the server and never touch the public site.</p>
       </section>
