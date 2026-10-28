@@ -13,15 +13,18 @@ export default function TaskPanel({ today }: { today: string }) {
   const [data, setData] = useState<BoardData | null>(null)
   const [tasks, setTasks] = useState<BoardTask[]>([])
   const [deps, setDeps] = useState<BoardData["deps"]>([])
+  const [miss, setMiss] = useState(0)
+  // Load once on mount so the first open is instant, then refresh whenever a different task opens.
   useEffect(() => {
-    if (!id) return
     let live = true
     bData().then(r => { if (live && r.ok) { setData(r.data); setTasks(r.data.tasks); setDeps(r.data.deps) } })
     return () => { live = false }
-  }, [id])
-  if (!id || !data || path.startsWith("/os/board")) return null
-  const t = tasks.find(x => x.id === id)
-  if (!t) return null
+  }, [id, miss])
+  const t = id ? tasks.find(x => x.id === id) : undefined
+  // A task added a moment ago may not be in the cached list yet: fetch again (a few tries).
+  useEffect(() => { if (id && data && !t && miss < 4) { const h = setTimeout(() => setMiss(m => m + 1), 400); return () => clearTimeout(h) } }, [id, data, t, miss])
+  if (!id || path.startsWith("/os/board")) return null
+  if (!data || !t) return miss >= 4 && data ? null : <div className="drawer-bg"><aside className="drawer loading" aria-busy="true" aria-label="Loading task"><div className="dr-load" /></aside></div>
   const setId = (n: string | null) => {
     const q = new URLSearchParams(sp.toString()); if (n) q.set("task", n); else q.delete("task")
     router.replace(`${path}${q.size ? "?" + q : ""}`, { scroll: false })

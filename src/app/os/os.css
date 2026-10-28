@@ -559,3 +559,4 @@ background:var(--bg);font:400 var(--t-body)/1.34 var(--font);letter-spacing:-.01
 .os .idea{flex-wrap:wrap;gap:8px}.os .idea .tt{flex:1 1 200px;min-width:0;overflow-wrap:anywhere}.os .idea-acts{display:flex;gap:6px;flex-wrap:wrap}
 .os .is-read .tt{text-decoration:line-through;opacity:.6}.os .add-row{display:flex;gap:8px;padding:10px 16px 14px}.os .add-row .in{flex:1;min-width:0}
 .os .row a.tt{color:inherit;overflow-wrap:anywhere}
+.os .dr-load{margin:24px;height:28px;border-radius:8px;background:var(--line);opacity:.5;animation:pulse 1.2s ease-in-out infinite}@keyframes pulse{50%{opacity:.25}}
