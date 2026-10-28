@@ -42,7 +42,7 @@ export default async function ProjectPage({ params, searchParams }: { params: Pr
             </div>
           </Sheet>
         </>} />
-      {nx ? (
+      {view !== "board" ? null : nx ? (
         <section className="card focus-card" style={{ marginBottom: 16 }}><div className="fc-b">
           <span className="eyebrow" style={{ width: "100%", margin: 0 }}>Next step</span>
           <span className="fc-t">{nx.title}</span>{nx.due_date && <span className="due">{relDue(nx.due_date, today).label}</span>}

@@ -17,3 +17,9 @@ export async function getWeek(today: string) {
   ])
   return { from, done, overdue, upcoming, stuck, quiet, words: words[0], published: published[0].n }
 }
+
+export async function getDoneOn(day: string) {
+  await requireOwner()
+  const [r] = await db()<{ n: number }[]>`select count(*)::int n from loam_os.tasks where status = 'done' and done_at::date = ${day}::date`
+  return r.n
+}

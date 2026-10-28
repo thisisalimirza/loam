@@ -1,7 +1,8 @@
 import Link from "next/link"
 import type { CSSProperties } from "react"
 import { getAreas, getEntryForDay, getFollowUps, getPins, getTasks, getTasksForDay } from "@/lib/os/data"
-import { ago, daysBetween, fmtDate, todayISO } from "@/lib/os/dates"
+import { addDays, ago, daysBetween, fmtDate, todayISO } from "@/lib/os/dates"
+import { getDoneOn } from "@/lib/os/review"
 import { nextUp } from "@/lib/os/focus"
 import type { Task } from "@/lib/os/types"
 import { Avatar, Card, PageHeader } from "../_ui/ui"
@@ -43,7 +44,10 @@ export default async function Today() {
   const words = entry ? entry.body.trim().split(/\s+/).filter(Boolean).length : 0
   const areaColor = (id: string | null) => areas.find(a => a.id === id)?.color
   const hour = Number(new Intl.DateTimeFormat("en-US", { hour: "numeric", hour12: false, timeZone: "America/New_York" }).format(new Date()))
+  // Morning brief: before noon, open with what got finished yesterday and what's first.
+  const yday = hour < 12 ? await getDoneOn(addDays(today, -1)).catch(() => 0) : 0
   const sub = [
+    hour < 12 && yday ? `Yesterday you finished ${yday}` : null,
     openToday ? `${openToday} due today` : motion.length ? `${motion.length} ${motion.length === 1 ? "project" : "projects"} active` : "Nothing due today",
     people.length ? `${people.length} to follow up with` : null,
   ].filter(Boolean).join(" · ")
@@ -53,7 +57,7 @@ export default async function Today() {
       <PageHeader
         eyebrow={fmtDate(today, { weekday: "long" })}
         title={fmtDate(today, { month: "long", day: "numeric" })}
-        sub={focus ?? sub}
+        sub={hour < 12 && yday ? [sub, focus].filter(Boolean).join(" · ") : focus ?? sub}
         actions={
           <Link href="/os/journal/write" className="jr">
             <Icon name="pen" className="ic" />
