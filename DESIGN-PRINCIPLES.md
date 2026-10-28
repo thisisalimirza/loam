@@ -15,8 +15,8 @@ Source of truth: the "Loam OS × Apple design plan" page (Apple HIG, checked 28 
 10. **Nudge, don't nag.** Today shows at most three suggestions, each with a reason.
 
 ## Merges, and why
-- **Inbox → Today/Tasks.** Unsorted tasks are just tasks without an area; a separate page made you visit twice. Today surfaces them as "Nothing to sort" when clear.
-- **Notes + Journal.** Both are writing; one place to write, with dated entries as a kind of note.
+- **Inbox → Today.** Unsorted tasks are just tasks without an area; a nav item for them made you check two places. Inbox left the sidebar; Today shows "N tasks have no area yet · Sort them" only when there are some.
+- **Notes + Journal (planned).** Both are writing; the goal is one place to write, with dated entries as a kind of note. Not merged yet because the journal has its own day-based flow worth keeping.
 
 ## Background enrichment
 `src/lib/os/enrich.ts` runs after saves (via `after()`), matches existing people, guesses new names (heuristic + optional AI through the Vercel AI Gateway, server-only), records `loam_os.mentions`, and creates `people.status='suggested'` rows. Dismissed people are kept so they are never re-suggested.

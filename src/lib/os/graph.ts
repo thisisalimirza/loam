@@ -100,14 +100,14 @@ export async function getRelated(kind: Kind, id: string): Promise<Related> {
 // ---------- proactive suggestions for Today ----------
 
 export type Suggestion = {
-  key: string; kind: "overdue" | "followup" | "quiet" | "stalled" | "stuck" | "seed" | "next"
+  key: string; kind: "overdue" | "followup" | "quiet" | "stalled" | "stuck" | "seed" | "next" | "sort" | "person"
   text: string; sub?: string; href?: string; projectId?: string; entryId?: string; personId?: string
 }
 
 export async function getSuggestions(): Promise<Suggestion[]> {
   const sql = db()
   const today = todayISO()
-  const [overdue, follow, quiet, stuck, stalled, seeds, bare] = await Promise.all([
+  const [overdue, follow, quiet, stuck, stalled, seeds, bare, [unsorted], sugg] = await Promise.all([
     sql<{ id: string; title: string; due_date: string }[]>`select id, title, due_date::text from loam_os.tasks
       where status <> 'done' and archived_at is null and due_date < ${today} order by due_date limit 5`,
     sql<{ id: string; name: string; follow_up: string }[]>`select id, name, follow_up::text from loam_os.people where status = 'active' and follow_up <= ${addDays(today, 1)} order by follow_up limit 5`,
@@ -125,6 +125,8 @@ export async function getSuggestions(): Promise<Suggestion[]> {
       and not exists (select 1 from loam_os.drafts d where d.source_entry_id = e.id) order by e.entry_date desc limit 2`,
     sql<{ id: string; name: string }[]>`select j.id, j.name from loam_os.projects j where j.status = 'active'
       and not exists (select 1 from loam_os.tasks t where t.project_id = j.id and t.status <> 'done' and t.archived_at is null) limit 3`,
+    sql<{ n: number }[]>`select count(*)::int n from loam_os.tasks where area_id is null and project_id is null and status <> 'done' and archived_at is null`,
+    sql<{ id: string; name: string; context: string | null }[]>`select id, name, context from loam_os.people where status = 'suggested' order by created_at desc limit 2`,
   ])
   const out: Suggestion[] = []
   for (const t of overdue) out.push({ key: `o:${t.id}:${t.due_date}`, kind: "overdue", text: t.title, sub: `Overdue since ${t.due_date}`, href: `/os/board?open=${t.id}` })
@@ -133,6 +135,8 @@ export async function getSuggestions(): Promise<Suggestion[]> {
   for (const c of stuck) out.push({ key: `s:${c.id}`, kind: "stuck", text: c.title, sub: `${c.days} days in ${c.col}`, href: `/os/board?open=${c.id}` })
   for (const j of stalled) out.push({ key: `p:${j.id}:${Math.floor(j.days / 7)}`, kind: "stalled", text: `${j.name}: nothing done lately`, sub: `Nothing moved in ${j.days} days`, href: `/os/projects/${j.id}` })
   for (const p of quiet) out.push({ key: `q:${p.id}:${p.last}`, kind: "quiet", text: `Check in with ${p.name}`, sub: `Last talked ${p.last}`, href: `/os/people/${p.id}`, personId: p.id })
+  if (unsorted?.n) out.push({ key: `u:${unsorted.n}`, kind: "sort", text: unsorted.n === 1 ? "1 task has no area yet" : `${unsorted.n} tasks have no area yet`, sub: "Sort them", href: "/os/inbox" })
+  for (const p of sugg) out.push({ key: `m:${p.id}`, kind: "person", text: `Add ${p.name} to People?`, sub: (p.context ?? "From your notes").replace(/^Mentioned: /, "You wrote: ").slice(0, 80), href: "/os/people" })
   for (const e of seeds) out.push({ key: `d:${e.id}`, kind: "seed", text: firstLine(e.body), sub: `Journal, ${e.entry_date}. Could become a post`, href: `/os/journal/${e.id}`, entryId: e.id })
   return out
 }

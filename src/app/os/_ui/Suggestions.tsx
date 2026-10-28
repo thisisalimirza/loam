@@ -10,7 +10,7 @@ import { toast } from "./Toast"
 
 const KEY = "os-dismissed"
 const IC: Record<Suggestion["kind"], [IconName, string]> = {
-  overdue: ["clock", "warn"], followup: ["chat", "acc"], quiet: ["people", ""], stalled: ["flag", ""], stuck: ["board", "warn"], seed: ["pen", "acc"], next: ["arrow", "acc"],
+  overdue: ["clock", "warn"], followup: ["chat", "acc"], quiet: ["people", ""], stalled: ["flag", ""], stuck: ["board", "warn"], seed: ["pen", "acc"], next: ["arrow", "acc"], sort: ["inbox", ""], person: ["people", "acc"],
 }
 
 /** Read and prune dismissals; each one hides a suggestion for a week. */

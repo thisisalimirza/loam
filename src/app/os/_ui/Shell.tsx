@@ -11,7 +11,6 @@ import { logout } from "@/lib/os/actions"
 type A = { id: string; name: string; color: string }
 const NAV: { href: string; label: string; icon: IconName }[] = [
   { href: "/os", label: "Today", icon: "today" },
-  { href: "/os/inbox", label: "Inbox", icon: "inbox" },
   { href: "/os/tasks", label: "Tasks", icon: "tasks" },
   { href: "/os/board", label: "Board", icon: "board" },
   { href: "/os/journal", label: "Journal", icon: "journal" },
