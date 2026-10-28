@@ -13,7 +13,9 @@ const TABLES = ["links", "mentions", "task_activity", "task_deps", "task_links",
 export async function POST() {
   await requireOwner()
   if ((await cookies()).get("loam_test")?.value !== "1") return NextResponse.json({ error: "test mode only" }, { status: 403 })
-  const out: Record<string, number> = {}
+  const out: Record<string, number | string> = {}
+  const [who] = await db()`select current_user u, current_setting('loam.test', true) t`
+  out.who = `${who.u}/${who.t}`
   await db().begin(async sql => {
     for (const t of TABLES) {
       const r = await sql`delete from ${sql("loam_os." + t)} where is_test returning 1`
