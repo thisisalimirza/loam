@@ -47,7 +47,7 @@ function MoCard({ m, today }: { m: Motion; today: string }) {
             setGone(true); const nx = await toggleTask(m.next!.id, true)
             toast(nx ? `Done. Next up: ${nx.title}` : "Done."); router.refresh(); setGone(false)
           })} />
-          <span className="tt">{m.next.title}</span>
+          <Link href={`?task=${m.next.id}`} scroll={false} className="tt">{m.next.title}</Link>
           {m.next.due_date && <span className={`due${relDue(m.next.due_date, today).warn ? " warn" : ""}`}>{relDue(m.next.due_date, today).label}</span>}
         </div>
       ) : (

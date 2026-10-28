@@ -5,6 +5,9 @@ import type { CSSProperties, ReactNode } from "react"
 import { Icon, type IconName } from "./icons"
 import Capture from "./Capture"
 import Shortcuts from "./Shortcuts"
+import TaskPanel from "./TaskPanel"
+import { Suspense } from "react"
+import { todayISO } from "@/lib/os/dates"
 import { ToastHost } from "./Toast"
 import { MentionProvider, type MIndex } from "./Mentions"
 import { logout } from "@/lib/os/actions"
@@ -64,6 +67,7 @@ export default function Shell({ areas, inbox, mentions, children }: { areas: A[]
       <main className="m">{children}</main>
       <Capture />
       <Shortcuts />
+      <Suspense fallback={null}><TaskPanel today={todayISO()} /></Suspense>
       <ToastHost />
       <nav className="tabs">
         {TABS.map(t => (

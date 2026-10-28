@@ -16,7 +16,7 @@ export default function MakeFrom({ text, source, entryId, onDone, label = "Selec
   const run = async (f: () => Promise<void>) => { if (busy) return; setBusy(true); try { await f() } finally { setBusy(false) } }
   const task = (followUp: boolean) => run(async () => {
     const t = await makeTask(text, { followUp, source })
-    if (t) toast({ text: `${followUp ? "Follow-up" : "Task"} added: ${t.title}`, href: `/os/board?open=${t.id}`, cta: "Open" })
+    if (t) toast({ text: `${followUp ? "Follow-up" : "Task"} added: ${t.title}`, href: `?task=${t.id}`, cta: "Open" })
     onDone?.()
   })
   const draft = (c: Channel) => run(async () => {

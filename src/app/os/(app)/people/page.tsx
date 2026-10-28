@@ -7,7 +7,7 @@ import Sheet from "../../_ui/Sheet"
 
 export const metadata = { title: "People" }
 
-const SRC: Record<string, string> = { task: "/os/board?open=", note: "/os/notes/", entry: "/os/journal/" }
+const SRC: Record<string, string> = { task: "?task=", note: "/os/notes/", entry: "/os/journal/" }
 const SRC_LABEL: Record<string, string> = { task: "Task", note: "Note", entry: "Journal" }
 
 export default async function People() {

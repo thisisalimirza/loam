@@ -32,7 +32,7 @@ export async function getRelated(kind: Kind, id: string): Promise<Related> {
   const sql = db()
   const r = empty()
   const task = (t: { id: string; title: string; status: string; due_date: string | null }) =>
-    ({ id: t.id, title: t.title, href: `/os/board?open=${t.id}`, meta: t.status === "done" ? "Done" : t.due_date ?? undefined })
+    ({ id: t.id, title: t.title, href: `?task=${t.id}`, meta: t.status === "done" ? "Done" : t.due_date ?? undefined })
   const entry = (e: { id: string; entry_date: string; body: string }) => ({ id: e.id, title: firstLine(e.body), href: `/os/journal/${e.id}`, meta: e.entry_date })
   const note = (n: { id: string; title: string }) => ({ id: n.id, title: n.title, href: `/os/notes/${n.id}` })
   const draft = (d: { id: string; title: string; body: string; channel: string }) => ({ id: d.id, title: d.title || firstLine(d.body), href: `/os/drafts/${d.id}`, meta: d.channel })
@@ -129,10 +129,10 @@ export async function getSuggestions(): Promise<Suggestion[]> {
     sql<{ id: string; name: string; context: string | null }[]>`select id, name, context from loam_os.people where status = 'suggested' order by created_at desc limit 2`,
   ])
   const out: Suggestion[] = []
-  for (const t of overdue) out.push({ key: `o:${t.id}:${t.due_date}`, kind: "overdue", text: t.title, sub: `Overdue since ${t.due_date}`, href: `/os/board?open=${t.id}` })
+  for (const t of overdue) out.push({ key: `o:${t.id}:${t.due_date}`, kind: "overdue", text: t.title, sub: `Overdue since ${t.due_date}`, href: `?task=${t.id}` })
   for (const p of follow) out.push({ key: `f:${p.id}:${p.follow_up}`, kind: "followup", text: `Follow up with ${p.name}`, sub: p.follow_up < today ? `Since ${p.follow_up}` : p.follow_up === today ? "Today" : "Tomorrow", href: `/os/people/${p.id}`, personId: p.id })
   for (const b of bare) out.push({ key: `n:${b.id}`, kind: "next", text: `${b.name} has no next step`, sub: "Add one", projectId: b.id, href: `/os/projects/${b.id}` })
-  for (const c of stuck) out.push({ key: `s:${c.id}`, kind: "stuck", text: c.title, sub: `${c.days} days in ${c.col}`, href: `/os/board?open=${c.id}` })
+  for (const c of stuck) out.push({ key: `s:${c.id}`, kind: "stuck", text: c.title, sub: `${c.days} days in ${c.col}`, href: `?task=${c.id}` })
   for (const j of stalled) out.push({ key: `p:${j.id}:${Math.floor(j.days / 7)}`, kind: "stalled", text: `${j.name}: nothing done lately`, sub: `Nothing moved in ${j.days} days`, href: `/os/projects/${j.id}` })
   for (const p of quiet) out.push({ key: `q:${p.id}:${p.last}`, kind: "quiet", text: `Check in with ${p.name}`, sub: `Last talked ${p.last}`, href: `/os/people/${p.id}`, personId: p.id })
   if (unsorted?.n) out.push({ key: `u:${unsorted.n}`, kind: "sort", text: unsorted.n === 1 ? "1 task has no area yet" : `${unsorted.n} tasks have no area yet`, sub: "Sort them", href: "/os/inbox" })

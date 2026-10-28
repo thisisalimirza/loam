@@ -28,11 +28,23 @@ function DueLabel({ t, today }: { t: Task; today: string }) {
   return <span className={`due${r.warn && t.status !== "done" ? " warn" : ""}`}>{t.due_date ? "" : "Planned "}{r.label}</span>
 }
 
+/** Quiet indicators: priority, checklist progress, notes. */
+function Quiet({ t }: { t: Task }) {
+  const c = t.checklist ?? [], d = c.filter(i => i.done).length
+  return <span className="qi">
+    {(t.priority === "urgent" || t.priority === "high") && <span className={`qi-p p-${t.priority}`} aria-label={`${t.priority} priority`}>{t.priority === "urgent" ? "!!!" : "!!"}</span>}
+    {c.length > 0 && <span className="qi-c" aria-label={`${d} of ${c.length} checklist items done`}><Icon name="list" size={12} />{d}/{c.length}</span>}
+    {t.notes?.trim() && <span className="qi-n" aria-label="Has notes"><Icon name="pen" size={12} /></span>}
+  </span>
+}
+
 export function TaskRow({ t, areas, today, hideArea }: { t: Task; areas: AreaLite[]; today: string; hideArea?: boolean }) {
   const [done, setDone] = useOptimistic(t.status === "done")
   const [, start] = useTransition()
   const [title, setTitle] = useOptimistic(t.title)
   const [editing, setEditing] = useState(false)
+  const router = useRouter()
+  const open = (id: string) => { const u = new URL(location.href); u.searchParams.set("task", id); router.push(u.pathname + u.search, { scroll: false }) }
   const save = (v: string) => {
     setEditing(false)
     const n = v.trim()
@@ -43,13 +55,13 @@ export function TaskRow({ t, areas, today, hideArea }: { t: Task; areas: AreaLit
       <button className="chk" aria-label={done ? "Mark not done" : "Mark done"} onClick={() => start(async () => {
         setDone(!done)
         const next = await toggleTask(t.id, !done)
-        if (!done) toast(next ? { text: `Done. Next up: ${next.title}`, href: `/os/board?open=${next.id}`, cta: "Open" } : t.repeat ? "Done. The next one is scheduled." : "Done.")
+        if (!done) toast(next ? { text: `Done. Next up: ${next.title}`, href: `?task=${next.id}`, cta: "Open" } : t.repeat ? "Done. The next one is scheduled." : "Done.")
       })} />
       {editing
         ? <input className="in tt" autoFocus defaultValue={title} aria-label="Edit task"
             onBlur={e => save(e.currentTarget.value)}
             onKeyDown={e => { if (e.key === "Enter") e.currentTarget.blur(); if (e.key === "Escape") setEditing(false) }} />
-        : <button type="button" className="tt" title="Click to edit" onClick={() => setEditing(true)}><Mentions text={title} />{t.repeat && <span className="rep" title={`Repeats ${t.repeat}`}> ↻</span>}</button>}
+        : <button type="button" className="tt" aria-label={`Open ${title}`} onClick={() => open(t.id)} onDoubleClick={() => setEditing(true)}><Mentions text={title} />{t.repeat && <span className="rep" title={`Repeats ${t.repeat}`}> ↻</span>}<Quiet t={t} /></button>}
       {!hideArea && <AreaPill id={t.area_id} areas={areas} />}
       <DueLabel t={t} today={today} />
       <button className="x" aria-label="Delete task" onClick={() => start(() => deleteTask(t.id))}><Icon name="x" size={14} /></button>

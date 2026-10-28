@@ -57,7 +57,7 @@ export default function Capture() {
   const jumps = q ? JUMPS.filter(j => j.label.toLowerCase().includes(q.toLowerCase())) : JUMPS
   const items: { label: string; sub: string; go: () => void }[] = [
     ...(q.trim() ? [{ label: `Add “${q.trim()}”`, sub: q.includes(":") ? "" : "Inbox", go: () => submit() }] : []),
-    ...hits.map(h => ({ label: h.title, sub: h.kind, go: () => { setOpen(false); router.push(h.kind === "task" ? KIND_HREF.task : KIND_HREF[h.kind] + h.id) } })),
+    ...hits.map(h => ({ label: h.title, sub: h.kind, go: () => { setOpen(false); router.push(h.kind === "task" ? `${location.pathname}?task=${h.id}` : KIND_HREF[h.kind] + h.id) } })),
     ...jumps.map(j => ({ label: j.label, sub: j.key ?? "Go", go: () => { setOpen(false); router.push(j.href) } })),
   ]
 

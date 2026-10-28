@@ -5,7 +5,7 @@ import { after } from "next/server"
 import { enrich } from "./enrich"
 import { requireOwner } from "./auth"
 import { setStatus } from "./taskStatus"
-import { normTask, type BoardTask } from "./board"
+import { getBoard, normTask, type BoardTask } from "./board"
 import { REPEATS } from "./dates"
 import type { Activity, BoardColumn, BoardFilters, BoardView, CheckItem, Task, TaskStatus } from "./types"
 
@@ -201,4 +201,9 @@ export async function bViewSave(name: string, filters: BoardFilters) {
 }
 export async function bViewDelete(id: string) {
   return run(async () => { await db()`delete from loam_os.board_views where id = ${uuid(id)}`; return true })
+}
+
+/** Everything the shared task panel needs, for opening a task from any page. */
+export async function bData() {
+  return run(async () => getBoard())
 }

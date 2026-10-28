@@ -24,7 +24,7 @@ export default function FollowUps({ personId, convoId, items, title = "Suggested
             <div className="sg-act">
               <button className="btn sm" onClick={async () => {
                 const t = await makeTask(i, { followUp: true, personId, source: { type: "person", id: personId } })
-                hide(i); if (t) toast({ text: `Added: ${t.title}`, href: `/os/board?open=${t.id}`, cta: "Open" })
+                hide(i); if (t) toast({ text: `Added: ${t.title}`, href: `?task=${t.id}`, cta: "Open" })
               }}>Add</button>
               <button className="btn ghost sm" aria-label="Dismiss" onClick={() => hide(i)}><Icon name="x" size={14} /></button>
             </div>
