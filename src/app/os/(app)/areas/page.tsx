@@ -29,7 +29,7 @@ export default async function Areas() {
   )
   return (
     <>
-      <PageHeader title="Areas" sub="The ongoing parts of your life, and the projects inside each." actions={<>{newProject}<Link href="/os/settings" className="btn ghost">Manage areas</Link></>} />
+      <PageHeader title="Areas" sub="The ongoing parts of your life, and the projects inside each." actions={<>{newProject}</>} />
       <div className="stack">
         {live.length === 0 ? <StarterAreas /> : (
           <ul className="arealist">
@@ -46,9 +46,9 @@ export default async function Areas() {
                     <span className="meta">{mine.length} open</span>
                     <Icon name="arrow" size={16} />
                   </Link>
-                  {nx ? (
+                  {nx && !nx.project_id ? (
                     <Link href={`/os/areas/${a.id}`} className="al-next"><small>Next</small><span className="tt">{nx.title}</span>{due && <span className={`due${due.warn ? " warn" : ""}`}>{due.label}</span>}</Link>
-                  ) : <p className="al-next quiet">Nothing queued. Open it to add a next step.</p>}
+                  ) : !nx && <p className="al-next quiet">Nothing queued. Open it to add a next step.</p>}
                   {ps.length > 0 && (
                     <ul className="al-ps">
                       {ps.map(p => {

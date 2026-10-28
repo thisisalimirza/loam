@@ -1,7 +1,6 @@
 import Link from "next/link"
 import { getEntries, getOnThisDay } from "@/lib/os/data"
 import { fmtDate, todayISO } from "@/lib/os/dates"
-import { newEntry } from "@/lib/os/actions"
 import { Card, Empty, PageHeader } from "../../_ui/ui"
 import { Icon } from "../../_ui/icons"
 
@@ -27,8 +26,7 @@ export default async function Journal({ searchParams }: { searchParams: Promise<
     <>
       <PageHeader title="Journal" sub="Private. Most of it goes nowhere, and that’s fine."
         actions={<>
-          <form action={newEntry}><button className="btn">New entry</button></form>
-          <Link href="/os/journal/write" className="btn pri"><Icon name="pen" />Write today</Link>
+          <Link href="/os/journal/write" className="btn pri"><Icon name="pen" />Write</Link>
         </>} />
       <div className="stack">
         <form className="inline" action="/os/journal">

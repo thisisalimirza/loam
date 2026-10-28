@@ -10,7 +10,7 @@ export default async function BoardPage() {
   const data = await getBoard()
   return (
     <>
-      <PageHeader eyebrow="All work" title="Board" sub="Every task across areas and projects. Press ? for shortcuts." />
+      <PageHeader title="Board" />
       <Suspense><Board data={data} today={todayISO()} /></Suspense>
     </>
   )

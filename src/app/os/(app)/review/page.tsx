@@ -14,12 +14,12 @@ export default async function Review() {
       <PageHeader eyebrow="Weekly review" title={`${fmtDate(w.from)} – ${fmtDate(today)}`}
         sub={`${w.done.length} done · ${w.words.days} journal ${w.words.days === 1 ? "day" : "days"}${w.published ? ` · ${w.published} published` : ""}`} />
       <div className="split"><div className="stack">
-        <Card title="Needs a decision" icon="flag" meta={w.overdue.length + w.stuck.length || undefined}>
-          {w.overdue.length + w.stuck.length === 0 ? <p className="quiet-line" style={{ padding: "4px 16px 14px" }}>Nothing overdue and every project has a next step.</p> : <ul>
+        {w.overdue.length + w.stuck.length > 0 && <Card title="Needs a decision" icon="flag" meta={w.overdue.length + w.stuck.length}>
+          <ul>
             {w.overdue.map(t => <li key={t.id}><Link href={`/os/review?task=${t.id}`} scroll={false} className="row"><span className="tt">{t.title}</span><span className="due warn">{relDue(t.due_date, today).label}</span></Link></li>)}
             {w.stuck.map(p => <li key={p.id}><Link href={`/os/projects/${p.id}`} className="row"><span className="tt">{p.name}</span><span className="due warn">No next step</span></Link></li>)}
-          </ul>}
-        </Card>
+          </ul>
+        </Card>}
         <Card title="Coming up" icon="calendar" meta={w.upcoming.length || undefined}>
           {w.upcoming.length === 0 ? <p className="quiet-line" style={{ padding: "4px 16px 14px" }}>Nothing dated for the next 7 days.</p> : <ul>
             {w.upcoming.map(t => <li key={t.id}><Link href={`/os/review?task=${t.id}`} scroll={false} className="row"><span className="tt">{t.title}</span><span className="due">{relDue(t.due_date, today).label}</span></Link></li>)}

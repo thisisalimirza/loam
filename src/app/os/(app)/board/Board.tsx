@@ -263,7 +263,6 @@ export default function Board({ data, today, scope = {}, embedded }: { data: Boa
   const open = openId ? tasks.find(t => t.id === openId) ?? null : null
   const doneCount = scoped.filter(t => t.status === "done").length
   const overdue = scoped.filter(t => t.status !== "done" && t.due_date && t.due_date < today).length
-  const doing = scoped.filter(t => t.status === "doing").length
   const stale = scoped.filter(t => t.status === "doing" && ageDays(t.status_changed_at) > 7).length
 
   async function archiveDone() {
@@ -294,7 +293,7 @@ export default function Board({ data, today, scope = {}, embedded }: { data: Boa
           {panel === "filter" && <FilterPanel data={data} tags={allTags} filters={filters} scope={scope} onChange={setFilters} onClose={() => setPanel(null)}
             onSave={async name => { const r = await bViewSave(name, filters); if (!r.ok) return fail(r.error); setViews(v => [...v, r.data]); toast(`Saved “${r.data.name}”`) }} />}
         </div>
-        <button className={`btn sm${lanes ? " on" : ""}`} onClick={toggleLanes} title="Group by area (g)"><Icon name="areas" size={14} />Lanes</button>
+        <button className={`btn sm${lanes ? " on" : ""}`} onClick={toggleLanes} title="Group by area (g)"><Icon name="areas" size={14} />Group by area</button>
         <span className="bd-grow" />
         {!embedded && <button className="btn sm ghost" onClick={archiveDone} disabled={!doneCount} title="Archive done cards">Archive done</button>}
         {!embedded && archived > 0 && <button className="btn sm ghost" onClick={restore} title="Bring archived cards back">Restore {archived}</button>}
@@ -314,8 +313,7 @@ export default function Board({ data, today, scope = {}, embedded }: { data: Boa
       )}
 
       <div className="bd-stats">
-        <span><b>{scoped.length - doneCount}</b> open</span><span><b>{doing}</b> in progress</span>
-        {overdue > 0 && <button className="warn" onClick={() => setFilters(f => ({ ...f, due: "overdue" }))}><b>{overdue}</b> overdue</button>}
+                {overdue > 0 && <button className="warn" onClick={() => setFilters(f => ({ ...f, due: "overdue" }))}><b>{overdue}</b> overdue</button>}
         {stale > 0 && <span className="warn"><b>{stale}</b> in progress for over a week</span>}
         {nFilters > 0 || q ? <span>Showing {visible.length}</span> : null}
       </div>
@@ -538,7 +536,7 @@ function ColumnEditor({ col, canDelete, index, count, onClose, onSave, onDelete,
 }
 
 function Help({ onClose }: { onClose: () => void }) {
-  const rows: [string, string][] = [["n", "New card"], ["/", "Search"], ["f", "Filters"], ["g", "Lanes by area"], ["j / k", "Next / previous card"], ["Enter", "Open card"], ["[ / ]", "Move card left / right"], ["Space", "Pick up, arrows to move, Space to drop"], ["Esc", "Close"]]
+  const rows: [string, string][] = [["n", "New card"], ["/", "Search"], ["f", "Filters"], ["g", "Group by area"], ["j / k", "Next / previous card"], ["Enter", "Open card"], ["[ / ]", "Move card left / right"], ["Space", "Pick up, arrows to move, Space to drop"], ["Esc", "Close"]]
   return (
     <div className="bd-help-panel" role="dialog" aria-label="Keyboard shortcuts">
       <div className="ch"><h2>Shortcuts</h2><button className="btn ghost sm" onClick={onClose} aria-label="Close"><Icon name="x" size={14} /></button></div>

@@ -54,7 +54,7 @@ export default async function Settings() {
           <li><Link href="/os/site" className="row"><Icon name="globe" /><span className="tt">Website</span><Icon name="arrow" /></Link></li>
           <li className="row"><Icon name="calendar" /><span className="tt">Google Calendar</span><small className="meta">Not connected</small></li>
           <li className="row"><Icon name="sparkle" /><span className="tt">Smart suggestions</span><small className="meta">On</small></li>
-          <li className="row" data-ai={ai.ok ? "ok" : "off"}><Icon name="sparkle" /><span className="tt">AI help</span><small className="meta">{ai.ok ? "Working" : ai.why}</small></li>
+          <li className="row" data-ai={ai.ok ? "ok" : "off"}><Icon name="sparkle" /><span className="tt">AI help</span><small className="meta">{ai.ok ? "On" : ai.why}</small></li>
         </ul>
         <p className="grp-f">Suggestions find people and dates in what you write, with or without AI. AI help catches names the basic check misses. Both run on the server and never touch the public site.</p>
       </section>

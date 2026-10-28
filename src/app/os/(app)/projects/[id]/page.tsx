@@ -4,7 +4,7 @@ import { deleteProject, setProjectStatus, updateProject } from "@/lib/os/actions
 import { nextUp } from "@/lib/os/focus"
 import Sheet from "../../../_ui/Sheet"
 import DateChip from "../../../_ui/DateChip"
-import { fmtDate, relDue, todayISO } from "@/lib/os/dates"
+import { fmtDate, todayISO } from "@/lib/os/dates"
 import { Card, PageHeader } from "../../../_ui/ui"
 import { AddTask, TaskList, ViewToggle } from "../../../_ui/Tasks"
 import Confirm from "../../../_ui/Confirm"
@@ -42,12 +42,7 @@ export default async function ProjectPage({ params, searchParams }: { params: Pr
             </div>
           </Sheet>
         </>} />
-      {view !== "board" ? null : nx ? (
-        <section className="card focus-card" style={{ marginBottom: 16 }}><div className="fc-b">
-          <span className="eyebrow" style={{ width: "100%", margin: 0 }}>Next step</span>
-          <span className="fc-t">{nx.title}</span>{nx.due_date && <span className="due">{relDue(nx.due_date, today).label}</span>}
-        </div></section>
-      ) : p.status === "active" && <p className="quiet-line" style={{ marginBottom: 12 }}>No next step yet. What’s the very next physical action? Add it below.</p>}
+      {view === "board" && !nx && p.status === "active" && <p className="quiet-line" style={{ marginBottom: 12 }}>No next step yet. What’s the very next physical action? Add it below.</p>}
       {view === "board" ? <Board data={await getBoard()} today={today} scope={{ projectId: id }} embedded /> : (
         <Card title="Tasks" icon="tasks">
           <AddTask projectId={id} areaId={p.area_id ?? undefined} placeholder="Add a step. Try “… by friday”" />
