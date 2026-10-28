@@ -514,3 +514,10 @@ background:var(--bg);font:400 var(--t-body)/1.34 var(--font);letter-spacing:-.01
 .os .sheet-b form .btn.pri[type=submit],.os .sheet-b form > div > .btn.pri:only-child{display:none}
 .os .sheet{animation:sheet-in .35s var(--ease-sheet)}
 @keyframes sheet-in{from{transform:translateY(16px);opacity:0}to{transform:none;opacity:1}}
+.os .grp{max-width:720px;margin:0 0 28px}
+.os .grp-h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 16px 6px}
+.os .grp-h h2{font-size:var(--t-foot);font-weight:500;color:var(--mute)}
+.os .grp-l{padding:0 0 0 0;overflow:hidden}.os .grp-l .row{padding:0 16px;border-radius:0}
+.os .grp-l .tt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.os .grp-l li+li{border-top:.5px solid var(--line)}
+.os .grp-f{font-size:var(--t-foot);color:var(--mute);padding:6px 16px 0}

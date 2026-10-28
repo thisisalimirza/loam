@@ -1,11 +1,10 @@
 import Link from "next/link"
 import type { CSSProperties } from "react"
 import { getAreas, getProjects, getTasks } from "@/lib/os/data"
-import { createArea, createProject } from "@/lib/os/actions"
+import { createProject } from "@/lib/os/actions"
 import { fmtDate, relDue, todayISO } from "@/lib/os/dates"
 import { nextUp } from "@/lib/os/focus"
 import { PageHeader } from "../../_ui/ui"
-import { Swatches } from "../../_ui/AreaForm"
 import { Icon } from "../../_ui/icons"
 import StarterAreas from "../../_ui/StarterAreas"
 import Sheet from "../../_ui/Sheet"
@@ -18,15 +17,6 @@ export default async function Areas() {
   const today = todayISO()
   const live = areas.filter(a => !a.archived), archived = areas.filter(a => a.archived)
   const loose = projects.filter(p => p.status !== "done" && (!p.area_id || !areas.some(a => a.id === p.area_id)))
-  const newArea = (
-    <Sheet label="New area" primary icon="plus">
-      <form action={createArea} className="form">
-        <label className="fld"><span>Name</span><input className="in" name="name" placeholder="e.g. Health" required aria-label="Area name" /></label>
-        <Swatches />
-        <div><button className="btn pri">Create area</button></div>
-      </form>
-    </Sheet>
-  )
   const newProject = live.length > 0 && (
     <Sheet label="New project" icon="flag">
       <form action={createProject} className="form">
@@ -39,7 +29,7 @@ export default async function Areas() {
   )
   return (
     <>
-      <PageHeader title="Areas" sub="The ongoing parts of your life, and the projects inside each." actions={<>{newProject}{newArea}</>} />
+      <PageHeader title="Areas" sub="The ongoing parts of your life, and the projects inside each." actions={<>{newProject}<Link href="/os/settings" className="btn ghost">Manage areas</Link></>} />
       <div className="stack">
         {live.length === 0 ? <StarterAreas /> : (
           <ul className="arealist">
