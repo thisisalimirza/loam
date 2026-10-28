@@ -74,6 +74,18 @@ export async function createArea(f: FormData) {
   await db()`insert into loam_os.areas (name, color, sort) values (${name}, ${str(f, "color") || "#4f5bd5"}, extract(epoch from now()))`
   back()
 }
+/** Creates only what he ticked in the starter picker. */
+export async function createStarterAreas(picks: { name: string; color: string; projects: string[] }[]) {
+  await requireOwner()
+  const clean = picks.map(p => ({ name: p.name.trim().slice(0, 80), color: /^#[0-9a-f]{6}$/i.test(p.color) ? p.color : "#4f5bd5", projects: p.projects.map(x => x.trim().slice(0, 120)).filter(Boolean).slice(0, 8) })).filter(p => p.name).slice(0, 8)
+  await db().begin(async sql => {
+    for (const [i, p] of clean.entries()) {
+      const [a] = await sql`insert into loam_os.areas (name, color, sort) values (${p.name}, ${p.color}, extract(epoch from now()) + ${i}) returning id`
+      for (const pr of p.projects) await sql`insert into loam_os.projects (name, area_id) values (${pr}, ${a.id})`
+    }
+  })
+  back()
+}
 export async function updateArea(f: FormData) {
   await requireOwner()
   await db()`update loam_os.areas set name = ${str(f, "name")}, color = ${str(f, "color")} where id = ${str(f, "id")}`

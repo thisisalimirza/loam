@@ -358,3 +358,32 @@ min-height:100vh;background:radial-gradient(1200px 400px at 70% -10%,#eef0ff,tra
 }
 .os .writer-date{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .os .rep{color:var(--mute);font-size:12px}
+/* areas list */
+.os .arealist{display:flex;flex-direction:column;gap:14px;list-style:none;margin:0;padding:0}
+.os .arealist>li{padding:0;overflow:hidden;border-left:3px solid var(--c)}
+.os .al-head{display:flex;align-items:center;gap:10px;padding:14px 16px;min-width:0}
+.os .al-head h2{flex:1;min-width:0;margin:0;font-size:16px;overflow-wrap:anywhere}
+.os .al-head .meta{white-space:nowrap}
+.os .al-head:hover h2{color:var(--acc)}
+.os .al-ps{list-style:none;margin:0;padding:0 6px 6px;border-top:1px solid var(--line)}
+.os .al-ps .row{gap:10px}
+.os .al-ps .row .meta{white-space:nowrap;margin-left:auto}
+.os .al-add{display:flex;align-items:center;gap:10px;padding:6px 10px}
+.os .in.bare{border:0;background:transparent;padding:6px 0;flex:1;min-width:0;box-shadow:none}
+.os .in.bare:focus{outline:none;border-bottom:1px solid var(--acc)}
+.os .al-done{display:block;padding:0 16px 12px}
+.os .pop-form{position:relative}
+.os .pop-form>summary{list-style:none;cursor:pointer}
+.os .pop-form>summary::-webkit-details-marker{display:none}
+.os .pop-form:not(.inline-form)>form{position:absolute;right:0;top:calc(100% + 8px);width:min(320px,calc(100vw - 32px));z-index:20;box-shadow:0 12px 32px rgba(15,23,42,.12)}
+.os .pop-form.inline-form>form{margin-top:10px;max-width:420px}
+.os .starter .st-list{list-style:none;margin:0;padding:0 8px}
+.os .starter .st-list>li{border-radius:12px;padding:4px 8px}
+.os .starter .st-list>li.on{background:var(--bg)}
+.os .st-head{display:flex;align-items:center;gap:12px;padding:10px 0;cursor:pointer;min-height:44px}
+.os .st-head input{width:18px;height:18px;accent-color:var(--acc);flex:none}
+.os .st-t{display:flex;flex-direction:column;min-width:0}
+.os .st-t small{color:var(--mute);font-size:13px}
+.os .st-ps{display:flex;flex-wrap:wrap;gap:6px;padding:0 0 12px 30px}
+@media (max-width:520px){.os .al-head .meta{display:none}.os .al-ps .row .due{display:none}}
+.os .nav.area .dot{flex:0 0 8px;width:8px;max-width:8px}.os .nav.area span:last-child{flex:1;min-width:0}
