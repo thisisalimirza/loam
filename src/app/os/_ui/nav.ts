@@ -12,7 +12,7 @@ export const NAV_GROUPS: [string, N[], boolean?][] = [
     { href: "/os/drafts", label: "Drafts", icon: "drafts", also: ["/os/schedule"] },
     { href: "/os/site", label: "Site", icon: "globe" },
   ]],
-  ["", [
+  ["Reflect", [
     { href: "/os/learn", label: "Learn", icon: "learn" },
     { href: "/os/people", label: "People", icon: "people" },
     { href: "/os/review", label: "Weekly review", icon: "review" },

@@ -44,7 +44,7 @@ export default function Sheet({ label, title, icon, primary, iconOnly, row, chil
   const opener = useRef<HTMLButtonElement>(null)
   return (
     <>
-      {row ? <button ref={opener} type="button" className="row row-btn" onClick={() => setOpen(true)} aria-label={label}>{row}</button> : <button ref={opener} type="button" className={`btn${primary ? " pri" : ""}${iconOnly ? " ghost icon-btn" : ""}`} onClick={() => setOpen(true)} aria-label={iconOnly ? label : undefined} title={iconOnly ? label : undefined}>
+      {row ? <button ref={opener} type="button" className="row row-btn" onClick={() => setOpen(true)} aria-label={label}>{row}</button> : <button ref={opener} type="button" className={`btn${primary ? " pri" : ""}${iconOnly ? " ghost icon-btn" : ""}${iconOnly && icon === "plus" ? " add-btn" : ""}`} onClick={() => setOpen(true)} aria-label={iconOnly ? label : undefined} title={iconOnly ? label : undefined}>
         {icon && <Icon name={icon} />}{!iconOnly && label}
       </button>}
       <SheetPanel open={open} onClose={() => setOpen(false)} title={title ?? label} opener={opener}>{children}</SheetPanel>

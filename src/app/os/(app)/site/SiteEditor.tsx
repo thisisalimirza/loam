@@ -64,7 +64,7 @@ export default function SiteEditor({ post, sections, defaultSection, created }: 
       <div className="sd-wrap">
         <section className="sd-body stack" style={{ gap: 10 }}>
           <nav className="seg" style={{ alignSelf: "flex-start" }}>
-            <button type="button" className={mode === "write" ? "on" : ""} onClick={() => setMode("write")}>Write</button>
+            <button type="button" className={mode === "write" ? "on" : ""} onClick={() => setMode("write")}>Edit</button>
             <button type="button" className={mode === "preview" ? "on" : ""} onClick={() => setMode("preview")}>Preview</button>
           </nav>
           <textarea className="editor" name="body" value={body} onChange={e => setBody(e.target.value)} aria-label="Post body"
@@ -90,7 +90,7 @@ export default function SiteEditor({ post, sections, defaultSection, created }: 
           <div className="fld"><span>Date</span><div><DateChip label="Published" name="date" defaultValue={post.date || null} clearable={false} quick={[["Today", 0], ["Yesterday", -1]]} /></div></div>
           <label className="fld"><span>Summary</span><textarea className="in" name="summary" rows={3} defaultValue={post.summary} placeholder="One line for lists and link previews" /></label>
           <label className="fld"><span>Tags</span><input className="in" name="tags" defaultValue={post.tags.join(", ")} placeholder="comma, separated" /></label>
-          <div className="sw-row"><span className="tt">Visible on the site</span><input type="hidden" name="published" value={published ? "on" : ""} disabled={!published} /><button type="button" role="switch" aria-checked={published} aria-label="Visible on the site" className="switch" onClick={() => { setPublished(!published); setDirty(true) }}><i /></button></div>
+          <div className="sw-row"><span className="tt">Visible</span><input type="hidden" name="published" value={published ? "on" : ""} disabled={!published} /><button type="button" role="switch" aria-checked={published} aria-label="Visible on the site" className="switch" onClick={() => { setPublished(!published); setDirty(true) }}><i /></button></div>
           </div>
         </SheetPanel>
       </div>

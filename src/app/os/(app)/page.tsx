@@ -67,13 +67,12 @@ export default async function Today() {
         {hour >= 17 && <RollOver items={roll} />}
       </Card>
       {strip.length > 0 && (
-        <section className="pstrip" aria-label="Your projects">
-          <h2 className="sec-h">Projects</h2>
-          <ul>{strip.map(x => {
-            const body = <><span className="dot" style={{ "--c": x.color ?? "var(--acc)" } as CSSProperties} /><span className="tt">{x.name}</span>{left(x.days) && <span className="meta">{left(x.days)}</span>}</>
-            return <li key={x.key}>{x.href ? <Link href={x.href}>{body}</Link> : <div>{body}</div>}</li>
-          })}</ul>
-        </section>
+        <Card title="Projects" icon="areas">
+          {strip.map(x => {
+            const body = <><span className="dot" style={{ "--c": x.color ?? "var(--acc)" } as CSSProperties} /><span className="tt">{x.name}{left(x.days) && <span className="meta"> · {left(x.days)}</span>}</span>{x.href && <Icon name="chev" />}</>
+            return x.href ? <Link key={x.key} href={x.href} className="jrow prow">{body}</Link> : <div key={x.key} className="jrow prow">{body}</div>
+          })}
+        </Card>
       )}
       {people.length > 0 && (
         <Card title="Follow up" icon="chat">

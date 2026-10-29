@@ -14,7 +14,7 @@ export default async function Notes() {
   return (
     <>
       <WriteSwitch /><PageHeader title="Notes"
-        actions={<form action={createNote}><button className="btn ghost icon-btn" aria-label="New note" title="New note"><Icon name="plus" /></button></form>} />
+        actions={<form action={createNote}><button className="btn ghost icon-btn add-btn" aria-label="New note" title="New note"><Icon name="plus" /></button></form>} />
       {notes.length === 0 ? <p className="quiet-line empty-one">No notes yet.</p> : <Card>{(
           <ul>
             {notes.map(n => {

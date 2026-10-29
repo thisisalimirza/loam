@@ -80,7 +80,7 @@ export default async function Learn({ searchParams }: { searchParams: Promise<{ 
       {tab === "edges" && sp.err && <p className="err">{sp.err === "search" ? "Searching X by topic isn’t set up yet. Paste post links instead." : "Couldn’t read those posts. Check the links."}</p>}
       {tab === "review" && !items.length && <p className="quiet-line">Nothing to review today.</p>}
       {tab === "reading" && (reading.length ? <div className="card"><Reading items={reading} /></div> : <p className="quiet-line">Nothing to read yet.</p>)}
-      {(tab === "evidence" || tab === "edges") && !items.length && <p className="quiet-line">{tab === "edges" ? "No debates yet. Keep a few topics above, or add posts." : "Nothing saved yet."}</p>}
+      {(tab === "evidence" || tab === "edges") && !items.length && <p className="quiet-line">{tab === "edges" ? "No debates yet. Pick a topic above or paste posts." : "Nothing saved yet."}</p>}
       <ul className="lrn-list">{items.map(it => <Item key={it.id} it={it} review={tab === "review"} />)}</ul>
     </>
   )

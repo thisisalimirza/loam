@@ -42,6 +42,7 @@ export default async function ProjectPage({ params, searchParams }: { params: Pr
               <div className="sw-row"><span className="tt">Due</span><DateChip bare label="Due" name="due_date" defaultValue={p.due_date} /></div>
               <div><button className="btn pri">Save</button></div>
             </form>
+            <div className="form">
             <form className="sw-row"><span className="tt">Status</span>
               <div className="seg" role="group" aria-label="Status">{(["active", "paused", "done"] as const).map(s => (
                 <button key={s} formAction={setProjectStatus.bind(null, id, s)} className={p.status === s ? "on" : ""} aria-pressed={p.status === s}>{s === "active" ? "Active" : s === "paused" ? "Paused" : "Done"}</button>
@@ -49,9 +50,10 @@ export default async function ProjectPage({ params, searchParams }: { params: Pr
             </form>
             {p.due_date && p.due_date >= today && (
               <form action={pin ? async () => { "use server"; await deletePin(pin.id) } : async () => { "use server"; await pinDate(p.name, p.due_date!, p.area_id) }} className="sw-row">
-                <span className="tt">Countdown on Today</span>
-                <button role="switch" aria-checked={!!pin} aria-label="Countdown on Today" className="switch"><i /></button>
+                <span className="tt">Countdown</span>
+                <button role="switch" aria-checked={!!pin} aria-label="Countdown" className="switch"><i /></button>
               </form>)}
+            </div>
             <div className="danger-zone">
               <Confirm action={deleteProject.bind(null, id)} label="Delete project" message="Delete this project? Its tasks stay in the area." />
             </div>

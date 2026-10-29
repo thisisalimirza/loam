@@ -55,7 +55,7 @@ function Row({ d, today, day }: { d: { id: string; title: string | null; channel
         <label className="fld"><span>Day</span><input className="in" type="date" name="day" min={today} defaultValue={day ?? addDays(today, 1)} aria-label={`Day for ${title}`} /></label>
         <div className="inline"><button className="btn sm">Schedule</button><Link href={`/os/drafts/${d.id}`} className="btn sm ghost">Open draft</Link></div>
       </form>
-      {day && <form action={async () => { "use server"; await scheduleDraft(d.id, null) }}><button className="btn ghost sm">Unschedule</button></form>}
+      {day && <form className="danger-zone" action={async () => { "use server"; await scheduleDraft(d.id, null) }}><button className="dz-row">Unschedule</button></form>}
     </Sheet>
   )
 }

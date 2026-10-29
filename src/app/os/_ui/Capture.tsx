@@ -95,7 +95,7 @@ export default function Capture() {
 
   return (
     <>
-      {/^\/os(\/(journal|notes|people|more))?$/.test(pathname) && <button className="capture" onClick={() => setOpen(true)}>
+      {/^\/os(\/[a-z]+)?$/.test(pathname) && !/^\/os\/(login|new)$/.test(pathname) && <button className="capture" onClick={() => setOpen(true)}>
         <Icon name="plus" /><span>{flash || "Add a task, note, or person…"}</span>
       </button>}
       {open && (

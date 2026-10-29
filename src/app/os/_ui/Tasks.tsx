@@ -35,7 +35,7 @@ function Quiet({ t }: { t: Task }) {
   const c = Array.isArray(t.checklist) ? t.checklist : [], d = c.filter(i => i.done).length
   return <span className="qi">
     {(t.priority === "urgent" || t.priority === "high") && <span className={`qi-p p-${t.priority}`} aria-label={`${t.priority} priority`}>{t.priority === "urgent" ? "!!!" : "!!"}</span>}
-    {c.length > 0 && <span className="qi-c" aria-label={`${d} of ${c.length} checklist items done`}><Icon name="list" size={12} />{d}/{c.length}</span>}
+    {c.length > 0 && <span className="qi-c" aria-label={`${d} of ${c.length} checklist items done`}><Icon name="check" size={12} />{d}/{c.length}</span>}
     {t.notes?.trim() && <span className="qi-n" aria-label="Has notes"><Icon name="pen" size={12} /></span>}
   </span>
 }

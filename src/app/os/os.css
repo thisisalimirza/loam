@@ -659,7 +659,7 @@ background:var(--bg);font:400 var(--t-body)/1.34 var(--font);letter-spacing:-.01
 .os .tpl-o input{margin-top:3px;accent-color:var(--acc)}.os .tpl-o span{display:flex;flex-direction:column;gap:1px}.os .tpl-o small{color:var(--mute);font-size:13px}
 .os .pf-g{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card,#fff)}
 .os .pf-r{display:flex;align-items:center;gap:12px;padding:8px 14px;min-height:44px;text-align:left}.os .pf-r+.pf-r{border-top:1px solid var(--line)}
-.os .pf-r>span:first-child{width:52px;flex:none;color:var(--mute);font-size:14px}
+.os .pf-r>span:first-child{width:84px;flex:none;color:var(--mute);font-size:14px}
 .os .pf-r .in{flex:1;min-width:0;max-width:none;border:0;background:transparent;padding-left:0}
 .os .dr-new{display:flex;align-items:center;gap:6px;background:var(--card,#fff);border:1px solid var(--line);border-radius:12px;padding:4px 6px 4px 4px;margin:0 0 16px;min-width:0}
 .os .dr-new .in{flex:1;min-width:0;border:0;background:transparent;box-shadow:none}
@@ -756,3 +756,32 @@ background:var(--bg);font:400 var(--t-body)/1.34 var(--font);letter-spacing:-.01
 .os .hd-actions .icon-btn:has(svg):not([aria-label="More"]):not([aria-label^="Edit"]){color:var(--acc)}
 /* D8: on phones, a page with a back link keeps its title on its own line; actions sit up by the back link */
 @media (max-width:640px){.os .hd:has(>div>.crumb){position:relative}.os .hd:has(>div>.crumb)>.hd-actions{position:absolute;top:-8px;right:0;margin:0;flex-wrap:nowrap}.os .hd:has(>div>.crumb)>div>.crumb{min-height:32px;display:inline-flex;align-items:center}.os .hd:has(>div>.crumb) .hd-actions .seg button{padding-inline:10px}}
+/* E1 site list */
+.os .site-bar{display:flex;gap:8px;align-items:center;margin:0 0 12px;min-width:0}
+.os .site-bar .seg{min-width:0;overflow-x:auto;scrollbar-width:none}
+.os .site-bar .seg a{white-space:nowrap}
+.os .site-bar .sd-menu summary{display:inline-flex;align-items:center;gap:4px}
+.os .site-bar .sd-pop{left:0;right:auto}
+/* E8: one add button: accent, full size in the page header, same spot everywhere */
+.os .add-btn{color:var(--acc)}
+.os .hd-actions .add-btn{width:36px;height:36px;padding:0;border-radius:50%;background:var(--acc);color:var(--onacc,#fff);display:inline-grid;place-items:center;flex:none}
+.os .hd-actions .add-btn:hover{filter:brightness(1.08);background:var(--acc)}
+.os .hd-actions .add-btn svg{width:20px;height:20px}
+/* E10 site editor body aligns with the title */
+.os .site-ed .sd-wrap{margin:0;max-width:760px}
+@media (min-width:641px){.os .hd:has(>div>.crumb):has(>div>.sub)>.hd-actions{align-self:flex-start;margin-top:28px}}
+/* E9 */
+.os .drawer-h{justify-content:flex-end}
+.os .dr-del{all:unset;cursor:pointer;color:var(--red,#d93025);font-size:15px;padding:8px 0}.os .dr-del:hover{text-decoration:underline}
+/* E6 board: switcher is the column name on phones; header bar dropped, its ⋯ lives in the switcher row */
+.os .col-jump-row{display:none;align-items:center;gap:6px;margin:0 0 10px;min-width:0}
+.os .col-jump-row .col-jump{margin:0;display:flex;min-width:0}
+.os .cj-more{flex:none;width:32px;height:32px;display:grid;place-items:center}
+@media (max-width:899px){.os .col-jump-row{display:flex}.os .bd:not(.lanes) .bd-colh{display:none}}
+.os .bd-count:empty{display:none}
+.os .bd-add{color:var(--acc)}
+.os .bd-bar:has(>form.bd-search){margin-bottom:14px}.os .bd-bar .sd-menu summary{display:inline-flex;align-items:center;gap:6px}.os .bd-bar .sd-pop{left:0;right:auto}
+.os:has(.modal-bg:not([hidden]),.drawer-bg:not([hidden])) .capture{display:none}
+/* E5 area is grey text at every width */
+.os li.trow .rmeta .pill{background:none;padding:0;color:var(--mute);font-size:13px;border:0}.os li.trow .rmeta .pill::before{display:none}
+.os .prow .dot{width:10px;height:10px;border-radius:50%;background:var(--c);flex:none;margin:0 4px}

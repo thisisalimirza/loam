@@ -1,7 +1,5 @@
-import { getAreas, getPins, getProjects } from "@/lib/os/data"
-import { pinName } from "@/lib/os/pinname"
-import { createArea, deletePin, logout } from "@/lib/os/actions"
-import { fmtDate } from "@/lib/os/dates"
+import { getAreas } from "@/lib/os/data"
+import { createArea, logout } from "@/lib/os/actions"
 import { aiOff } from "@/lib/os/ai"
 import AiSwitch from "../../_ui/AiSwitch"
 import AreaEdit from "../../_ui/AreaEdit"
@@ -14,7 +12,7 @@ export const metadata = { title: "Settings" }
 export const dynamic = "force-dynamic"
 
 export default async function Settings() {
-  const [areas, pins, off, projects] = await Promise.all([getAreas(true), getPins(), aiOff(), getProjects()])
+  const [areas, off] = await Promise.all([getAreas(true), aiOff()])
   return (
     <>
       <PageHeader title="Settings" />
@@ -31,20 +29,7 @@ export default async function Settings() {
           </Sheet></li>
         </ul>
       </section>
-      <section className="grp" aria-label="Pinned dates">
-        <div className="grp-h"><h2>Pinned dates</h2></div>
-        <ul className="card grp-l">
-          {pins.map(p => (
-            <li key={p.id}><Sheet label={pinName(p, projects)} row={<><span className="tt">{pinName(p, projects)}</span><small className="meta">{fmtDate(p.pin_date)}</small><Icon name="chev" className="i chev" /></>}>
-              <p className="meta" style={{ margin: "0 0 12px" }}>Counts down to {fmtDate(p.pin_date)} on Today.</p>
-              <form action={deletePin.bind(null, p.id)}><button className="btn" style={{ color: "var(--warn)" }} aria-label={`Unpin ${pinName(p, projects)}`}>Unpin</button></form>
-            </Sheet></li>
-          ))}
-          {!pins.length && <li className="row meta">Pin a project deadline from Today to count down to it.</li>}
-        </ul>
-      </section>
       <section className="grp" aria-label="Suggestions">
-        <div className="grp-h"><h2>Suggestions</h2></div>
         <ul className="card grp-l">
           <li className="row sw-row"><Icon name="sparkle" /><span className="tt">Suggestions<small className="sw-sub">Uses AI for names it can’t match</small></span><AiSwitch on={!off} /></li>
         </ul>

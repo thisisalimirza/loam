@@ -113,7 +113,6 @@ export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOp
     <div className="drawer-bg" onMouseDown={e => { if (e.target === e.currentTarget) onClose() }}>
       <aside className="drawer" ref={panel} tabIndex={-1} role="dialog" aria-label={t.title}>
         <header className="drawer-h">
-          <button className="btn ghost sm" onMouseDown={e => e.preventDefault()} onClick={() => { setTitle(t.title); setNotes(t.notes ?? ""); onClose() }}>Cancel</button>
           <button className="btn ghost sm dr-done" onClick={() => { (document.activeElement as HTMLElement | null)?.blur(); setTimeout(onClose, 0) }}>Done</button>
         </header>
         <div className="drawer-b">
@@ -192,7 +191,7 @@ export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOp
           </section>
 
           <section className="dr-sec">
-            <h3>People and notes</h3>
+            {(linkedPeople.length > 0 || linkedNotes.length > 0) && <h3>People and notes</h3>}
             <div className="chips">
               {linkedPeople.map(p => <span key={p.id} className="chip on"><Link href={`/os/people/${p.id}`}>{p.name}</Link><button aria-label={`Unlink ${p.name}`} onClick={() => link("person", p.id, false)}><Icon name="x" size={11} /></button></span>)}
               {linkedNotes.map(n => <span key={n.id} className="chip on"><Link href={`/os/notes/${n.id}`}>{n.title}</Link><button aria-label={`Unlink ${n.title}`} onClick={() => link("note", n.id, false)}><Icon name="x" size={11} /></button></span>)}
@@ -208,11 +207,11 @@ export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOp
           </details>
         </div>
         <footer className="drawer-f">
-          <button className="btn sm danger" onClick={() => {
+          <button className="dr-del" onClick={() => {
             const snap = t
             onDeleted()
             undoable("Task deleted", async () => { const r = await bDelete(snap.id); if (!r.ok) throw new Error(r.error); router.refresh() }, () => onRestore?.(snap))
-          }}><Icon name="trash" size={14} />Delete</button>
+          }}>Delete task</button>
           <span className="meta foot-note">{[t.created_at && `Added ${new Date(t.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}`, t.status !== "done" && t.status_changed_at && inFor(t.status_changed_at) && `In ${colName} for ${inFor(t.status_changed_at)}`].filter(Boolean).join(" · ")}</span>
         </footer>
       </aside>

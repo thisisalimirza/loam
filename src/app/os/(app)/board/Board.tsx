@@ -319,7 +319,7 @@ export default function Board({ data, today, scope = {}, embedded }: { data: Boa
       {panel === "help" && <Help onClose={() => setPanel(null)} />}
 
       <DndContext sensors={sensors} collisionDetection={collide} onDragStart={onStart} onDragOver={onOver} onDragEnd={onEnd} onDragCancel={() => { setActive(null); setDrag(null) }}>
-        {!lanes && <ColJump scroller={scroller} sel=".bd-col" cols={cols.map(c => ({ id: c.id, label: c.name, count: cellView(laneList[0]?.id ?? "all", c.id).length }))} />}
+        {!lanes && <ColJump scroller={scroller} sel=".bd-col" cols={cols.map(c => ({ id: c.id, label: c.name }))} onEdit={id => setColEdit(id)} />}
         <div className="bd-scroll hfade" ref={scroller}>
           {laneList.map(lane => (
             <section key={lane.id} className="bd-lane">
@@ -408,7 +408,7 @@ function Column({ col, lane, showHead, count, total, children, footer, onEdit, d
           <span className="bd-grip" {...attributes} {...listeners} aria-label={`Move column ${col.name}`} title={dragDisabled ? undefined : "Drag to reorder"}>
             <i className={`bd-kind k-${col.kind}`} />{col.name}
           </span>
-          <span className={`bd-count${over ? " over" : ""}`} title={col.wip ? `Limit ${col.wip}` : undefined}>{col.wip ? `${total}/${col.wip}` : count}</span>
+          <span className={`bd-count${over ? " over" : ""}`} title={col.wip ? `Limit ${col.wip}` : undefined}>{col.wip ? `${total}/${col.wip}` : count || ""}</span>
           <button className="bd-icon" onClick={onEdit} aria-label={`Edit column ${col.name}`}><Icon name="more" size={14} /></button>
         </header>
       )}
@@ -529,7 +529,7 @@ function ColumnEditor({ col, canDelete, index, count, onClose, onSave, onDelete,
 }
 
 function Help({ onClose }: { onClose: () => void }) {
-  const rows: [string, string][] = [["n", "New task"], ["/", "Search"], ["f", "Filters"], ["g", "Group by area"], ["j / k", "Next / previous task"], ["Enter", "Open task"], ["[ / ]", "Move task left / right"], ["Space", "Pick up, arrows to move, Space to drop"], ["Esc", "Close"]]
+  const rows: [string, string][] = [["n", "New task"], ["/", "Search"], ["f", "Filters"], ["g", "Group by area"], ["j / k", "Next / previous task"], ["Enter", "Open task"], ["[ / ]", "Move task left / right"], ["Space", "Pick up, arrows to move, Space to drop"], ["?", "Show shortcuts"], ["Esc", "Close"]]
   return (
     <div className="bd-help-panel" role="dialog" aria-label="Keyboard shortcuts">
       <div className="ch"><h2>Shortcuts</h2><button className="btn ghost sm" onClick={onClose} aria-label="Close"><Icon name="x" size={14} /></button></div>

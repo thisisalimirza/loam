@@ -1,3 +1,4 @@
+import { Icon } from "../../_ui/icons"
 import Link from "next/link"
 import { getWeek } from "@/lib/os/review"
 import { fmtDate, relDue, todayISO } from "@/lib/os/dates"
@@ -16,15 +17,15 @@ export default async function Review() {
       <PageHeader eyebrow="Weekly review" title={`${fmtDate(w.from)} – ${fmtDate(today)}`}
         sub={sum || "Nothing done or written yet this week."} />
       <div className="split"><div className="stack">
-        {w.overdue.length + w.stuck.length > 0 && <Card title="Needs a decision" icon="flag" meta={w.overdue.length + w.stuck.length}>
+        {w.overdue.length + w.stuck.length > 0 && <Card title="Needs a decision" icon="flag">
           <ul>
-            {w.overdue.map(t => <li key={t.id}><Link href={`/os/review?task=${t.id}`} scroll={false} className="row"><span className="tt">{t.title}</span><span className="due warn">{relDue(t.due_date, today).label}</span></Link></li>)}
-            {w.stuck.map(p => <li key={p.id}><Link href={`/os/projects/${p.id}`} className="row"><span className="tt">{p.name}</span><span className="due warn">No next step</span></Link></li>)}
+            {w.overdue.map(t => <li key={t.id}><Link href={`/os/review?task=${t.id}`} scroll={false} className="row"><span className="tt">{t.title}</span><span className="due warn">{relDue(t.due_date, today).label}</span><Icon name="chev" size={14} className="muted" /></Link></li>)}
+            {w.stuck.map(p => <li key={p.id}><Link href={`/os/projects/${p.id}`} className="row"><span className="tt">{p.name}</span><span className="due warn">No next step</span><Icon name="chev" size={14} className="muted" /></Link></li>)}
           </ul>
         </Card>}
         {upcoming.length > 0 && <Card title="Next 7 days" icon="calendar">
           <ul>
-            {upcoming.map(t => <li key={t.id}><Link href={`/os/review?task=${t.id}`} scroll={false} className="row"><span className="tt">{t.title}</span><span className="due">{relDue(t.due_date, today).label}</span></Link></li>)}
+            {upcoming.map(t => <li key={t.id}><Link href={`/os/review?task=${t.id}`} scroll={false} className="row"><span className="tt">{t.title}</span><span className="due">{relDue(t.due_date, today).label}</span><Icon name="chev" size={14} className="muted" /></Link></li>)}
           </ul>
         </Card>}
       </div><aside className="stack side-ctx">
