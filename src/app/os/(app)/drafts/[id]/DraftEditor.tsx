@@ -44,7 +44,7 @@ export default function DraftEditor({ d }: { d: { id: string; title: string; bod
           <textarea className="editor" value={body} onChange={e => setBody(e.target.value)} placeholder={isX ? "Say it in 280." : "Write the draft."} aria-label="Draft body" style={isX ? { minHeight: 180 } : undefined} />
           <div className={`counter${isX && n > 280 ? " over" : ""}`}>{isX ? `${n} / 280` : `${body.trim() ? body.trim().split(/\s+/).length : 0} words`}</div>
         </section>
-        {stage === "scheduled" && (
+        {stage !== "published" && (
           <label className="field">Goes out on<input className="in" type="date" defaultValue={d.scheduled_for ?? ""} onChange={e => scheduleDraft(d.id, e.target.value || null)} /></label>
         )}
         {stage === "published" && (
