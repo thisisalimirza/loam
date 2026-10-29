@@ -67,7 +67,7 @@ export default async function Today() {
         {hour >= 17 && <RollOver items={roll} />}
       </Card>
       {strip.length > 0 && (
-        <Card title="Projects" icon="areas">
+        <Card title="Projects" className="today-list">
           {strip.map(x => {
             const body = <><span className="dot" style={{ "--c": x.color ?? "var(--acc)" } as CSSProperties} /><span className="tt">{x.name}{left(x.days) && <span className="meta"> · {left(x.days)}</span>}</span>{x.href && <Icon name="chev" />}</>
             return x.href ? <Link key={x.key} href={x.href} className="jrow prow">{body}</Link> : <div key={x.key} className="jrow prow">{body}</div>

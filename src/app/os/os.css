@@ -785,3 +785,7 @@ background:var(--bg);font:400 var(--t-body)/1.34 var(--font);letter-spacing:-.01
 /* E5 area is grey text at every width */
 .os li.trow .rmeta .pill{background:none;padding:0;color:var(--mute);font-size:13px;border:0}.os li.trow .rmeta .pill::before{display:none}
 .os .prow .dot{width:10px;height:10px;border-radius:50%;background:var(--c);flex:none;margin:0 4px}
+.os .hd-actions .add-btn,.os .hd-actions .icon-btn.add-btn:has(svg){color:#fff!important;background:var(--acc)}
+.os .site-bar .sd-menu summary .i{transform:rotate(90deg)}
+.os .today-list>.prow:first-of-type{border-top:0}.os .prow .meta{color:var(--mute)}
+.os .hd-actions .add-btn{width:36px!important;height:36px!important;min-width:36px;min-height:36px;padding:0!important;border-radius:50%!important;align-self:center}

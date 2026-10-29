@@ -34,14 +34,14 @@ export default async function TasksPage({ searchParams }: { searchParams: Promis
           {sp.area && <input type="hidden" name="area" value={sp.area} />}{sp.show && <input type="hidden" name="show" value={sp.show} />}
           <input name="q" defaultValue={sp.q ?? ""} placeholder="Search tasks" aria-label="Search tasks" />
         </form>
-        {(areas.length >= 2 || unsorted > 0 || sp.area || doneN > 0) && <details className="sd-menu">
+        <details className="sd-menu">
           <summary className={`btn sm${sp.area ? " on" : ""}`}><Icon name="list" size={14} />View{sp.area ? <b className="bd-n">1</b> : null}</summary>
           <div className="sd-pop" role="menu">
             <span className="pk-h">Area</span>
             {filters.map(f => <a key={f.key} role="menuitemradio" aria-checked={(sp.area ?? "all") === f.key} href={f.href}>{f.label}{(sp.area ?? "all") === f.key ? " ✓" : ""}</a>)}
             {(doneN > 0 || showDone) && <><span className="pk-h">Done</span><a role="menuitem" href={qs({ show: showDone ? undefined : "done" })}>{showDone ? "Hide done" : `Show ${doneN} done`}</a></>}
           </div>
-        </details>}
+        </details>
       </div>
       {view === "board" ? (
         <TaskBoard tasks={tasks} areas={areas} today={today} areaId={area} />
