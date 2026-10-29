@@ -1,11 +1,11 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { getArea, getAreas, getNotes, getPeople, getProjects, getTasks } from "@/lib/os/data"
-import { archiveArea, createProject, deleteArea, updateArea } from "@/lib/os/actions"
+import { archiveArea, deleteArea, updateArea } from "@/lib/os/actions"
 import { todayISO, leftLabel } from "@/lib/os/dates"
 import { nextUp } from "@/lib/os/focus"
+import ProjectForm from "../../../_ui/ProjectForm"
 import Sheet from "../../../_ui/Sheet"
-import DateChip from "../../../_ui/DateChip"
 import { Avatar, Card, PageHeader, Pill } from "../../../_ui/ui"
 import { Swatches } from "../../../_ui/AreaForm"
 import { AddTask, TaskList, ViewToggle } from "../../../_ui/Tasks"
@@ -40,13 +40,7 @@ export default async function AreaPage({ params, searchParams }: { params: Promi
   )
   const newProject = (
     <Sheet label="New project" icon="flag">
-      <form action={createProject} className="form">
-        <input type="hidden" name="area_id" value={id} />
-        <label className="fld"><span>Name</span><input className="in" name="name" placeholder="e.g. Step 2 prep" required aria-label="Project name" /></label>
-        <label className="fld"><span>Template</span><select className="in" name="kind" aria-label="Template"><option value="general">Plain</option><option value="research">Research (Idea to Paper)</option><option value="business">Business (with numbers)</option></select></label>
-        <DateChip label="Due" name="due_date" />
-        <div><button className="btn pri">Create project</button></div>
-      </form>
+      <ProjectForm areaId={id} />
     </Sheet>
   )
   return (

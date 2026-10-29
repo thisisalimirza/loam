@@ -22,6 +22,7 @@ export default function SiteEditor({ post, sections, defaultSection, created }: 
   const [section, setSection] = useState(defaultSection ?? post.section)
   const [published, setPublished] = useState(post.published)
   const [dirty, setDirty] = useState(false)
+  const [details, setDetails] = useState(isNew)
   const form = useRef<HTMLFormElement>(null)
 
   useEffect(() => { if (state?.sha) { setSha(state.sha); setDirty(false) } }, [state])
@@ -41,18 +42,25 @@ export default function SiteEditor({ post, sections, defaultSection, created }: 
         <div style={{ minWidth: 0, flex: 1 }}>
           <Link className="crumb" href="/os/site"><Icon name="back" size={14} />Site</Link>
           <input className="title-in" name="title" value={title} onChange={e => setTitle(e.target.value)} placeholder="Title" aria-label="Title" required autoFocus={isNew} />
-          {!isNew && <div className="meta ell">{post.url}{!post.published && " · hidden"}</div>}
         </div>
         <div className="hd-actions">
           <span className="meta">{pending ? "Saving…" : dirty ? "Unsaved changes" : ""}</span>
-          {!isNew && post.published && <a className="btn ghost sm" href={post.url} target="_blank" rel="noreferrer"><Icon name="link" size={14} />View live</a>}
+          <details className="sd-menu">
+            <summary className="btn ghost sm" aria-label="More"><Icon name="more" size={16} /></summary>
+            <div className="sd-pop" role="menu">
+              <button type="button" role="menuitem" onClick={e => { (e.currentTarget.closest("details") as HTMLDetailsElement).open = false; setDetails(true) }}>Details</button>
+              {!isNew && <div className="sd-path meta ell">{post.url}</div>}
+              {!isNew && post.published && <a role="menuitem" href={post.url} target="_blank" rel="noreferrer">View live</a>}
+              {!isNew && <div className="sd-del"><Confirm action={deleteSitePost.bind(null, post.path)} label="Delete post" message={`Delete “${post.title}” from the site? This commits a deletion to GitHub.`} /></div>}
+            </div>
+          </details>
           <button className="btn pri" disabled={pending} title="⌘S">{pending ? "Saving…" : isNew ? (published ? "Publish" : "Save hidden") : "Save"}</button>
         </div>
       </header>
       {state?.error && <p className="err banner-err" role="alert">{state.error}</p>}
       {state?.ok && !dirty && <p className="banner" role="status">{state.ok}</p>}
-      <div className="pgrid">
-        <section className="card cb stack" style={{ gap: 10 }}>
+      <div className="sd-wrap">
+        <section className="sd-body stack" style={{ gap: 10 }}>
           <nav className="seg" style={{ alignSelf: "flex-start" }}>
             <button type="button" className={mode === "write" ? "on" : ""} onClick={() => setMode("write")}>Write</button>
             <button type="button" className={mode === "preview" ? "on" : ""} onClick={() => setMode("preview")}>Preview</button>
@@ -64,7 +72,9 @@ export default function SiteEditor({ post, sections, defaultSection, created }: 
             : <p className="muted">Nothing to preview yet.</p>)}
           <span className="meta">{words} {words === 1 ? "word" : "words"} · about {Math.max(1, Math.round(words / 230))} min read</span>
         </section>
-        <aside className="card cb form" style={{ alignSelf: "start" }}>
+        <div className="sd-scrim" hidden={!details} onClick={() => setDetails(false)} />
+        <aside className="sd-sheet form" hidden={!details} role="dialog" aria-label="Details">
+          <div className="sheet-h"><strong>Details</strong><button type="button" className="btn ghost sm done" onClick={() => setDetails(false)}>Done</button></div>
           {isNew && (<>
             <label className="f">Section
               <select className="in" name="section" value={section} onChange={e => setSection(e.target.value)}>
@@ -80,7 +90,6 @@ export default function SiteEditor({ post, sections, defaultSection, created }: 
           <label className="f">Summary<textarea className="in" name="summary" rows={3} defaultValue={post.summary} placeholder="One line for lists and link previews" /></label>
           <label className="f">Tags<input className="in" name="tags" defaultValue={post.tags.join(", ")} placeholder="comma, separated" /></label>
           <label className="check"><input type="checkbox" name="published" checked={published} onChange={e => setPublished(e.target.checked)} />Visible on the site</label>
-          {!isNew && <Confirm action={deleteSitePost.bind(null, post.path)} label="Delete post" message={`Delete “${post.title}” from the site? This commits a deletion to GitHub.`} />}
         </aside>
       </div>
     </form>

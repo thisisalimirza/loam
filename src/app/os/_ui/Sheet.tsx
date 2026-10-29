@@ -24,7 +24,6 @@ export default function Sheet({ label, title, icon, primary, iconOnly, row, chil
     document.addEventListener("keydown", k)
     setTimeout(() => box.current?.querySelector<HTMLElement>("input:not([type=hidden]):not([type=radio]),textarea")?.focus(), 20)
     return () => { document.removeEventListener("keydown", k); back?.focus() }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open])
   return (
     <>

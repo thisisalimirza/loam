@@ -1,14 +1,13 @@
 import Link from "next/link"
 import type { CSSProperties } from "react"
 import { getAreas, getProjects, getTasks } from "@/lib/os/data"
-import { createProject } from "@/lib/os/actions"
 import { relDue, todayISO, leftLabel } from "@/lib/os/dates"
 import { nextUp } from "@/lib/os/focus"
 import { PageHeader } from "../../_ui/ui"
 import { Icon } from "../../_ui/icons"
 import StarterAreas from "../../_ui/StarterAreas"
+import ProjectForm from "../../_ui/ProjectForm"
 import Sheet from "../../_ui/Sheet"
-import DateChip from "../../_ui/DateChip"
 
 export const metadata = { title: "Projects" }
 
@@ -19,13 +18,7 @@ export default async function Areas() {
   const loose = projects.filter(p => p.status !== "done" && (!p.area_id || !areas.some(a => a.id === p.area_id)))
   const newProject = live.length > 0 && (
     <Sheet label="New project" icon="flag">
-      <form action={createProject} className="form">
-        <label className="fld"><span>Name</span><input className="in" name="name" placeholder="e.g. Step 2 prep" required aria-label="Project name" /></label>
-        <label className="fld"><span>Area</span><select className="in" name="area_id" aria-label="Area">{live.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}</select></label>
-        <label className="fld"><span>Template</span><select className="in" name="kind" aria-label="Template"><option value="general">Plain</option><option value="research">Research (Idea to Paper)</option><option value="business">Business (with numbers)</option></select></label>
-        <DateChip label="Due" name="due_date" />
-        <div><button className="btn pri">Create project</button></div>
-      </form>
+      <ProjectForm areas={live} />
     </Sheet>
   )
   return (

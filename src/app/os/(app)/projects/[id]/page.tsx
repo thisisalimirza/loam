@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation"
+import MetricValue from "../../../_ui/MetricValue"
 import { getAreas, getMetrics, getPins, getProject, getTasks } from "@/lib/os/data"
 import { RESEARCH_STAGES } from "@/lib/os/types"
-import { addMetric, deleteMetric, setMetric, setProjectStage, deletePin, deleteProject, pinDate, setProjectStatus, updateProject } from "@/lib/os/actions"
+import { addMetric, deleteMetric, setProjectStage, deletePin, deleteProject, pinDate, setProjectStatus, updateProject } from "@/lib/os/actions"
 import { nextUp } from "@/lib/os/focus"
 import Sheet from "../../../_ui/Sheet"
 import DateChip from "../../../_ui/DateChip"
@@ -66,7 +67,7 @@ export default async function ProjectPage({ params, searchParams }: { params: Pr
           {metrics.map(m => (
             <div className="metric" key={m.id}>
               <span className="k">{m.label}</span>
-              <form action={setMetric.bind(null, m.id)} className="mv"><input className="in" name="value" defaultValue={String(m.value)} inputMode="decimal" aria-label={`${m.label} value`} /><button className="btn sm ghost">Save</button></form>
+              <div className="mv"><MetricValue id={m.id} label={m.label} value={String(m.value)} /></div>
               <span className="meta">{m.target != null ? `${fmt(m.value, m.unit)} of ${fmt(m.target, m.unit)}` : fmt(m.value, m.unit)}</span>
               {m.target ? <span className="bar"><i style={{ width: `${Math.min(100, Math.round((m.value / m.target) * 100))}%` }} /></span> : null}
               <form action={deleteMetric.bind(null, m.id)}><button className="btn ghost sm x" aria-label={`Remove ${m.label}`}>×</button></form>

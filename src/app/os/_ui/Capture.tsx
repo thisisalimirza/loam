@@ -3,7 +3,7 @@ import SmartInput, { type SmartHandle } from "./SmartInput"
 import { useEffect, useRef, useState, useTransition } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import { Icon } from "./icons"
-import { capture, searchAll } from "@/lib/os/actions"
+import { capture, captureHints, searchAll } from "@/lib/os/actions"
 import { recentItems, remember, type Recent } from "./recent"
 
 const OPEN = "loam:capture"
@@ -43,6 +43,7 @@ export default function Capture() {
   const [hits, setHits] = useState<Hit[]>([])
   const [sel, setSel] = useState(0)
   const [rec, setRec] = useState<Recent[]>([])
+  const [hint, setHint] = useState<Hit[]>([])
   const [flash, setFlash] = useState("")
   const [pending, start] = useTransition()
   const router = useRouter()
@@ -61,7 +62,7 @@ export default function Capture() {
   }, [router])
 
   useEffect(() => { setOpen(false) }, [pathname])
-  useEffect(() => { if (open) { setKind(KINDS[0]); setQ(""); setHits([]); setSel(0); setRec(recentItems(5)); setTimeout(() => si.current?.focus(), 10) } }, [open])
+  useEffect(() => { if (open) { setKind(KINDS[0]); setQ(""); setHits([]); setSel(0); setRec(recentItems(3)); captureHints().then(setHint).catch(() => setHint([])); setTimeout(() => si.current?.focus(), 10) } }, [open])
 
   useEffect(() => {
     if (!open || q.trim().length < 2 || q.includes(":")) { setHits([]); return }
@@ -69,10 +70,13 @@ export default function Capture() {
     return () => clearTimeout(t)
   }, [q, open])
 
-  const jumps = q ? JUMPS.filter(j => j.label.toLowerCase().includes(q.toLowerCase())) : JUMPS
+  const jumps = q.trim() ? JUMPS.filter(j => j.label.toLowerCase().includes(q.toLowerCase())) : []
+  const SUB: Record<string, string> = { note: "Note", draft: "Draft", person: "Mentioned this week" }
+  const hints = q.trim() ? [] : hint.filter(h => !rec.some(r => r.id === h.id))
   const items: { label: string; sub: string; go: () => void }[] = [
     ...(q.trim() ? [{ label: `Add “${q.trim()}”`, sub: q.includes(":") ? "" : kind.label, go: () => submit() }] : []),
     ...(q.trim() ? [] : rec.map(r => ({ label: r.title!, sub: "Recent " + r.kind, go: () => { setOpen(false); remember(r.kind, r.id, r.title); if (r.kind === "task") openTask(r.id); else router.push(KIND_HREF[r.kind] + r.id) } }))),
+    ...hints.map(h => ({ label: h.title, sub: SUB[h.kind] ?? h.kind, go: () => { setOpen(false); remember(h.kind, h.id, h.title); router.push(KIND_HREF[h.kind] + h.id) } })),
     ...hits.map(h => ({ label: h.title, sub: h.kind, go: () => { setOpen(false); remember(h.kind, h.id, h.title); if (h.kind === "task") openTask(h.id); else router.push(KIND_HREF[h.kind] + h.id) } })),
     ...jumps.map(j => ({ label: j.label, sub: j.key ?? "Go", go: () => { setOpen(false); router.push(j.href) } })),
   ]
@@ -105,7 +109,7 @@ export default function Capture() {
                   if (e.key === "ArrowUp") { e.preventDefault(); setSel(s => Math.max(s - 1, 0)) }
                   if (e.key === "Enter") { e.preventDefault(); items[sel]?.go() }
                 }} disabled={pending} />
-              <kbd>esc</kbd>
+              <kbd className="kbd-hint">esc</kbd>
             </div>
             <div className="seg cap-kind" role="group" aria-label="Add as">{KINDS.map(x => <button key={x.k} className={x.k === kind.k ? "on" : ""} onClick={() => { setKind(x); si.current?.focus() }}>{x.label}</button>)}</div>
             <ul>
@@ -115,7 +119,7 @@ export default function Capture() {
                 </button></li>
               ))}
             </ul>
-            {kind.k === "task" && <div className="hint"><span>Dates like “fri” or “every mon” are picked up as you type</span></div>}
+            {kind.k === "task" && <div className="hint kbd-hint"><span>Dates like “fri” or “every mon” are picked up as you type</span></div>}
           </div>
         </div>
       )}
