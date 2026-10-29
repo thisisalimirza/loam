@@ -1,3 +1,4 @@
+import WriteSwitch from "../../_ui/WriteSwitch"
 import Link from "next/link"
 import { getEntries, getOnThisDay } from "@/lib/os/data"
 import { fmtDate, todayISO } from "@/lib/os/dates"
@@ -25,7 +26,7 @@ export default async function Journal({ searchParams }: { searchParams: Promise<
   const [entries, otd] = await Promise.all([getEntries(q), q ? Promise.resolve([]) : getOnThisDay(today)])
   return (
     <>
-      <PageHeader title="Journal" sub="Private. Most of it goes nowhere, and that’s fine."
+      <WriteSwitch /><PageHeader title="Journal" sub="Private. Most of it goes nowhere, and that’s fine."
         actions={<>
           <Link href="/os/journal/write" className="btn pri"><Icon name="pen" />Write</Link>
         </>} />

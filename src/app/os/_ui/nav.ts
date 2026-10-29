@@ -11,18 +11,18 @@ export const NAV_GROUPS: [string, N[], boolean?][] = [
     { href: "/os/drafts", label: "Drafts", icon: "drafts", also: ["/os/schedule"] },
     { href: "/os/site", label: "Site", icon: "globe" },
   ]],
-  ["Learn", [
+  ["", [
     { href: "/os/learn", label: "Learn", icon: "learn" },
+    { href: "/os/areas", label: "Projects", icon: "areas", also: ["/os/projects"] },
   ]],
-  ["Projects", [
-    { href: "/os/areas", label: "Areas & projects", icon: "areas", also: ["/os/projects"] },
-  ]],
-  ["Other", [
+  ["", [
     { href: "/os/people", label: "People", icon: "people" },
     { href: "/os/review", label: "Weekly review", icon: "calendar" },
-    { href: "/os/settings", label: "Settings", icon: "info" },
+    { href: "/os/settings", label: "Settings", icon: "gear" },
   ], true],
 ]
+export const WRITE: N[] = NAV_GROUPS[1][1]
+export const MORE: N[] = [NAV_GROUPS[2][1][0], ...NAV_GROUPS[3][1]]
 export const TABS: N[] = [
   { href: "/os", label: "Today", icon: "today" },
   { href: "/os/tasks", label: "Tasks", icon: "tasks", also: ["/os/board"] },
@@ -30,4 +30,3 @@ export const TABS: N[] = [
   { href: "/os/areas", label: "Projects", icon: "areas", also: ["/os/projects"] },
   { href: "/os/more", label: "More", icon: "more", also: ["/os/people", "/os/review", "/os/settings", "/os/inbox", "/os/learn"] },
 ]
-

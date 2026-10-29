@@ -1,19 +1,19 @@
+import WriteSwitch from "../../_ui/WriteSwitch"
 import Link from "next/link"
-import { getAreas, getNotes, getReading } from "@/lib/os/data"
+import { getAreas, getNotes } from "@/lib/os/data"
 import { createNote } from "@/lib/os/actions"
 import { ago, todayISO } from "@/lib/os/dates"
 import { Card, Empty, PageHeader, Pill } from "../../_ui/ui"
 import { Icon } from "../../_ui/icons"
-import Reading from "./Reading"
 
 export const metadata = { title: "Notes" }
 
 export default async function Notes() {
-  const [notes, areas, reading] = await Promise.all([getNotes(), getAreas(true), getReading()])
+  const [notes, areas] = await Promise.all([getNotes(), getAreas(true)])
   const today = todayISO()
   return (
     <>
-      <PageHeader title="Notes" sub="Plans, meeting notes, things to keep."
+      <WriteSwitch /><PageHeader title="Notes" sub="Plans, meeting notes, things to keep."
         actions={<form action={createNote}><button className="btn pri"><Icon name="plus" />New note</button></form>} />
       <Card>
         {notes.length === 0 ? <Empty icon="notes" title="No notes yet">Write one here, or type “note: title” into ⌘K.</Empty> : (
@@ -34,9 +34,6 @@ export default async function Notes() {
             })}
           </ul>
         )}
-      </Card>
-      <Card title="Reading list" icon="journal" meta={reading.filter(r => !r.read_at).length || undefined}>
-        <Reading items={reading} />
       </Card>
     </>
   )

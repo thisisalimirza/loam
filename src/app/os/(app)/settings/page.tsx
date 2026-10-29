@@ -19,15 +19,7 @@ export default async function Settings() {
     <>
       <PageHeader title="Settings" />
       <section className="grp" aria-label="Areas">
-        <div className="grp-h"><h2>Areas</h2>
-          <Sheet label="New area" icon="plus">
-            <form action={createArea} className="form">
-              <label className="fld"><span>Name</span><input className="in" name="name" placeholder="e.g. Health" required aria-label="Area name" /></label>
-              <Swatches />
-              <div><button className="btn pri">Create area</button></div>
-            </form>
-          </Sheet>
-        </div>
+        <div className="grp-h"><h2>Areas</h2></div>
         <ul className="card grp-l">
           {areas.map(a => (
             <li key={a.id}><Link href={`/os/areas/${a.id}`} className="row">
@@ -35,7 +27,13 @@ export default async function Settings() {
               {a.archived && <small className="meta">Archived</small>}<Icon name="arrow" />
             </Link></li>
           ))}
-          {!areas.length && <li className="row meta">No areas yet.</li>}
+          <li><Sheet label="Add area…" title="New area" row={<><Icon name="plus" /><span className="tt" style={{ color: "var(--acc)" }}>Add area…</span></>}>
+            <form action={createArea} className="form">
+              <label className="fld"><span>Name</span><input className="in" name="name" placeholder="e.g. Health" required aria-label="Area name" /></label>
+              <Swatches />
+              <div><button className="btn pri">Create area</button></div>
+            </form>
+          </Sheet></li>
         </ul>
         <p className="grp-f">Rename, recolor or archive an area from its page.</p>
       </section>
@@ -43,8 +41,10 @@ export default async function Settings() {
         <div className="grp-h"><h2>Pinned dates</h2></div>
         <ul className="card grp-l">
           {pins.map(p => (
-            <li key={p.id} className="row"><span className="tt">{pinName(p, projects)}</span><small className="meta">{fmtDate(p.pin_date)}</small>
-              <form action={deletePin.bind(null, p.id)}><button className="btn ghost sm" aria-label={`Unpin ${pinName(p, projects)}`}>Unpin</button></form></li>
+            <li key={p.id}><Sheet label={pinName(p, projects)} row={<><span className="tt">{pinName(p, projects)}</span><small className="meta">{fmtDate(p.pin_date)}</small><Icon name="chev" className="i chev" /></>}>
+              <p className="meta" style={{ margin: "0 0 12px" }}>Counts down to {fmtDate(p.pin_date)} on Today.</p>
+              <form action={deletePin.bind(null, p.id)}><button className="btn" style={{ color: "var(--warn)" }} aria-label={`Unpin ${pinName(p, projects)}`}>Unpin</button></form>
+            </Sheet></li>
           ))}
           {!pins.length && <li className="row meta">Pin a project deadline from Today to count down to it.</li>}
         </ul>
@@ -54,10 +54,10 @@ export default async function Settings() {
         <ul className="card grp-l">
           <li><Link href="/os/site" className="row"><Icon name="globe" /><span className="tt">Website</span><Icon name="arrow" /></Link></li>
           <li className="row"><Icon name="calendar" /><span className="tt">Google Calendar</span><small className="meta">Not connected</small></li>
-          <li className="row"><Icon name="sparkle" /><span className="tt">Smart suggestions</span><small className="meta">On</small></li>
-          <li className="row" data-ai={ai.ok ? "ok" : "off"}><Icon name="sparkle" /><span className="tt">AI help</span><small className="meta">{ai.ok ? "On" : ai.why}</small></li>
+          <li className="row"><Icon name="xlogo" /><span className="tt">X</span><small className="meta">{process.env.X_BEARER_TOKEN ? "Connected" : "Not connected"}</small></li>
+          <li className="row" data-ai={ai.ok ? "ok" : "off"}><Icon name="sparkle" /><span className="tt">Suggestions</span><small className="meta">On</small></li>
         </ul>
-        <p className="grp-f">Suggestions find people and dates in what you write, with or without AI. AI help catches names the basic check misses. Both run on the server and never touch the public site.</p>
+        <p className="grp-f">{ai.ok ? "Uses AI for names it can’t match." : "Finds people and dates in what you write."} X: pasted post links work now; searching by topic needs an X read key.</p>
       </section>
       <section className="grp" aria-label="Account">
         <ul className="card grp-l">

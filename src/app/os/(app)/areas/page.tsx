@@ -2,7 +2,7 @@ import Link from "next/link"
 import type { CSSProperties } from "react"
 import { getAreas, getProjects, getTasks } from "@/lib/os/data"
 import { createProject } from "@/lib/os/actions"
-import { fmtDate, relDue, todayISO } from "@/lib/os/dates"
+import { relDue, todayISO, leftLabel } from "@/lib/os/dates"
 import { nextUp } from "@/lib/os/focus"
 import { PageHeader } from "../../_ui/ui"
 import { Icon } from "../../_ui/icons"
@@ -10,7 +10,7 @@ import StarterAreas from "../../_ui/StarterAreas"
 import Sheet from "../../_ui/Sheet"
 import DateChip from "../../_ui/DateChip"
 
-export const metadata = { title: "Areas" }
+export const metadata = { title: "Projects" }
 
 export default async function Areas() {
   const [areas, projects, tasks] = await Promise.all([getAreas(true), getProjects(), getTasks({ openOnly: true })])
@@ -30,7 +30,7 @@ export default async function Areas() {
   )
   return (
     <>
-      <PageHeader title="Areas" sub="The ongoing parts of your life, and the projects inside each." actions={<>{newProject}</>} />
+      <PageHeader title="Projects" actions={<>{newProject}</>} />
       <div className="stack">
         {live.length === 0 ? <StarterAreas /> : (
           <ul className="arealist">
@@ -44,7 +44,6 @@ export default async function Areas() {
                   <Link href={`/os/areas/${a.id}`} className="al-head">
                     <span className="dot" style={{ margin: 0 }} />
                     <h2>{a.name}</h2>
-                    <span className="meta">{mine.length} open</span>
                     <Icon name="arrow" size={16} />
                   </Link>
                   {nx && !nx.project_id ? (
@@ -59,8 +58,7 @@ export default async function Areas() {
                             <Icon name="flag" size={14} className="muted" />
                             <span className="tt">{p.name}{pn && <small className="al-pn">{pn.title}</small>}{!pn && p.status === "active" && <small className="al-pn warn">No next step</small>}</span>
                             {p.status === "paused" && <span className="pill gray">Paused</span>}
-                            {p.due_date && <span className="due">{fmtDate(p.due_date)}</span>}
-                            <span className="meta">{pt.length || ""}</span>
+                            {p.due_date && <span className={`due${p.due_date < today ? " warn" : ""}`}>{leftLabel(today, p.due_date)}</span>}
                           </Link></li>
                         )
                       })}

@@ -27,8 +27,8 @@ export default function Shell({ mentions, children }: { mentions: MIndex; childr
       <aside className="side">
         <div className="brand"><span className="logo">L</span><div><strong>Loam OS</strong><small>Private</small></div></div>
         <Capture.Trigger />
-        {NAV_GROUPS.map(([g, items, quiet]) => (
-          <div key={g || "main"} className={quiet ? "ngrp quiet" : "ngrp"}>
+        {NAV_GROUPS.map(([g, items, quiet], gi) => (
+          <div key={gi} className={quiet ? "ngrp quiet" : "ngrp"}>
             {g && !quiet && <div className="sect">{g}</div>}
             {items.map(n => (
               <Link key={n.href} href={n.href} className={`nav${on(path, n) ? " on" : ""}`}>

@@ -7,7 +7,7 @@ import type { Task } from "@/lib/os/types"
 import { Avatar, Card, PageHeader } from "../_ui/ui"
 import { Icon } from "../_ui/icons"
 import { TaskList } from "../_ui/Tasks"
-import Suggestions from "../_ui/Suggestions"
+import Suggestions, { type Lead } from "../_ui/Suggestions"
 import { RollOver } from "../_ui/InMotion"
 import { focusPick, getInMotion, getRollover } from "@/lib/os/motion"
 import { getSuggestions } from "@/lib/os/graph"
@@ -50,21 +50,18 @@ export default async function Today() {
   ]
   const left = (n: number | null) => n === null ? null : n < 0 ? `${-n} days past due` : n === 0 ? "Due today" : `${n} ${n === 1 ? "day" : "days"} left`
 
+  const leads: Lead[] = [
+    ...(showHero ? [{ key: "focus", href: `/os?task=${hero.next!.id}`, text: hero.next!.title, sub: `${hero.name}${hero.risk ? ` · ${hero.risk}` : ""}`, icon: "flag" as const, cta: { label: "Start", href: `/os?task=${hero.next!.id}` } }] : []),
+    ...([0, 1].includes(new Date(today + "T12:00:00").getDay()) ? [{ key: "review", href: "/os/review", text: "Weekly review", sub: "Look back at the week and pick what’s next.", icon: "calendar" as const }] : []),
+    ...nudges.map(n => ({ key: n.key, href: n.href, text: n.text, icon: n.icon })),
+  ]
+
   return (
     <>
       <PageHeader eyebrow={fmtDate(today, { weekday: "long", month: "long", day: "numeric" })} title="Today" />
-      {[0, 1].includes(new Date(today + "T12:00:00").getDay()) && <Link href="/os/review" className="nudge"><Icon name="calendar" size={16} /><span><strong>Weekly review</strong> Look back at the week and pick what’s next.</span><Icon name="chev" size={14} /></Link>}
-      {showHero && (
-        <section className="hero" aria-label="Focus">
-          <div><p className="hero-k">If you only get to one thing</p><h2>{hero.next!.title}</h2><p className="meta">{hero.name}{hero.risk ? ` · ${hero.risk}` : ""}</p></div>
-          <Link href={`/os?task=${hero.next!.id}`} className="btn pri">Start</Link>
-        </section>
-      )}
-      {nudges.length > 0 && (
-        <ul className="nudges" aria-label="Nudges">{nudges.map(n => <li key={n.key}><Link href={n.href}><Icon name={n.icon} size={15} /><span>{n.text}</span><Icon name="chev" size={13} /></Link></li>)}</ul>
-      )}
+      <Suggestions items={s} lead={leads} />
       <Card title={listTitle} className="today-list">
-        {tasks.length > 0 && <TaskList tasks={tasks} areas={areas} today={today} />}
+        {tasks.length > 0 && <TaskList tasks={tasks} areas={areas} today={today} hideToday />}
         <Link href="/os/journal/write" className="jrow"><Icon name="pen" /><span className="tt">Journal</span><span className="meta">{words ? `${words} words` : "Not started"}</span><Icon name="chev" className="i chev" /></Link>
         {posting.map(d => <Link key={d.id} href={`/os/drafts/${d.id}`} className="jrow"><Icon name="send" /><span className="tt">{d.title || "Untitled"}</span><span className="meta">Goes out on {d.channel}</span><Icon name="chev" /></Link>)}
         {hour >= 17 && <RollOver items={roll} />}
@@ -78,7 +75,6 @@ export default async function Today() {
           })}</ul>
         </section>
       )}
-      {s.length > 0 && <Suggestions items={s} />}
       {people.length > 0 && (
         <Card title="Follow up" icon="chat">
           <ul className="pgrid">

@@ -4,6 +4,14 @@ import { addReading, markRead } from "@/lib/os/actions"
 
 type R = { id: string; title: string; url: string | null; read_at: string | null }
 /** Papers and articles to read. Paste a link or a title; tick it off when it's read. */
+export function AddReading() {
+  return (
+    <form action={addReading} className="form">
+      <label className="fld"><span>Link or title</span><input name="text" className="in" placeholder="Paste a link or a title" aria-label="Add to reading list" required /></label>
+      <div><button className="btn pri sm">Add</button></div>
+    </form>
+  )
+}
 export default function Reading({ items }: { items: R[] }) {
   const [list, setRead] = useOptimistic(items, (s, p: { id: string; read: boolean }) => s.map(r => r.id === p.id ? { ...r, read_at: p.read ? "x" : null } : r))
   const [, start] = useTransition()
@@ -15,10 +23,6 @@ export default function Reading({ items }: { items: R[] }) {
           {r.url ? <a href={r.url} target="_blank" rel="noreferrer" className="tt">{r.title}</a> : <span className="tt">{r.title}</span>}
         </li>
       ))}</ul>}
-      <form action={addReading} className="add-row" onSubmit={e => { const f = e.currentTarget; setTimeout(() => f.reset(), 0) }}>
-        <input name="text" className="in" placeholder="Paste a link or a title" aria-label="Add to reading list" required />
-        <button className="btn sm">Add</button>
-      </form>
     </>
   )
 }

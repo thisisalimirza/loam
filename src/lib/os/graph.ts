@@ -137,7 +137,7 @@ export async function getSuggestions(): Promise<Suggestion[]> {
   for (const c of stuck) out.push({ key: `s:${c.id}`, kind: "stuck", text: c.title, sub: `${c.days} days in ${c.col}`, href: `?task=${c.id}` })
   for (const j of stalled) out.push({ key: `p:${j.id}:${Math.floor(j.days / 7)}`, kind: "stalled", text: `${j.name}: nothing done lately`, sub: `Nothing moved in ${j.days} days`, href: `/os/projects/${j.id}` })
   for (const p of quiet) out.push({ key: `q:${p.id}:${p.last}`, kind: "quiet", text: `Check in with ${p.name}`, sub: `Last talked ${p.last}`, href: `/os/people/${p.id}`, personId: p.id })
-  if (unsorted?.n) out.push({ key: `u:${unsorted.n}`, kind: "sort", text: unsorted.n === 1 ? "1 task has no area yet" : `${unsorted.n} tasks have no area yet`, sub: "Sort them", href: "/os/inbox" })
+  if (unsorted?.n) out.push({ key: `u:${unsorted.n}`, kind: "sort", text: unsorted.n === 1 ? "1 task has no area yet" : `${unsorted.n} tasks have no area yet`, sub: "Sort them", href: "/os/tasks?area=none" })
   for (const p of sugg) out.push({ key: `m:${p.id}`, kind: "person", text: `Add ${p.name} to People?`, sub: (p.context ?? "From your notes").replace(/^Mentioned: /, "You wrote: ").slice(0, 80), href: "/os/people" })
   for (const e of seeds) out.push({ key: `d:${e.id}`, kind: "seed", text: firstLine(e.body), sub: `Journal, ${e.entry_date}. Could become a post`, href: `/os/journal/${e.id}`, entryId: e.id })
   return out

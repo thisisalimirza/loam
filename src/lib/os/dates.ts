@@ -102,3 +102,8 @@ export function splitDate(title: string, today = todayISO()) {
   }
   return { title: title.trim(), date: null }
 }
+/** One way to say a deadline everywhere: "37 days left", "Due today", "3 days late". */
+export function leftLabel(today: string, due: string) {
+  const n = daysBetween(today, due)
+  return n === 0 ? "Due today" : n > 0 ? `${n} ${n === 1 ? "day" : "days"} left` : `${-n} ${n === -1 ? "day" : "days"} late`
+}

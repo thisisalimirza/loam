@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation"
 
 const GO: Record<string, [string, string]> = {
   t: ["/os", "Today"], k: ["/os/tasks", "Tasks"], b: ["/os/board", "Board"], j: ["/os/journal", "Journal"],
-  p: ["/os/people", "People"], n: ["/os/notes", "Notes"], a: ["/os/areas", "Areas"], s: ["/os/settings", "Settings"],
+  p: ["/os/people", "People"], n: ["/os/notes", "Notes"], a: ["/os/areas", "Projects"], s: ["/os/settings", "Settings"],
 }
 const typing = (t: EventTarget | null) => t instanceof HTMLElement && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))
 

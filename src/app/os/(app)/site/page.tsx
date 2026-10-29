@@ -1,3 +1,4 @@
+import WriteSwitch from "../../_ui/WriteSwitch"
 import Link from "next/link"
 import { getMeta, listFiles, liveUrl } from "@/lib/os/site"
 import { Card, Empty, PageHeader, Pill } from "../../_ui/ui"
@@ -14,7 +15,7 @@ export default async function Site({ searchParams }: { searchParams: Promise<{ q
   const { q = "", s = "", deleted } = await searchParams
   let data: Awaited<ReturnType<typeof listFiles>>
   try { data = await listFiles() } catch (e) {
-    return (<><PageHeader title="Site" /><Card><Empty icon="x" title="Couldn't load the site">{e instanceof Error ? e.message : "GitHub didn't answer."} Reload to try again.</Empty></Card></>)
+    return (<><WriteSwitch /><PageHeader title="Site" /><Card><Empty icon="x" title="Couldn't load the site">{e instanceof Error ? e.message : "GitHub didn't answer."} Reload to try again.</Empty></Card></>)
   }
   const meta = await getMeta(data.files)
   const sections = ["", ...data.sections]
@@ -29,7 +30,7 @@ export default async function Site({ searchParams }: { searchParams: Promise<{ q
   const href = (o: { s?: string; q?: string }) => { const p = new URLSearchParams(); const ss = o.s ?? s, qq = o.q ?? q; if (ss) p.set("s", ss); if (qq) p.set("q", qq); const t = p.toString(); return `/os/site${t ? "?" + t : ""}` }
   return (
     <>
-      <PageHeader title="Site" sub={<>Everything on thisisalimirza.com. Changes go live in about a minute.</>}
+      <WriteSwitch /><PageHeader title="Site" sub={<>Everything on thisisalimirza.com. Changes go live in about a minute.</>}
         actions={<><a className="btn" href="/" target="_blank" rel="noreferrer"><Icon name="link" />View site</a><Link className="btn pri" href={`/os/site/new${s && s !== "_pages" ? `?section=${s}` : ""}`}><Icon name="plus" />New post</Link></>} />
       {deleted && <p className="banner">Deleted. The site updates in about a minute.</p>}
       <nav className="chips" aria-label="Sections">

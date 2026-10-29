@@ -91,9 +91,9 @@ export default function Capture() {
 
   return (
     <>
-      <button className="capture" onClick={() => setOpen(true)}>
+      {/^\/os(\/(journal|notes|people|more))?$/.test(pathname) && <button className="capture" onClick={() => setOpen(true)}>
         <Icon name="plus" /><span>{flash || "Add a task, note, or person…"}</span>
-      </button>
+      </button>}
       {open && (
         <div className="modal-bg" onMouseDown={e => { if (e.target === e.currentTarget) setOpen(false) }}>
           <div className="modal" role="dialog" aria-label="Capture">

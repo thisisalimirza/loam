@@ -7,12 +7,12 @@ import { todayISO } from "./dates"
 
 export type Source = { url: string; title: string; author?: string }
 export type LearnItem = {
-  id: string; kind: "evidence" | "edge"; title: string; url: string | null; source: string; summary: string; takeaway: string
+  id: string; kind: "evidence" | "edge" | "topic"; title: string; url: string | null; source: string; summary: string; takeaway: string
   sources: Source[]; query: string | null; review_due: string | null; review_step: number; created_at: Date
 }
 export const STEPS = [1, 3, 7, 21, 60]
 
-export async function getLearn(kind?: "evidence" | "edge") {
+export async function getLearn(kind?: "evidence" | "edge" | "topic") {
   await requireOwner()
   const sql = db()
   return kind
@@ -21,7 +21,7 @@ export async function getLearn(kind?: "evidence" | "edge") {
 }
 export async function getDue() {
   await requireOwner()
-  return db()<LearnItem[]>`select id, kind, title, url, source, summary, takeaway, sources, query, review_due::text review_due, review_step, created_at from loam_os.learn_items where review_due <= ${todayISO()} order by review_due, created_at limit 50`
+  return db()<LearnItem[]>`select id, kind, title, url, source, summary, takeaway, sources, query, review_due::text review_due, review_step, created_at from loam_os.learn_items where kind <> 'topic' and review_due <= ${todayISO()} order by review_due, created_at limit 50`
 }
 
 const strip = (h: string) => h.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi, " ").replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&#39;|&rsquo;/g, "’").replace(/&quot;/g, '"').replace(/\s+/g, " ").trim()

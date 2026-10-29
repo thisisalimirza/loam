@@ -279,7 +279,7 @@ export default function Board({ data, today, scope = {}, embedded }: { data: Boa
   }
 
   return (
-    <div className={`bd${embedded ? " embedded" : ""}`}>
+    <div className={`bd${embedded ? " embedded" : ""}${lanes ? " lanes" : ""}`}>
       <div className="bd-bar">
         <label className="bd-search sfield"><Icon name="search" size={14} />
           <input ref={searchRef} value={q} onChange={e => setQ(e.target.value)} placeholder="Search cards" aria-label="Search cards"
@@ -288,14 +288,13 @@ export default function Board({ data, today, scope = {}, embedded }: { data: Boa
         </label>
         <div className="bd-pop-wrap">
           <button className={`btn sm${nFilters ? " on" : ""}`} onClick={() => setPanel(p => p === "filter" ? null : "filter")} aria-expanded={panel === "filter"}>
-            <Icon name="list" size={14} />Filter{nFilters ? <b className="bd-n">{nFilters}</b> : null}
+            <Icon name="list" size={14} />View{nFilters || lanes ? <b className="bd-n">{nFilters + (lanes ? 1 : 0)}</b> : null}
           </button>
-          {panel === "filter" && <FilterPanel data={data} tags={allTags} filters={filters} scope={scope} onChange={setFilters} onClose={() => setPanel(null)}
+          {panel === "filter" && <FilterPanel data={data} tags={allTags} filters={filters} scope={scope} onChange={setFilters} onClose={() => setPanel(null)} lanes={scope.projectId ? undefined : lanes} onLanes={toggleLanes}
             onSave={async name => { const r = await bViewSave(name, filters); if (!r.ok) return fail(r.error); setViews(v => [...v, r.data]); toast(`Saved “${r.data.name}”`) }} />}
         </div>
-        {!scope.projectId && <button className={`btn sm${lanes ? " on" : ""}`} onClick={toggleLanes} title="Group by area (g)"><Icon name="areas" size={14} />Group by area</button>}
         <span className="bd-grow" />
-        {!embedded && <button className="btn sm ghost" onClick={archiveDone} disabled={!doneCount} title="Archive done cards">Archive done</button>}
+        {!embedded && doneCount > 0 && <button className="btn sm ghost" onClick={archiveDone} title="Archive done cards">Archive done</button>}
         {!embedded && archived > 0 && <button className="btn sm ghost" onClick={restore} title="Bring archived cards back">Restore {archived}</button>}
         <button className="btn sm ghost bd-help" onClick={() => setPanel(p => p === "help" ? null : "help")} aria-label="Keyboard shortcuts">?</button>
       </div>
@@ -472,8 +471,8 @@ function QuickAdd({ onAdd, onClose }: { onAdd: (v: SmartValue) => Promise<void> 
   )
 }
 
-function FilterPanel({ data, tags, filters, scope, onChange, onClose, onSave }: {
-  data: BoardData; tags: string[]; filters: BoardFilters; scope: Scope; onChange: (f: BoardFilters) => void; onClose: () => void; onSave: (name: string) => void
+function FilterPanel({ data, tags, filters, scope, onChange, onClose, onSave, lanes, onLanes }: {
+  data: BoardData; tags: string[]; filters: BoardFilters; scope: Scope; onChange: (f: BoardFilters) => void; onClose: () => void; onSave: (name: string) => void; lanes?: boolean; onLanes: () => void
 }) {
   const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
@@ -489,7 +488,8 @@ function FilterPanel({ data, tags, filters, scope, onChange, onClose, onSave }: 
   )
   const [name, setName] = useState("")
   return (
-    <div className="bd-pop" ref={ref} role="dialog" aria-label="Filters">
+    <div className="bd-pop" ref={ref} role="dialog" aria-label="View">
+      {lanes !== undefined && <label className="bd-lanes-t"><input type="checkbox" checked={lanes} onChange={onLanes} />Group by area</label>}
       {!scope.areaId && <><h4>Area</h4><div className="chips">{data.areas.map(a => <Chip key={a.id} k="areas" v={a.id} label={a.name} color={a.color} />)}<Chip k="areas" v={NO_AREA} label="No area" /></div></>}
       {!scope.projectId && data.projects.length > 0 && <><h4>Project</h4><div className="chips">{data.projects.filter(p => p.status !== "done" && (!scope.areaId || p.area_id === scope.areaId)).map(p => <Chip key={p.id} k="projects" v={p.id} label={p.name} />)}</div></>}
       {tags.length > 0 && <><h4>Tag</h4><div className="chips">{tags.map(t => <Chip key={t} k="tags" v={t} label={"#" + t} />)}</div></>}

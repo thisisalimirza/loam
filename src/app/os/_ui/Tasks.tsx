@@ -21,10 +21,12 @@ function AreaPill({ id, areas }: { id: string | null; areas: AreaLite[] }) {
   return <span className="pill" style={{ "--c": a.color } as CSSProperties}>{a.name}</span>
 }
 
-function DueLabel({ t, today }: { t: Task; today: string }) {
+function DueLabel({ t, today, hideToday }: { t: Task; today: string; hideToday?: boolean }) {
   const d = t.due_date ?? t.scheduled_date
   if (!d) return null
   const r = relDue(d, today)
+  if (hideToday && r.label === "Today") return null
+  if (hideToday && r.warn) return <span className="due warn">Overdue</span>
   return <span className={`due${r.warn && t.status !== "done" ? " warn" : ""}`}>{t.due_date ? "" : "Planned "}{r.label}</span>
 }
 
@@ -38,7 +40,7 @@ function Quiet({ t }: { t: Task }) {
   </span>
 }
 
-export function TaskRow({ t, areas, today, hideArea }: { t: Task; areas: AreaLite[]; today: string; hideArea?: boolean }) {
+export function TaskRow({ t, areas, today, hideArea, hideToday }: { t: Task; areas: AreaLite[]; today: string; hideArea?: boolean; hideToday?: boolean }) {
   const [done, setDone] = useOptimistic(t.status === "done")
   const [, start] = useTransition()
   const [title, setTitle] = useOptimistic(t.title)
@@ -50,7 +52,7 @@ export function TaskRow({ t, areas, today, hideArea }: { t: Task; areas: AreaLit
     if (n && n !== t.title) start(async () => { setTitle(n); await renameTask(t.id, n) })
   }
   return (
-    <li className={`row hov trow${done ? " done" : ""}`}>
+    <li className={`row hov trow${done ? " done" : ""}`} onContextMenu={e => { if (!matchMedia("(pointer: coarse)").matches) return; e.preventDefault(); if (window.confirm(`Delete “${title}”?`)) start(() => deleteTask(t.id)) }}>
       <button className="chk" aria-label={done ? "Mark not done" : "Mark done"} onClick={() => start(async () => {
         setDone(!done)
         const next = await toggleTask(t.id, !done)
@@ -61,7 +63,7 @@ export function TaskRow({ t, areas, today, hideArea }: { t: Task; areas: AreaLit
             onBlur={e => save(e.currentTarget.value)}
             onKeyDown={e => { if (e.key === "Enter") e.currentTarget.blur(); if (e.key === "Escape") setEditing(false) }} />
         : <button type="button" className="tt" aria-label={`Open ${title}`} onClick={() => open(t.id)} onDoubleClick={() => setEditing(true)}><Mentions text={title} />{t.repeat && <span className="rep" title={`Repeats ${t.repeat}`}> ↻</span>}<Quiet t={t} /></button>}
-      <span className="rmeta">{!hideArea && <AreaPill id={t.area_id} areas={areas} />}<DueLabel t={t} today={today} /></span>
+      <span className="rmeta"><Quiet t={t} />{!hideArea && <AreaPill id={t.area_id} areas={areas} />}<DueLabel t={t} today={today} hideToday={hideToday} /></span>
       <button className="x" aria-label="Delete task" onClick={() => start(() => deleteTask(t.id))}><Icon name="x" size={14} /></button>
     </li>
   )
@@ -119,11 +121,11 @@ export function AddTask({ areaId, projectId, areas, projects, status, placeholde
   )
 }
 
-export function TaskList({ tasks: all, areas, today, hideArea, unfiledOnly, emptyTitle = "Nothing here", emptyText }: { tasks: Task[]; hideArea?: boolean; unfiledOnly?: boolean; emptyTitle?: string; emptyText?: string } & Ctx) {
+export function TaskList({ tasks: all, areas, today, hideArea, hideToday, unfiledOnly, emptyTitle = "Nothing here" }: { tasks: Task[]; hideArea?: boolean; hideToday?: boolean; unfiledOnly?: boolean; emptyTitle?: string; emptyText?: string } & Ctx) {
   // In the inbox a task leaves the list the moment it gets an area or project.
   const tasks = unfiledOnly ? all.filter(t => !t.area_id && !t.project_id) : all
-  if (tasks.length === 0) return <div className="empty"><Icon name="check" className="ic" /><strong>{emptyTitle}</strong>{emptyText && <p>{emptyText}</p>}</div>
-  return <ul>{tasks.map(t => <TaskRow key={t.id} t={t} areas={areas} today={today} hideArea={hideArea} />)}</ul>
+  if (tasks.length === 0) return <p className="quiet-line empty-line">{emptyTitle}</p>
+  return <ul>{tasks.map(t => <TaskRow key={t.id} t={t} areas={areas} today={today} hideArea={hideArea} hideToday={hideToday} />)}</ul>
 }
 
 export function TaskBoard({ tasks, areas, today, areaId, projectId }: { tasks: Task[]; areaId?: string; projectId?: string } & Ctx) {

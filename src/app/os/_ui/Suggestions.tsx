@@ -23,21 +23,29 @@ function dismissed(): Record<string, number> {
   } catch { return {} }
 }
 
-export default function Suggestions({ items, limit = 6 }: { items: Suggestion[]; limit?: number }) {
+export type Lead = { key: string; href: string; text: string; sub?: string; icon: IconName; cta?: { label: string; href: string } }
+
+/** Today's single "Suggested" group: lead rows (focus, review, nudges) first, then graph suggestions; at most `limit` in total. */
+export default function Suggestions({ items, lead = [], limit = 3 }: { items: Suggestion[]; lead?: Lead[]; limit?: number }) {
   const [hidden, setHidden] = useState<Record<string, number> | null>(null)
-  const [all, setAll] = useState(false)
   useEffect(() => setHidden(dismissed()), [])
-  if (!hidden) return null
-  const shown = items.filter(s => !hidden[s.key])
-  if (!shown.length) return null
+  const leads = lead.slice(0, limit)
+  const shown = hidden ? items.filter(s => !hidden[s.key]).slice(0, Math.max(0, limit - leads.length)) : []
+  if (!leads.length && !shown.length) return null
   const dismiss = (k: string) => { const n = { ...hidden, [k]: Date.now() }; setHidden(n); try { localStorage.setItem(KEY, JSON.stringify(n)) } catch {} }
   return (
-    <section className="card">
-      <div className="ch"><h2><Icon name="sparkle" />Suggestions</h2></div>
+    <section className="card sugg-card" aria-label="Suggested">
+      <h2 className="sec-h sg-h">Suggested</h2>
       <ul className="sugg" style={{ padding: 6 }}>
-        {(all ? shown : shown.slice(0, limit)).map(s => <Row key={s.key} s={s} onDismiss={() => dismiss(s.key)} />)}
+        {leads.map(l => (
+          <li key={l.key} data-lead={l.key}>
+            <span className="sg-ic acc"><Icon name={l.icon} size={14} /></span>
+            <div className="sg-t"><Link href={l.href}>{l.text}</Link>{l.sub && <small>{l.sub}</small>}</div>
+            {l.cta && <div className="sg-act"><Link href={l.cta.href} className="btn pri sm">{l.cta.label}</Link></div>}
+          </li>
+        ))}
+        {shown.map(s => <Row key={s.key} s={s} onDismiss={() => dismiss(s.key)} />)}
       </ul>
-      {shown.length > limit && <div className="addrow"><button className="btn ghost sm" onClick={() => setAll(a => !a)}>{all ? "Show fewer" : `Show ${shown.length - limit} more`}</button></div>}
     </section>
   )
 }

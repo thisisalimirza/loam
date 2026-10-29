@@ -577,6 +577,13 @@ export async function addEdge(f: FormData) {
   back()
   redirect("/os/learn?tab=edges")
 }
+export async function toggleTopic(title: string) {
+  await requireOwner()
+  const sql = db()
+  const d = await sql`delete from loam_os.learn_items where kind = 'topic' and title = ${title} returning id`
+  if (!d.length) await sql`insert into loam_os.learn_items (kind, title, source) values ('topic', ${title.slice(0, 80)}, '')`
+  back()
+}
 export async function reviewLearn(id: string, ok: boolean) {
   await requireOwner()
   const steps = [1, 3, 7, 21, 60]

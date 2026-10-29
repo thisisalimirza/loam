@@ -5,7 +5,7 @@ import { addMetric, deleteMetric, setMetric, setProjectStage, deletePin, deleteP
 import { nextUp } from "@/lib/os/focus"
 import Sheet from "../../../_ui/Sheet"
 import DateChip from "../../../_ui/DateChip"
-import { daysBetween, fmtDate, todayISO } from "@/lib/os/dates"
+import { todayISO, leftLabel } from "@/lib/os/dates"
 import { Card, PageHeader } from "../../../_ui/ui"
 import { AddTask, TaskList, ViewToggle } from "../../../_ui/Tasks"
 import Confirm from "../../../_ui/Confirm"
@@ -27,18 +27,17 @@ export default async function ProjectPage({ params, searchParams }: { params: Pr
   const pin = pins.find(x => x.pin_date >= today && (x.label.toLowerCase() === p.name.toLowerCase() || x.pin_date === p.due_date))
   const area = areas.find(a => a.id === p.area_id)
   const nx = nextUp(tasks)
-  const openN = tasks.filter(t => t.status !== "done").length
   return (
     <>
-      <PageHeader back={area ? { href: `/os/areas/${area.id}`, label: area.name } : { href: "/os/areas", label: "Areas" }}
-        title={p.name} sub={[p.status[0].toUpperCase() + p.status.slice(1), p.due_date && `due ${fmtDate(p.due_date)}`, p.due_date && p.due_date >= today && `${daysBetween(today, p.due_date)} days left`, openN > 0 && `${openN} open`].filter(Boolean).join(" · ")}
+      <PageHeader back={area ? { href: `/os/areas/${area.id}`, label: area.name } : { href: "/os/areas", label: "Projects" }}
+        title={p.name} sub={[p.status !== "active" && p.status[0].toUpperCase() + p.status.slice(1), p.due_date && p.status !== "done" && leftLabel(today, p.due_date)].filter(Boolean).join(" · ") || undefined}
         actions={<><ViewToggle base={`/os/projects/${id}`} view={view} />
           <Sheet label="Edit project" title="Edit project" icon="more" iconOnly>
             <form action={updateProject} className="form">
               <input type="hidden" name="id" value={id} />
               <label className="fld"><span>Name</span><input className="in" name="name" defaultValue={p.name} required aria-label="Project name" /></label>
               <label className="fld"><span>Area</span><select className="in" name="area_id" defaultValue={p.area_id ?? ""} aria-label="Area"><option value="">No area</option>{areas.filter(a => !a.archived || a.id === p.area_id).map(a => <option key={a.id} value={a.id}>{a.name}</option>)}</select></label>
-              <label className="fld"><span>Kind</span><select className="in" name="kind" defaultValue={kind} aria-label="Kind"><option value="general">Plain</option><option value="research">Research</option><option value="business">Business</option></select></label>
+              <label className="fld"><span>Template</span><select className="in" name="kind" defaultValue={kind} aria-label="Template"><option value="general">Plain</option><option value="research">Research</option><option value="business">Business</option></select></label>
               <DateChip label="Due" name="due_date" defaultValue={p.due_date} />
               <div><button className="btn pri">Save</button></div>
             </form>
