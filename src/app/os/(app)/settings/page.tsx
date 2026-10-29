@@ -1,6 +1,7 @@
 import Link from "next/link"
 import type { CSSProperties } from "react"
-import { getAreas, getPins } from "@/lib/os/data"
+import { getAreas, getPins, getProjects } from "@/lib/os/data"
+import { pinName } from "@/lib/os/pinname"
 import { createArea, deletePin, logout } from "@/lib/os/actions"
 import { fmtDate } from "@/lib/os/dates"
 import { aiStatus } from "@/lib/os/ai"
@@ -13,7 +14,7 @@ export const metadata = { title: "Settings" }
 export const dynamic = "force-dynamic"
 
 export default async function Settings() {
-  const [areas, pins, ai] = await Promise.all([getAreas(true), getPins(), aiStatus()])
+  const [areas, pins, ai, projects] = await Promise.all([getAreas(true), getPins(), aiStatus(), getProjects()])
   return (
     <>
       <PageHeader title="Settings" />
@@ -42,8 +43,8 @@ export default async function Settings() {
         <div className="grp-h"><h2>Pinned dates</h2></div>
         <ul className="card grp-l">
           {pins.map(p => (
-            <li key={p.id} className="row"><span className="tt">{p.label}</span><small className="meta">{fmtDate(p.pin_date)}</small>
-              <form action={deletePin.bind(null, p.id)}><button className="btn ghost sm" aria-label={`Unpin ${p.label}`}>Unpin</button></form></li>
+            <li key={p.id} className="row"><span className="tt">{pinName(p, projects)}</span><small className="meta">{fmtDate(p.pin_date)}</small>
+              <form action={deletePin.bind(null, p.id)}><button className="btn ghost sm" aria-label={`Unpin ${pinName(p, projects)}`}>Unpin</button></form></li>
           ))}
           {!pins.length && <li className="row meta">Pin a project deadline from Today to count down to it.</li>}
         </ul>

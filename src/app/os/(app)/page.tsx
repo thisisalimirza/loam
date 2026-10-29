@@ -9,7 +9,7 @@ import { Icon } from "../_ui/icons"
 import { TaskList } from "../_ui/Tasks"
 import Suggestions from "../_ui/Suggestions"
 import { RollOver } from "../_ui/InMotion"
-import { getInMotion, getRollover } from "@/lib/os/motion"
+import { focusPick, getInMotion, getRollover } from "@/lib/os/motion"
 import { getSuggestions } from "@/lib/os/graph"
 
 export const metadata = { title: "Today" }
@@ -36,6 +36,8 @@ export default async function Today() {
     listTitle = "Up next"
   }
   const listed = new Set(tasks.map(t => t.id))
+  const hero = focusPick(motion)
+  const showHero = hero && hero.next && !listed.has(hero.next.id)
   const s = sugg.filter(x => x.kind !== "followup" && !(x.kind === "next" && x.projectId && motion.some(m => m.id === x.projectId)) && ![...listed].some(id => x.key.includes(id)))
   const words = entry ? entry.body.trim().split(/\s+/).filter(Boolean).length : 0
   const hour = Number(new Intl.DateTimeFormat("en-US", { hour: "numeric", hour12: false, timeZone: "America/New_York" }).format(new Date()))
@@ -50,6 +52,12 @@ export default async function Today() {
     <>
       <PageHeader eyebrow={fmtDate(today, { weekday: "long", month: "long", day: "numeric" })} title="Today" />
       {[0, 1].includes(new Date(today + "T12:00:00").getDay()) && <Link href="/os/review" className="nudge"><Icon name="calendar" size={16} /><span><strong>Weekly review</strong> Look back at the week and pick what’s next.</span><Icon name="chev" size={14} /></Link>}
+      {showHero && (
+        <section className="hero" aria-label="Focus">
+          <div><p className="hero-k">If you only get to one thing</p><h2>{hero.next!.title}</h2><p className="meta">{hero.name}{hero.risk ? ` · ${hero.risk}` : ""}</p></div>
+          <Link href={`/os?task=${hero.next!.id}`} className="btn pri">Start</Link>
+        </section>
+      )}
       <Card title={listTitle} className="today-list">
         {tasks.length > 0 && <TaskList tasks={tasks} areas={areas} today={today} />}
         <Link href="/os/journal/write" className="jrow"><Icon name="pen" /><span className="tt">Journal</span><span className="meta">{words ? `${words} words` : "Not started"}</span><Icon name="chev" className="i chev" /></Link>

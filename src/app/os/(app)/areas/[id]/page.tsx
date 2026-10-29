@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import type { CSSProperties } from "react"
+import { pinName } from "@/lib/os/pinname"
 import { getArea, getAreas, getNotes, getPeople, getPins, getProjects, getTasks } from "@/lib/os/data"
 import { archiveArea, createProject, deleteArea, deletePin, updateArea } from "@/lib/os/actions"
 import { daysBetween, fmtDate, todayISO } from "@/lib/os/dates"
@@ -76,7 +77,7 @@ export default async function AreaPage({ params, searchParams }: { params: Promi
         <div className="countdowns ctx-cd">
           {myPins.map(p => (
             <div key={p.id} className="cd" style={{ "--c": area.color } as CSSProperties}>
-              <div className="num">{daysBetween(today, p.pin_date)}<small> days</small></div><span>{p.label}</span>
+              <div className="num">{daysBetween(today, p.pin_date)}<small> days</small></div><span>{pinName(p, projects)}</span>
               <form action={deletePin.bind(null, p.id)}><button className="btn ghost sm" aria-label="Unpin"><Icon name="x" size={14} /></button></form>
             </div>
           ))}

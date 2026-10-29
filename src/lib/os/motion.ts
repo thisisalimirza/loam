@@ -103,3 +103,7 @@ export function focusLine(ms: Motion[]) {
   const m = risky[0]
   return `If you only get to one project today, make it ${m.name}.`
 }
+export function focusPick(ms: Motion[]) {
+  const risky = ms.filter(m => m.risk && m.next)
+  return ms.length >= 2 && risky.length ? risky[0] : null
+}
