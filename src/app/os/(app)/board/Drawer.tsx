@@ -22,7 +22,7 @@ export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOp
   onClose: () => void; onOpen: (id: string) => void; onChange: (t: BoardTask) => void; onDeps: (d: Dep[]) => void
   onMove: (colId: string) => Promise<void>; onDeleted: () => void; fromBoard?: boolean
 }) {
-  const [moreOpen, setMoreOpen] = useState(() => !!(t.repeat || t.area_id && !t.project_id || (t.tags ?? []).length))
+  const [moreOpen, setMoreOpen] = useState(() => !!(t.repeat || t.area_id && !t.project_id || (t.tags ?? []).length || deps.some(d => d.task_id === t.id || d.blocked_by === t.id)))
   const [activity, setActivity] = useState<Activity[] | null>(null)
   const [links, setLinks] = useState<{ kind: "person" | "note"; ref_id: string }[]>([])
   const [title, setTitle] = useState(t.title)
