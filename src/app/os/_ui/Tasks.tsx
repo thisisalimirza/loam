@@ -151,7 +151,7 @@ export function TaskBoard({ tasks, areas, today, areaId, projectId }: { tasks: T
       )}
       footer={col => col === "done" ? null : (
         <form className="coladd" action={createTask} onSubmit={e => { const f = e.currentTarget; setTimeout(() => f.reset(), 0) }}>
-          <input className="in" name="title" placeholder="Add a card" aria-label={`Add to ${col}`} required />
+          <input className="in" name="title" placeholder="Add a task" aria-label={`Add to ${col}`} required />
           <input type="hidden" name="status" value={col} />
           {areaId && <input type="hidden" name="area_id" value={areaId} />}
           {projectId && <input type="hidden" name="project_id" value={projectId} />}
