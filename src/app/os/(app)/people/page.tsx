@@ -45,7 +45,7 @@ export default async function People() {
         </Card>
         {suggested.length > 0 && (
           <section className="quiet-sec" aria-label="From your notes">
-            <h2 className="sec-h">From your notes <span className="meta">Names you mentioned. Add them, or tell me who they are.</span></h2>
+            <h2 className="sec-h">From your notes</h2>
             <ul className="sp-list">{suggested.map(s => {
               const m = s.mentions[0]
               return (
