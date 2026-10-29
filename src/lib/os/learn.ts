@@ -16,12 +16,12 @@ export async function getLearn(kind?: "evidence" | "edge") {
   await requireOwner()
   const sql = db()
   return kind
-    ? sql<LearnItem[]>`select *, review_due::text review_due from loam_os.learn_items where kind = ${kind} order by created_at desc limit 100`
-    : sql<LearnItem[]>`select *, review_due::text review_due from loam_os.learn_items order by created_at desc limit 100`
+    ? sql<LearnItem[]>`select id, kind, title, url, source, summary, takeaway, sources, query, review_due::text review_due, review_step, created_at from loam_os.learn_items where kind = ${kind} order by created_at desc limit 100`
+    : sql<LearnItem[]>`select id, kind, title, url, source, summary, takeaway, sources, query, review_due::text review_due, review_step, created_at from loam_os.learn_items order by created_at desc limit 100`
 }
 export async function getDue() {
   await requireOwner()
-  return db()<LearnItem[]>`select *, review_due::text review_due from loam_os.learn_items where review_due <= ${todayISO()} order by review_due, created_at limit 50`
+  return db()<LearnItem[]>`select id, kind, title, url, source, summary, takeaway, sources, query, review_due::text review_due, review_step, created_at from loam_os.learn_items where review_due <= ${todayISO()} order by review_due, created_at limit 50`
 }
 
 const strip = (h: string) => h.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi, " ").replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&#39;|&rsquo;/g, "’").replace(/&quot;/g, '"').replace(/\s+/g, " ").trim()
