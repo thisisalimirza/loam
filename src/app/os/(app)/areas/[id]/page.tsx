@@ -47,6 +47,7 @@ export default async function AreaPage({ params, searchParams }: { params: Promi
       <form action={createProject} className="form">
         <input type="hidden" name="area_id" value={id} />
         <label className="fld"><span>Name</span><input className="in" name="name" placeholder="e.g. Step 2 prep" required aria-label="Project name" /></label>
+        <label className="fld"><span>Template</span><select className="in" name="kind" aria-label="Template"><option value="general">Plain</option><option value="research">Research (Idea to Paper)</option><option value="business">Business (with numbers)</option></select></label>
         <DateChip label="Due" name="due_date" />
         <div><button className="btn pri">Create project</button></div>
       </form>

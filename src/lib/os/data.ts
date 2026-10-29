@@ -1,7 +1,7 @@
 import "server-only"
 import { db } from "./db"
 import { requireOwner } from "./auth"
-import type { Area, Conversation, Draft, Entry, Note, Person, Pin, Project, Task } from "./types"
+import type { Area, Conversation, Draft, Entry, Note, Person, Pin, Project, Metric, Task } from "./types"
 
 // Reads. Each one checks the session itself.
 
@@ -23,6 +23,10 @@ export async function getProjects(areaId?: string) {
   return areaId
     ? sql<Project[]>`select * from loam_os.projects where area_id = ${areaId} order by status, created_at`
     : sql<Project[]>`select * from loam_os.projects order by status, created_at`
+}
+export async function getMetrics(projectId: string) {
+  await requireOwner()
+  return db()<Metric[]>`select id, project_id, label, value::float8 value, target::float8 target, unit from loam_os.project_metrics where project_id = ${projectId} order by created_at`
 }
 export async function getProject(id: string) {
   await requireOwner()

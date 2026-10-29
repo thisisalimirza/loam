@@ -104,16 +104,52 @@ export async function deleteArea(id: string) {
   back(); redirect("/os/areas")
 }
 
+const TEMPLATES: Record<string, { stage?: string; tasks: string[]; metrics: [string, string][] }> = {
+  research: { stage: "Idea", tasks: ["Write the research question in one sentence", "Ask a mentor if they will supervise", "Check whether it needs IRB review"], metrics: [] },
+  business: { tasks: ["Write who it is for and what they pay", "Talk to five possible customers"], metrics: [["Revenue", "$"], ["Customers", ""]] },
+}
 export async function createProject(f: FormData) {
   await requireOwner()
   const name = str(f, "name"); if (!name) return
-  await db()`insert into loam_os.projects (name, area_id, due_date) values (${name}, ${opt(f, "area_id")}, ${opt(f, "due_date")})`
+  const kind = ["research", "business"].includes(str(f, "kind")) ? str(f, "kind") : "general"
+  const tpl = TEMPLATES[kind]
+  const area = opt(f, "area_id")
+  await db().begin(async sql => {
+    const [p] = await sql<{ id: string }[]>`insert into loam_os.projects (name, area_id, due_date, kind, stage) values (${name}, ${area}, ${opt(f, "due_date")}, ${kind}, ${tpl?.stage ?? null}) returning id`
+    for (const [i, t] of (tpl?.tasks ?? []).entries()) await sql`insert into loam_os.tasks (title, project_id, area_id, sort) values (${t}, ${p.id}, ${area}, ${i})`
+    for (const [l, u] of tpl?.metrics ?? []) await sql`insert into loam_os.project_metrics (project_id, label, unit) values (${p.id}, ${l}, ${u})`
+  })
   back()
 }
 export async function updateProject(f: FormData) {
   await requireOwner()
   const name = str(f, "name"); if (!name) return
-  await db()`update loam_os.projects set name = ${name}, area_id = ${opt(f, "area_id")}, due_date = ${opt(f, "due_date")} where id = ${str(f, "id")}`
+  const kind = ["research", "business"].includes(str(f, "kind")) ? str(f, "kind") : "general"
+  await db()`update loam_os.projects set name = ${name}, area_id = ${opt(f, "area_id")}, due_date = ${opt(f, "due_date")}, kind = ${kind},
+    stage = case when ${kind} = 'research' then coalesce(stage, 'Idea') else stage end where id = ${str(f, "id")}`
+  back()
+}
+export async function setProjectStage(id: string, stage: string) {
+  await requireOwner()
+  await db()`update loam_os.projects set stage = ${stage} where id = ${id}`
+  back()
+}
+export async function addMetric(projectId: string, f: FormData) {
+  await requireOwner()
+  const label = str(f, "label"); if (!label) return
+  const num = (k: string) => { const v = str(f, k).replace(/[$,%\s]/g, ""); return v && !isNaN(+v) ? +v : null }
+  await db()`insert into loam_os.project_metrics (project_id, label, value, target, unit) values (${projectId}, ${label}, ${num("value") ?? 0}, ${num("target")}, ${str(f, "unit")})`
+  back()
+}
+export async function setMetric(id: string, f: FormData) {
+  await requireOwner()
+  const v = str(f, "value").replace(/[$,%\s]/g, ""); if (!v || isNaN(+v)) return
+  await db()`update loam_os.project_metrics set value = ${+v}, updated_at = now() where id = ${id}`
+  back()
+}
+export async function deleteMetric(id: string) {
+  await requireOwner()
+  await db()`delete from loam_os.project_metrics where id = ${id}`
   back()
 }
 export async function setProjectStatus(id: string, status: "active" | "paused" | "done") {
@@ -506,4 +542,53 @@ export async function ideaTo(id: string, to: "task" | "draft" | "note" | "drop")
   if (to === "note") { await sql`update loam_os.notes set kind = 'note', updated_at = now() where id = ${id}`; href = `/os/notes/${id}` }
   else await sql`delete from loam_os.notes where id = ${id}`
   back(); return { href }
+}
+
+// ---------- learn ----------
+
+export async function addEvidence(f: FormData) {
+  await requireOwner()
+  const { readPage, summarizeOne } = await import("./learn")
+  const url = str(f, "url"), note = str(f, "note")
+  if (!url && !note) return
+  const page = url ? await readPage(url) : null
+  const ai = page ? await summarizeOne(page.title, page.text) : null
+  const title = (str(f, "title") || page?.title || note.split("\n")[0]).slice(0, 200)
+  const sources = url ? [{ url, title: page?.title ?? url }] : []
+  await db()`insert into loam_os.learn_items (kind, title, url, source, summary, takeaway, sources, review_due)
+    values ('evidence', ${title}, ${url || null}, ${page?.host ?? ""}, ${ai?.summary ?? ""}, ${note || ai?.takeaway || ""}, ${sources as never}::jsonb, ${addDays(todayISO(), 1)})`
+  back()
+}
+export async function addEdge(f: FormData) {
+  await requireOwner()
+  const { readPost, searchX, summarizeMany } = await import("./learn")
+  const topic = str(f, "topic")
+  const links = str(f, "links").split(/\s+/).filter(l => /^https?:\/\/(www\.)?(x|twitter)\.com\/[^/]+\/status\/\d+/.test(l)).slice(0, 10)
+  if (!topic && !links.length) return
+  const found = topic ? (await searchX(topic)) ?? [] : []
+  const pasted = (await Promise.all(links.map(readPost))).filter(Boolean) as { url: string; author: string; text: string }[]
+  const posts = [...pasted, ...found].filter((p, i, a) => a.findIndex(q => q.url === p.url) === i).slice(0, 15)
+  if (!posts.length) redirect("/os/learn?tab=edges&err=" + (topic && !links.length ? "search" : "posts"))
+  const r = await summarizeMany(topic || "these posts", posts)
+  const summary = r ? r.points.map(p => `${p.claim}|${p.sources.join(",")}`).join("\n") : ""
+  const title = (r?.title || topic || `${posts[0].author}: ${posts[0].text}`).slice(0, 120)
+  await db()`insert into loam_os.learn_items (kind, title, source, summary, takeaway, sources, query, review_due)
+    values ('edge', ${title}, 'X', ${summary}, ${r?.takeaway ?? ""}, ${posts.map(p => ({ url: p.url, title: p.text.slice(0, 140), author: p.author })) as never}::jsonb, ${topic || null}, ${addDays(todayISO(), 1)})`
+  back()
+  redirect("/os/learn?tab=edges")
+}
+export async function reviewLearn(id: string, ok: boolean) {
+  await requireOwner()
+  const steps = [1, 3, 7, 21, 60]
+  const sql = db()
+  const [it] = await sql<{ review_step: number }[]>`select review_step from loam_os.learn_items where id = ${id}`
+  if (!it) return
+  const step = ok ? Math.min(it.review_step + 1, steps.length - 1) : 0
+  await sql`update loam_os.learn_items set review_step = ${step}, review_due = ${addDays(todayISO(), ok ? steps[step] : 1)}, reviewed_at = now() where id = ${id}`
+  back()
+}
+export async function deleteLearn(id: string) {
+  await requireOwner()
+  await db()`delete from loam_os.learn_items where id = ${id}`
+  back()
 }

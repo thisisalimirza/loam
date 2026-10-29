@@ -1,0 +1,1 @@
+-- Applied via Supabase apply_migration (loam_os_build_learn). Project kinds, metrics, Learn items.

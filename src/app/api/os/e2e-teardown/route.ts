@@ -5,7 +5,7 @@ import { requireOwner } from "@/lib/os/auth"
 
 export const dynamic = "force-dynamic"
 
-const TABLES = ["links", "mentions", "task_activity", "task_deps", "task_links", "conversations", "tasks", "drafts", "notes", "journal_entries", "pins", "people", "board_columns", "board_views", "projects", "areas"]
+const TABLES = ["links", "mentions", "task_activity", "task_deps", "task_links", "conversations", "tasks", "drafts", "notes", "journal_entries", "pins", "people", "board_columns", "board_views", "project_metrics", "learn_items", "projects", "areas"]
 
 /** Owner-only, test-mode only. Deletes rows flagged is_test, nothing else.
  *  Row-level security already hides real rows in test mode; the explicit

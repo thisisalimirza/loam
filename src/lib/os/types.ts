@@ -1,5 +1,8 @@
 export type Area = { id: string; name: string; color: string; archived: boolean; sort: number }
-export type Project = { id: string; area_id: string | null; name: string; status: "active" | "paused" | "done"; due_date: string | null }
+export type Project = { id: string; area_id: string | null; name: string; status: "active" | "paused" | "done"; due_date: string | null; kind?: ProjectKind; stage?: string | null }
+export type ProjectKind = "general" | "research" | "business"
+export const RESEARCH_STAGES = ["Idea", "IRB", "Data", "Analysis", "Abstract", "Poster", "Paper"] as const
+export type Metric = { id: string; project_id: string; label: string; value: number; target: number | null; unit: string }
 export type TaskStatus = "todo" | "doing" | "done"
 export type Task = {
   id: string; title: string; notes: string; status: TaskStatus

@@ -11,6 +11,7 @@ import Suggestions from "../_ui/Suggestions"
 import { RollOver } from "../_ui/InMotion"
 import { focusPick, getInMotion, getRollover } from "@/lib/os/motion"
 import { getSuggestions } from "@/lib/os/graph"
+import { getNudges } from "@/lib/os/nudges"
 
 export const metadata = { title: "Today" }
 
@@ -24,6 +25,7 @@ export default async function Today() {
     getAreas(), getTasksForDay(today), getPins(), getFollowUps(today), getEntryForDay(today), getSuggestions().catch(() => []),
     getInMotion().catch(() => []), getRollover().catch(() => []), getTasks({ openOnly: true }), getDrafts().catch(() => []),
   ])
+  const nudges = await getNudges().catch(() => [])
   const posting = drafts.filter(d => d.stage !== "published" && d.scheduled_for && ((d.scheduled_for as unknown) instanceof Date ? (d.scheduled_for as unknown as Date).toISOString() : String(d.scheduled_for)).slice(0, 10) === today)
   // One list: overdue + due today (+ done today). If nothing is dated, the next step per project/area instead.
   let tasks: Task[] = dayTasks
@@ -57,6 +59,9 @@ export default async function Today() {
           <div><p className="hero-k">If you only get to one thing</p><h2>{hero.next!.title}</h2><p className="meta">{hero.name}{hero.risk ? ` · ${hero.risk}` : ""}</p></div>
           <Link href={`/os?task=${hero.next!.id}`} className="btn pri">Start</Link>
         </section>
+      )}
+      {nudges.length > 0 && (
+        <ul className="nudges" aria-label="Nudges">{nudges.map(n => <li key={n.key}><Link href={n.href}><Icon name={n.icon} size={15} /><span>{n.text}</span><Icon name="chev" size={13} /></Link></li>)}</ul>
       )}
       <Card title={listTitle} className="today-list">
         {tasks.length > 0 && <TaskList tasks={tasks} areas={areas} today={today} />}

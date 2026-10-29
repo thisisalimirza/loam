@@ -11,6 +11,9 @@ export const NAV_GROUPS: [string, N[], boolean?][] = [
     { href: "/os/drafts", label: "Drafts", icon: "drafts", also: ["/os/schedule"] },
     { href: "/os/site", label: "Site", icon: "globe" },
   ]],
+  ["Learn", [
+    { href: "/os/learn", label: "Learn", icon: "learn" },
+  ]],
   ["Projects", [
     { href: "/os/areas", label: "Areas & projects", icon: "areas", also: ["/os/projects"] },
   ]],
@@ -25,6 +28,6 @@ export const TABS: N[] = [
   { href: "/os/tasks", label: "Tasks", icon: "tasks", also: ["/os/board"] },
   { href: "/os/journal", label: "Write", icon: "pen", also: ["/os/notes", "/os/drafts", "/os/site", "/os/schedule"] },
   { href: "/os/areas", label: "Projects", icon: "areas", also: ["/os/projects"] },
-  { href: "/os/more", label: "More", icon: "more", also: ["/os/people", "/os/review", "/os/settings", "/os/inbox"] },
+  { href: "/os/more", label: "More", icon: "more", also: ["/os/people", "/os/review", "/os/settings", "/os/inbox", "/os/learn"] },
 ]
 
