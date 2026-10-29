@@ -17,11 +17,12 @@ import { PRI, age } from "./Board"
 
 type Dep = { task_id: string; blocked_by: string }
 
-export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOpen, onChange, onDeps, onMove, onDeleted }: {
+export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOpen, onChange, onDeps, onMove, onDeleted, fromBoard }: {
   task: BoardTask; data: BoardData; cols: BoardColumn[]; tasks: BoardTask[]; deps: Dep[]; today: string
   onClose: () => void; onOpen: (id: string) => void; onChange: (t: BoardTask) => void; onDeps: (d: Dep[]) => void
-  onMove: (colId: string) => Promise<void>; onDeleted: () => void
+  onMove: (colId: string) => Promise<void>; onDeleted: () => void; fromBoard?: boolean
 }) {
+  const [moreOpen, setMoreOpen] = useState(() => !!(t.repeat || t.area_id && !t.project_id || (t.tags ?? []).length))
   const [activity, setActivity] = useState<Activity[] | null>(null)
   const [links, setLinks] = useState<{ kind: "person" | "note"; ref_id: string }[]>([])
   const [title, setTitle] = useState(t.title)
@@ -39,7 +40,7 @@ export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOp
   }, [t.id])
   useEffect(() => {
     const prev = document.body.style.overflow
-    const docked = window.matchMedia("(min-width:1366px)").matches
+    const docked = window.matchMedia("(min-width:1024px)").matches
     if (docked) document.body.classList.add("has-panel"); else document.body.style.overflow = "hidden"
     panel.current?.focus()
     const k = (e: KeyboardEvent) => { if (e.key === "Escape" && !(e.target as HTMLElement).closest(".bd-dep-results")) onClose() }
@@ -112,8 +113,8 @@ export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOp
     <div className="drawer-bg" onMouseDown={e => { if (e.target === e.currentTarget) onClose() }}>
       <aside className="drawer" ref={panel} tabIndex={-1} role="dialog" aria-label={t.title}>
         <header className="drawer-h">
-          <span className="meta">{col?.name ?? ""} · {age(t.status_changed_at)} in column</span>
-          <button className="btn ghost sm" onClick={onClose} aria-label="Close"><Icon name="x" size={14} /></button>
+          <button className="btn ghost sm" onMouseDown={e => e.preventDefault()} onClick={() => { setTitle(t.title); setNotes(t.notes ?? ""); onClose() }}>Cancel</button>
+          <button className="btn ghost sm dr-done" onClick={() => { (document.activeElement as HTMLElement | null)?.blur(); setTimeout(onClose, 0) }}>Done</button>
         </header>
         <div className="drawer-b">
           <textarea className="dr-title" rows={1} value={title} aria-label="Title" onChange={e => setTitle(e.target.value)}
@@ -130,28 +131,15 @@ export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOp
           <MentionChips text={`${t.title}\n${t.notes ?? ""}`} />
 
           <dl className="dr-props">
-            <dt>Column</dt>
-            <dd><select className="in" value={col?.id ?? ""} onChange={e => onMove(e.target.value)} aria-label="Column">{cols.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}</select></dd>
+            {fromBoard && <><dt>Column</dt>
+            <dd><select className="in" value={col?.id ?? ""} onChange={e => onMove(e.target.value)} aria-label="Column">{cols.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}</select></dd></>}
             <dt>Priority</dt>
             <dd><div className="seg">{(Object.keys(PRI) as Priority[]).map(p => <button key={p} className={(t.priority ?? "normal") === p ? "on" : ""} onClick={() => save({ priority: p })}>{PRI[p].label}</button>)}</div></dd>
             <dt>Due</dt>
             <dd><DateChip label="Due" value={t.due_date ?? null} onChange={d => save({ due_date: d })} /></dd>
-            <dt>Repeat</dt>
-            <dd><select className="in" value={t.repeat ?? ""} onChange={e => save({ repeat: (e.target.value || null) as BoardTask["repeat"] })} aria-label="Repeat">
-              <option value="">Never</option>{REPEATS.map(r => <option key={r} value={r}>{REPEAT_LABEL[r]}</option>)}</select></dd>
-            <dt>Area</dt>
-            <dd><select className="in" value={t.area_id ?? ""} onChange={e => save({ area_id: e.target.value || null })} aria-label="Area">
-              <option value="">No area</option>{data.areas.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}</select></dd>
             <dt>Project</dt>
             <dd><select className="in" value={t.project_id ?? ""} onChange={e => save({ project_id: e.target.value || null })} aria-label="Project">
               <option value="">No project</option>{projects.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}</select></dd>
-            <dt>Tags</dt>
-            <dd className="chips">
-              {(t.tags ?? []).map(x => <span key={x} className="chip on">#{x}<button aria-label={`Remove ${x}`} onClick={() => save({ tags: (t.tags ?? []).filter(y => y !== x) })}><Icon name="x" size={11} /></button></span>)}
-              <form onSubmit={e => { e.preventDefault(); if (tagIn.trim()) { save({ tags: [...(t.tags ?? []), tagIn] }); setTagIn("") } }}>
-                <input className="in sm" value={tagIn} onChange={e => setTagIn(e.target.value)} placeholder="Add tag" aria-label="Add tag" />
-              </form>
-            </dd>
           </dl>
 
           <section className="dr-sec">
@@ -171,6 +159,23 @@ export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOp
             }} />
           </section>
 
+          <details className="dr-more" open={moreOpen} onToggle={e => setMoreOpen(e.currentTarget.open)}>
+            <summary>More details</summary>
+            <dl className="dr-props">
+            <dt>Repeat</dt>
+            <dd><select className="in" value={t.repeat ?? ""} onChange={e => save({ repeat: (e.target.value || null) as BoardTask["repeat"] })} aria-label="Repeat">
+              <option value="">Never</option>{REPEATS.map(r => <option key={r} value={r}>{REPEAT_LABEL[r]}</option>)}</select></dd>
+            <dt>Area</dt>
+            <dd><select className="in" value={t.area_id ?? ""} onChange={e => save({ area_id: e.target.value || null })} aria-label="Area">
+              <option value="">No area</option>{data.areas.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}</select></dd>
+            <dt>Tags</dt>
+            <dd className="chips">
+              {(t.tags ?? []).map(x => <span key={x} className="chip on">#{x}<button aria-label={`Remove ${x}`} onClick={() => save({ tags: (t.tags ?? []).filter(y => y !== x) })}><Icon name="x" size={11} /></button></span>)}
+              <form onSubmit={e => { e.preventDefault(); if (tagIn.trim()) { save({ tags: [...(t.tags ?? []), tagIn] }); setTagIn("") } }}>
+                <input className="in sm" value={tagIn} onChange={e => setTagIn(e.target.value)} placeholder="Add tag" aria-label="Add tag" />
+              </form>
+            </dd>
+            </dl>
           <section className="dr-sec">
             <h3>Waiting on</h3>
             {blockedBy.length === 0 && <p className="meta">Nothing. Add a card this one can’t start without.</p>}
@@ -227,6 +232,7 @@ export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOp
               <button className="btn sm" disabled={!comment.trim()}>Comment</button>
             </form>
           </section>
+          </details>
         </div>
         <footer className="drawer-f">
           <button className="btn sm danger" onClick={async () => {

@@ -28,13 +28,17 @@ function Trigger() {
   )
 }
 
-// Pages that have their own add field: one add per page, so the floating bar steps aside (⌘K still works).
-const OWN_ADD = [/^\/os\/tasks$/, /^\/os\/drafts$/, /^\/os\/people$/, /^\/os\/inbox$/, /^\/os\/notes$/, /^\/os\/areas\/[^/]+$/, /^\/os\/projects\/[^/]+$/, /^\/os\/board$/, /^\/os\/(drafts|people|notes|journal)\/[^/]+$/]
+const KINDS = [
+  { k: "task", label: "Task", prefix: "", ph: "Add a task, or type to search…" },
+  { k: "note", label: "Note", prefix: "note: ", ph: "Note title" },
+  { k: "person", label: "Person", prefix: "person: ", ph: "Name" },
+  { k: "draft", label: "Draft", prefix: "draft: ", ph: "Idea or working title" },
+] as const
 
 export default function Capture() {
   const pathname = usePathname()
-  const ownAdd = OWN_ADD.some(r => r.test(pathname))
   const [open, setOpen] = useState(false)
+  const [kind, setKind] = useState<(typeof KINDS)[number]>(KINDS[0])
   const [q, setQ] = useState("")
   const [hits, setHits] = useState<Hit[]>([])
   const [sel, setSel] = useState(0)
@@ -56,7 +60,8 @@ export default function Capture() {
     return () => { window.removeEventListener("keydown", onKey); window.removeEventListener(OPEN, onOpen) }
   }, [router])
 
-  useEffect(() => { if (open) { setQ(""); setHits([]); setSel(0); setRec(recentItems(5)); setTimeout(() => si.current?.focus(), 10) } }, [open])
+  useEffect(() => { setOpen(false) }, [pathname])
+  useEffect(() => { if (open) { setKind(KINDS[0]); setQ(""); setHits([]); setSel(0); setRec(recentItems(5)); setTimeout(() => si.current?.focus(), 10) } }, [open])
 
   useEffect(() => {
     if (!open || q.trim().length < 2 || q.includes(":")) { setHits([]); return }
@@ -66,34 +71,35 @@ export default function Capture() {
 
   const jumps = q ? JUMPS.filter(j => j.label.toLowerCase().includes(q.toLowerCase())) : JUMPS
   const items: { label: string; sub: string; go: () => void }[] = [
-    ...(q.trim() ? [{ label: `Add “${q.trim()}”`, sub: q.includes(":") ? "" : "Inbox", go: () => submit() }] : []),
+    ...(q.trim() ? [{ label: `Add “${q.trim()}”`, sub: q.includes(":") ? "" : kind.label, go: () => submit() }] : []),
     ...(q.trim() ? [] : rec.map(r => ({ label: r.title!, sub: "Recent " + r.kind, go: () => { setOpen(false); remember(r.kind, r.id, r.title); if (r.kind === "task") openTask(r.id); else router.push(KIND_HREF[r.kind] + r.id) } }))),
     ...hits.map(h => ({ label: h.title, sub: h.kind, go: () => { setOpen(false); remember(h.kind, h.id, h.title); if (h.kind === "task") openTask(h.id); else router.push(KIND_HREF[h.kind] + h.id) } })),
     ...jumps.map(j => ({ label: j.label, sub: j.key ?? "Go", go: () => { setOpen(false); router.push(j.href) } })),
   ]
 
   function submit() {
-    const text = q.trim(); if (!text) return
+    const raw = q.trim(); if (!raw) return
+    const text = kind.prefix && !/^\w+:/.test(raw) ? kind.prefix + raw : raw
     start(async () => {
       const v = si.current?.value()
-      const r = await capture(text, v && !/^\w+:/.test(text) ? { title: v.title, due: v.due, repeat: v.repeat } : undefined)
+      const r = await capture(text, v && !kind.prefix && !/^\w+:/.test(text) ? { title: v.title, due: v.due, repeat: v.repeat } : undefined)
       setOpen(false)
       if (r.href) router.push(r.href)
-      else { setFlash("Added to Inbox"); router.refresh(); setTimeout(() => setFlash(""), 1800) }
+      else { setFlash("Added"); router.refresh(); setTimeout(() => setFlash(""), 1800) }
     })
   }
 
   return (
     <>
-      {!ownAdd && <button className="capture" onClick={() => setOpen(true)}>
-        <Icon name="plus" /><span>{flash || "Add a task, note, or person…"}</span><kbd>⌘K</kbd>
-      </button>}
+      <button className="capture" onClick={() => setOpen(true)}>
+        <Icon name="plus" /><span>{flash || "Add a task, note, or person…"}</span>
+      </button>
       {open && (
         <div className="modal-bg" onMouseDown={e => { if (e.target === e.currentTarget) setOpen(false) }}>
           <div className="modal" role="dialog" aria-label="Capture">
             <div className="mi">
               <Icon name="plus" />
-              <SmartInput ref={si} autoFocus dates={!/^\w+:/.test(q)} placeholder="Add a task, or type to search…" aria-label="Capture or search" onValue={v => { if (v.raw !== q) { setQ(v.raw); setSel(0) } }}
+              <SmartInput ref={si} autoFocus dates={!kind.prefix && !/^\w+:/.test(q)} placeholder={kind.ph} aria-label="Capture or search" onValue={v => { if (v.raw !== q) { setQ(v.raw); setSel(0) } }}
                 onKeyDown={e => {
                   if (e.key === "ArrowDown") { e.preventDefault(); setSel(s => Math.min(s + 1, items.length - 1)) }
                   if (e.key === "ArrowUp") { e.preventDefault(); setSel(s => Math.max(s - 1, 0)) }
@@ -101,6 +107,7 @@ export default function Capture() {
                 }} disabled={pending} />
               <kbd>esc</kbd>
             </div>
+            <div className="seg cap-kind" role="group" aria-label="Add as">{KINDS.map(x => <button key={x.k} className={x.k === kind.k ? "on" : ""} onClick={() => { setKind(x); si.current?.focus() }}>{x.label}</button>)}</div>
             <ul>
               {items.map((it, i) => (
                 <li key={i}><button className={i === sel ? "on" : ""} onMouseEnter={() => setSel(i)} onClick={it.go}>
@@ -108,7 +115,7 @@ export default function Capture() {
                 </button></li>
               ))}
             </ul>
-            <div className="hint"><span>Dates like “fri” or “every mon” are picked up as you type</span><span>note: · person: · draft:</span></div>
+            {kind.k === "task" && <div className="hint"><span>Dates like “fri” or “every mon” are picked up as you type</span></div>}
           </div>
         </div>
       )}

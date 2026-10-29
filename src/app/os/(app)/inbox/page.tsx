@@ -12,14 +12,14 @@ export default async function Inbox() {
   return (
     <>
       <PageHeader title="Inbox" sub="Things you captured that don’t belong anywhere yet." />
-      <Card title="Unfiled" icon="inbox" meta={`${tasks.length}`}>
+      <Card title="Unfiled" icon="inbox" meta={tasks.length || undefined}>
         <TaskList unfiledOnly tasks={tasks} areas={areas} today={todayISO()} emptyTitle="Nothing to sort" emptyText="Anything you add with ⌘K and don’t give an area shows up here." />
         {tasks.length > 0 && areas.length > 0 && <FileTo tasks={tasks.map(t => ({ id: t.id, title: t.title }))} areas={areas.map(a => ({ id: a.id, name: a.name }))} />}
         <AddTask />
       </Card>
-      <Card title="Ideas" icon="pen" meta={ideas.length || undefined}>
-        {ideas.length ? <Ideas items={ideas.map(i => ({ id: i.id, title: i.title }))} /> : <p className="quiet-line" style={{ padding: "4px 16px 14px" }}>Type “idea: …” into ⌘K to park one here.</p>}
-      </Card>
+      {ideas.length > 0 && <Card title="Ideas" icon="pen">
+        <Ideas items={ideas.map(i => ({ id: i.id, title: i.title }))} />
+      </Card>}
     </>
   )
 }

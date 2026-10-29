@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation"
-import { getAreas, getProject, getTasks } from "@/lib/os/data"
-import { deleteProject, setProjectStatus, updateProject } from "@/lib/os/actions"
+import { getAreas, getPins, getProject, getTasks } from "@/lib/os/data"
+import { deletePin, deleteProject, pinDate, setProjectStatus, updateProject } from "@/lib/os/actions"
 import { nextUp } from "@/lib/os/focus"
 import Sheet from "../../../_ui/Sheet"
 import DateChip from "../../../_ui/DateChip"
@@ -14,11 +14,12 @@ import { getBoard } from "@/lib/os/board"
 
 export default async function ProjectPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ view?: string }> }) {
   const { id } = await params
-  const view = (await searchParams).view === "list" ? "list" : "board"
+  const view = (await searchParams).view === "board" ? "board" : "list"
   const p = await getProject(id)
   if (!p) notFound()
   const today = todayISO()
-  const [areas, tasks] = await Promise.all([getAreas(true), getTasks({ projectId: id })])
+  const [areas, tasks, pins] = await Promise.all([getAreas(true), getTasks({ projectId: id }), getPins()])
+  const pin = pins.find(x => x.pin_date >= today && (x.label.toLowerCase() === p.name.toLowerCase() || x.pin_date === p.due_date))
   const area = areas.find(a => a.id === p.area_id)
   const nx = nextUp(tasks)
   return (
@@ -35,6 +36,9 @@ export default async function ProjectPage({ params, searchParams }: { params: Pr
               <div><button className="btn pri">Save</button></div>
             </form>
             <div className="danger-zone">
+              {p.due_date && p.due_date >= today && (pin
+                ? <form action={async () => { "use server"; await deletePin(pin.id) }}><button className="btn sm">Unpin countdown</button></form>
+                : <form action={async () => { "use server"; await pinDate(p.name, p.due_date!, p.area_id) }}><button className="btn sm">Pin countdown</button></form>)}
               {(["active", "paused", "done"] as const).filter(s => s !== p.status).map(s => (
                 <form key={s} action={setProjectStatus.bind(null, id, s)}><button className="btn sm">{s === "active" ? "Reopen" : s === "paused" ? "Pause" : "Mark done"}</button></form>
               ))}
@@ -43,7 +47,7 @@ export default async function ProjectPage({ params, searchParams }: { params: Pr
           </Sheet>
         </>} />
       {view === "board" && !nx && p.status === "active" && <p className="quiet-line" style={{ marginBottom: 12 }}>No next step yet. What’s the very next physical action? Add it below.</p>}
-      {view === "board" ? <Board data={await getBoard()} today={today} scope={{ projectId: id }} embedded /> : (
+      {view === "board" ? <div className="in-project"><Board data={await getBoard()} today={today} scope={{ projectId: id }} embedded /></div> : (
         <Card title="Tasks" icon="tasks">
           <AddTask projectId={id} areaId={p.area_id ?? undefined} placeholder="Add a step. Try “… by friday”" />
           {tasks.length > 0 && <TaskList tasks={tasks} areas={areas} today={today} hideArea />}

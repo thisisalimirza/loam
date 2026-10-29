@@ -59,7 +59,7 @@ export default async function AreaPage({ params, searchParams }: { params: Promi
         actions={<><ViewToggle base={`/os/areas/${id}`} view={view} />{edit}</>} />
       <div className={view === "board" ? "stack" : "split"}><div className="stack">
         {view === "board" ? <Board data={await getBoard()} today={today} scope={{ areaId: id }} embedded /> : (
-          <Card title="Tasks" icon="tasks" meta={open.length}>
+          <Card title="Tasks" icon="tasks" meta={open.length || undefined}>
             <AddTask areaId={id} projects={projects.filter(p => p.status === "active")} placeholder={`Add to ${area.name}. Try “… fri”`} />
             {open.length > 0 && <TaskList tasks={open} areas={areas} today={today} hideArea />}
           </Card>

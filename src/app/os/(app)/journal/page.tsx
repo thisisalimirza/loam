@@ -44,7 +44,7 @@ export default async function Journal({ searchParams }: { searchParams: Promise<
             ))}
           </Card>
         )}
-        <Card title={q ? `Results for “${q}”` : "Entries"} icon="journal" meta={entries.length}>
+        <Card title={q ? `Results for “${q}”` : "Entries"} icon="journal" meta={entries.length || undefined}>
           {entries.length === 0 ? (
             q ? <Empty icon="search" title="Nothing matched">Try a different word.</Empty>
               : <Empty icon="journal" title="Nothing written yet">Press ⌘J from anywhere to open today’s page.</Empty>

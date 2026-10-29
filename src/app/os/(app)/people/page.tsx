@@ -26,7 +26,7 @@ export default async function People() {
           </form>
         </Sheet>} />
       <div className="stack">
-        <Card meta={people.length} title="Everyone" icon="people">
+        <Card meta={people.length || undefined} title="Everyone" icon="people">
           {people.length === 0 ? <Empty icon="people" title="No one yet">Add a mentor, a friend, a collaborator. Names you mention in tasks, notes and your journal will show up below to add in one tap.</Empty> : (
             <ul>{people.map(p => {
               const due = p.follow_up && p.follow_up <= today

@@ -273,8 +273,8 @@ export async function capture(text: string, parsed?: { title: string; due: strin
       back(); return { href: `/os/people/${p.id}` }
     }
     if (kind === "idea") {
-      await sql`insert into loam_os.notes (title, kind) values (${rest || "Untitled idea"}, 'idea')`
-      back(); return { href: null }
+      const [d] = await sql<{ id: string }[]>`insert into loam_os.drafts (title, channel, stage, sort) values (${rest || "Untitled idea"}, 'X', 'idea', extract(epoch from now())) returning id`
+      back(); return { href: `/os/drafts/${d.id}` }
     }
     if (kind === "read") { await addReadingRaw(rest); back(); return { href: null } }
     if (kind === "draft") {

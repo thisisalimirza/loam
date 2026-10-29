@@ -293,7 +293,7 @@ export default function Board({ data, today, scope = {}, embedded }: { data: Boa
           {panel === "filter" && <FilterPanel data={data} tags={allTags} filters={filters} scope={scope} onChange={setFilters} onClose={() => setPanel(null)}
             onSave={async name => { const r = await bViewSave(name, filters); if (!r.ok) return fail(r.error); setViews(v => [...v, r.data]); toast(`Saved “${r.data.name}”`) }} />}
         </div>
-        <button className={`btn sm${lanes ? " on" : ""}`} onClick={toggleLanes} title="Group by area (g)"><Icon name="areas" size={14} />Group by area</button>
+        {!scope.projectId && <button className={`btn sm${lanes ? " on" : ""}`} onClick={toggleLanes} title="Group by area (g)"><Icon name="areas" size={14} />Group by area</button>}
         <span className="bd-grow" />
         {!embedded && <button className="btn sm ghost" onClick={archiveDone} disabled={!doneCount} title="Archive done cards">Archive done</button>}
         {!embedded && archived > 0 && <button className="btn sm ghost" onClick={restore} title="Bring archived cards back">Restore {archived}</button>}
@@ -378,7 +378,7 @@ export default function Board({ data, today, scope = {}, embedded }: { data: Boa
           setColEdit(null); router.refresh()
         }} />}
 
-      {open && <PanelBoundary key={open.id} onClose={() => setOpenId(null)}><Drawer key={open.id} task={open} data={data} cols={cols} tasks={tasks} deps={deps} today={today}
+      {open && <PanelBoundary key={open.id} onClose={() => setOpenId(null)}><Drawer fromBoard key={open.id} task={open} data={data} cols={cols} tasks={tasks} deps={deps} today={today}
         onClose={() => setOpenId(null)} onOpen={setOpenId}
         onChange={patchLocal} onDeps={setDeps}
         onMove={colId => { const top = cell("all", colId)[0]; return moveTo(open.id, colId, top ? top.sort - 1 : Date.now() / 1000) }}

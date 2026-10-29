@@ -88,9 +88,8 @@ export function RollOver({ items }: { items: { id: string; title: string }[] }) 
   const router = useRouter()
   if (!items.length || done) return null
   return (
-    <div className="rollover">
-      <span>{items.length} unfinished from today. Move {items.length === 1 ? "it" : "them"} to tomorrow?</span>
-      <button className="btn sm" disabled={pending} onClick={() => start(async () => { const n = await rollOver(items.map(i => i.id)); setDone(true); toast(`Moved ${n} to tomorrow`); router.refresh() })}>Roll over</button>
-    </div>
+    <button className="rollover-q" disabled={pending} onClick={() => start(async () => { const n = await rollOver(items.map(i => i.id)); setDone(true); toast(`Moved ${n} to tomorrow`); router.refresh() })}>
+      Move {items.length} unfinished to tomorrow
+    </button>
   )
 }

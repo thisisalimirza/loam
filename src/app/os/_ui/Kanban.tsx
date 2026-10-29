@@ -14,7 +14,7 @@ function Column({ id, label, count, children, footer }: { id: string; label: str
   const { setNodeRef, isOver } = useDroppable({ id: `col:${id}` })
   return (
     <div ref={setNodeRef} className={`col${isOver ? " over" : ""}`}>
-      <div className="colh">{label}<span>{count}</span></div>
+      <div className="colh">{label}{count > 0 && <span>{count}</span>}</div>
       {children}
       {footer}
     </div>

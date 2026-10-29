@@ -70,7 +70,7 @@ export default async function PersonPage({ params }: { params: Promise<{ id: str
             </form>
           </Card>
 
-          <Card title="History" icon="journal" meta={convos.length}>
+          <Card title="History" icon="journal" meta={convos.length || undefined}>
             {convos.length === 0 ? <div className="cb meta">Nothing logged.</div> : convos.map(c => (
               <div key={c.id} className="convo">
                 <div className="inline"><b>{fmtDate(c.happened_on, { month: "short", day: "numeric", year: "numeric" })}</b><Pill gray>{c.channel}</Pill><span className="meta grow">{ago(c.happened_on, today)}</span>

@@ -9,10 +9,12 @@ export const metadata = { title: "Weekly review" }
 export default async function Review() {
   const today = todayISO()
   const w = await getWeek(today)
+  const upcoming = w.upcoming.filter(t => t.due_date && t.due_date > today)
+  const sum = [w.done.length && `${w.done.length} done`, w.words.days && `${w.words.days} journal ${w.words.days === 1 ? "day" : "days"}`, w.words.n && `${w.words.n.toLocaleString()} words`, w.published && `${w.published} published`].filter(Boolean).join(" · ")
   return (
     <>
       <PageHeader eyebrow="Weekly review" title={`${fmtDate(w.from)} – ${fmtDate(today)}`}
-        sub={`${w.done.length} done · ${w.words.days} journal ${w.words.days === 1 ? "day" : "days"}${w.published ? ` · ${w.published} published` : ""}`} />
+        sub={sum || "Nothing done or written yet this week."} />
       <div className="split"><div className="stack">
         {w.overdue.length + w.stuck.length > 0 && <Card title="Needs a decision" icon="flag" meta={w.overdue.length + w.stuck.length}>
           <ul>
@@ -20,19 +22,19 @@ export default async function Review() {
             {w.stuck.map(p => <li key={p.id}><Link href={`/os/projects/${p.id}`} className="row"><span className="tt">{p.name}</span><span className="due warn">No next step</span></Link></li>)}
           </ul>
         </Card>}
-        <Card title="Coming up" icon="calendar" meta={w.upcoming.length || undefined}>
-          {w.upcoming.length === 0 ? <p className="quiet-line" style={{ padding: "4px 16px 14px" }}>Nothing dated for the next 7 days.</p> : <ul>
-            {w.upcoming.map(t => <li key={t.id}><Link href={`/os/review?task=${t.id}`} scroll={false} className="row"><span className="tt">{t.title}</span><span className="due">{relDue(t.due_date, today).label}</span></Link></li>)}
-          </ul>}
-        </Card>
+        {upcoming.length > 0 && <Card title="Next 7 days" icon="calendar">
+          <ul>
+            {upcoming.map(t => <li key={t.id}><Link href={`/os/review?task=${t.id}`} scroll={false} className="row"><span className="tt">{t.title}</span><span className="due">{relDue(t.due_date, today).label}</span></Link></li>)}
+          </ul>
+        </Card>}
       </div><aside className="stack side-ctx">
-        <Card title="Done this week" icon="check" meta={w.done.length || undefined}>
-          {w.done.length === 0 ? <p className="quiet-line" style={{ padding: "4px 16px 14px" }}>Nothing marked done yet.</p> : <ul>{w.done.slice(0, 12).map(t => <li key={t.id}><Link href={`/os/review?task=${t.id}`} scroll={false} className="row"><span className="tt struck">{t.title}</span></Link></li>)}</ul>}
-        </Card>
+        {w.done.length > 0 && <Card title="Done this week" icon="check">
+          <ul>{w.done.slice(0, 12).map(t => <li key={t.id}><Link href={`/os/review?task=${t.id}`} scroll={false} className="row"><span className="tt struck">{t.title}</span></Link></li>)}</ul>
+        </Card>}
         {w.quiet.length > 0 && <Card title="Haven’t talked in a while" icon="chat" meta={w.quiet.length}>
           <ul>{w.quiet.map(p => <li key={p.id}><Link href={`/os/people/${p.id}`} className="row"><span className="tt">{p.name}</span><span className="due">{p.last_on ? fmtDate(p.last_on) : "Never logged"}</span></Link></li>)}</ul>
         </Card>}
-        <p className="quiet-line">{w.words.n.toLocaleString()} words in the journal this week. <Link href="/os/journal">Read back</Link></p>
+        {w.words.n > 0 && <p className="quiet-line"><Link href="/os/journal">Read back this week’s journal</Link></p>}
       </aside></div>
     </>
   )

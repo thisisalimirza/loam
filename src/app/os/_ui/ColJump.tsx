@@ -22,7 +22,7 @@ export default function ColJump({ scroller, cols, sel }: { scroller: RefObject<H
   const go = (n: number) => scroller.current?.querySelectorAll<HTMLElement>(sel)[n]?.scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" })
   return (
     <div className="seg col-jump" role="tablist" aria-label="Columns">
-      {cols.map((c, n) => <button key={c.id} type="button" role="tab" aria-selected={on === n} className={on === n ? "on" : ""} onClick={() => go(n)}>{c.label}<span>{c.count}</span></button>)}
+      {cols.map((c, n) => <button key={c.id} type="button" role="tab" aria-selected={on === n} className={on === n ? "on" : ""} onClick={() => go(n)}>{c.label}{c.count > 0 && <span>{c.count}</span>}</button>)}
     </div>
   )
 }
