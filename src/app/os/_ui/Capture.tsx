@@ -7,7 +7,7 @@ import { capture, captureHints, searchAll } from "@/lib/os/actions"
 import { recentItems, remember, type Recent } from "./recent"
 
 const OPEN = "loam:capture"
-const KIND_HREF: Record<string, string> = { task: "/os/tasks", person: "/os/people/", note: "/os/notes/", area: "/os/areas/", draft: "/os/drafts/" }
+const KIND_HREF: Record<string, string> = { task: "/os/tasks", person: "/os/people/", note: "/os/notes/", area: "/os/areas/", draft: "/os/drafts/", journal: "/os/journal/" }
 const JUMPS = [
   { label: "Write in the journal", href: "/os/journal/write", key: "⌘J" },
   { label: "Tasks board", href: "/os/tasks?view=board" },
@@ -18,7 +18,7 @@ const JUMPS = [
 /** Open the task panel over the current page (shallow URL change, no server round trip). */
 const openTask = (id: string) => { const u = new URL(location.href); u.searchParams.set("task", id); window.history.pushState(null, "", u.pathname + u.search) }
 
-type Hit = { kind: string; id: string; title: string }
+type Hit = { kind: string; id: string; title: string; sub?: string }
 
 function Trigger() {
   return (
@@ -71,12 +71,12 @@ export default function Capture() {
   }, [q, open])
 
   const jumps = q.trim() ? JUMPS.filter(j => j.label.toLowerCase().includes(q.toLowerCase())) : []
-  const SUB: Record<string, string> = { note: "Note", draft: "Draft", person: "Mentioned this week" }
-  const hints = q.trim() ? [] : hint.filter(h => !rec.some(r => r.id === h.id))
+  const SUB: Record<string, string> = { note: "Note", draft: "Draft", person: "Mentioned this week", journal: "Journal", task: "Task" }
+  const hints = q.trim() ? [] : hint.filter(h => !rec.some(r => r.id === h.id)).slice(0, 3)
   const items: { label: string; sub: string; go: () => void }[] = [
     ...(q.trim() ? [{ label: `Add “${q.trim()}”`, sub: q.includes(":") ? "" : kind.label, go: () => submit() }] : []),
     ...(q.trim() ? [] : rec.map(r => ({ label: r.title!, sub: "Recent " + r.kind, go: () => { setOpen(false); remember(r.kind, r.id, r.title); if (r.kind === "task") openTask(r.id); else router.push(KIND_HREF[r.kind] + r.id) } }))),
-    ...hints.map(h => ({ label: h.title, sub: SUB[h.kind] ?? h.kind, go: () => { setOpen(false); remember(h.kind, h.id, h.title); router.push(KIND_HREF[h.kind] + h.id) } })),
+    ...hints.map(h => ({ label: h.title, sub: h.sub ?? SUB[h.kind] ?? h.kind, go: () => { setOpen(false); remember(h.kind, h.id, h.title); if (h.kind === "task") openTask(h.id); else router.push(KIND_HREF[h.kind] + h.id) } })),
     ...hits.map(h => ({ label: h.title, sub: h.kind, go: () => { setOpen(false); remember(h.kind, h.id, h.title); if (h.kind === "task") openTask(h.id); else router.push(KIND_HREF[h.kind] + h.id) } })),
     ...jumps.map(j => ({ label: j.label, sub: j.key ?? "Go", go: () => { setOpen(false); router.push(j.href) } })),
   ]

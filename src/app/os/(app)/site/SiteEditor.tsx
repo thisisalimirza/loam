@@ -72,25 +72,25 @@ export default function SiteEditor({ post, sections, defaultSection, created }: 
           {mode === "preview" && (body.trim()
             ? <article className="md">{title && <h1>{title}</h1>}<div dangerouslySetInnerHTML={{ __html: marked.parse(esc(body)) as string }} /></article>
             : <p className="muted">Nothing to preview yet.</p>)}
-          <span className="meta">{words} {words === 1 ? "word" : "words"} · about {Math.max(1, Math.round(words / 230))} min read</span>
+          {words >= 50 && <span className="meta">{words} words · about {Math.max(1, Math.round(words / 230))} min read</span>}
         </section>
         <SheetPanel open={details} onClose={() => setDetails(false)} title="Details" keepMounted opener={more}>
           <div className="form">
           {isNew && (<>
-            <label className="f">Section
+            <label className="fld"><span>Section</span>
               <select className="in" name="section" value={section} onChange={e => setSection(e.target.value)}>
                 {sections.map(s => <option key={s} value={s}>{label(s)}</option>)}
                 <option value="_pages">Top-level page</option>
                 <option value="_new">New section…</option>
               </select>
             </label>
-            {section === "_new" && <label className="f">New section name<input className="in" name="new_section" placeholder="e.g. letters" /></label>}
-            <label className="f">Slug<input className="in" name="slug" placeholder={title ? title.toLowerCase().replace(/[^\w\s-]/g, "").trim().replace(/\s+/g, "-") : "from the title"} /></label>
+            {section === "_new" && <label className="fld"><span>New section name</span><input className="in" name="new_section" placeholder="e.g. letters" /></label>}
+            <label className="fld"><span>Slug</span><input className="in" name="slug" placeholder={title ? title.toLowerCase().replace(/[^\w\s-]/g, "").trim().replace(/\s+/g, "-") : "from the title"} /></label>
           </>)}
-          <div className="f">Date<div><DateChip label="Published" name="date" defaultValue={post.date || null} clearable={false} quick={[["Today", 0], ["Yesterday", -1]]} /></div></div>
-          <label className="f">Summary<textarea className="in" name="summary" rows={3} defaultValue={post.summary} placeholder="One line for lists and link previews" /></label>
-          <label className="f">Tags<input className="in" name="tags" defaultValue={post.tags.join(", ")} placeholder="comma, separated" /></label>
-          <label className="check"><input type="checkbox" name="published" checked={published} onChange={e => setPublished(e.target.checked)} />Visible on the site</label>
+          <div className="fld"><span>Date</span><div><DateChip label="Published" name="date" defaultValue={post.date || null} clearable={false} quick={[["Today", 0], ["Yesterday", -1]]} /></div></div>
+          <label className="fld"><span>Summary</span><textarea className="in" name="summary" rows={3} defaultValue={post.summary} placeholder="One line for lists and link previews" /></label>
+          <label className="fld"><span>Tags</span><input className="in" name="tags" defaultValue={post.tags.join(", ")} placeholder="comma, separated" /></label>
+          <div className="sw-row"><span className="tt">Visible on the site</span><input type="hidden" name="published" value={published ? "on" : ""} disabled={!published} /><button type="button" role="switch" aria-checked={published} aria-label="Visible on the site" className="switch" onClick={() => { setPublished(!published); setDirty(true) }}><i /></button></div>
           </div>
         </SheetPanel>
       </div>

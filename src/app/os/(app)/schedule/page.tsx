@@ -35,15 +35,13 @@ export default async function Schedule() {
             <ul>{ready.map(d => <li key={d.id}><Row d={d} today={today} /></li>)}</ul>
           </Card>
         )}
-        <Card title="Next two weeks">
-          {busy.length === 0 ? <p className="quiet-line" style={{ padding: "12px 16px" }}>Nothing scheduled.</p> : (
+        {busy.length === 0 ? (ready.length === 0 && <p className="quiet-line empty-one">Nothing scheduled.</p>) : <Card title="Next two weeks">{(
             <ul>{busy.map(day => (
               <li key={day} className="sch-day">
                 <h3 className="sch-h">{day === today ? "Today" : day === addDays(today, 1) ? "Tomorrow" : fmtDate(day, { weekday: "short", month: "short", day: "numeric" })}</h3>
                 <ul>{on(day).map(d => <li key={d.id}><Row d={d} today={today} day={day} /></li>)}</ul>
               </li>))}</ul>
-          )}
-        </Card>
+          )}</Card>}
       </div>
     </>
   )

@@ -30,7 +30,6 @@ export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOp
   const [notes, setNotes] = useState(t.notes ?? "")
   const router = useRouter()
   const colName = cols.find(c => c.id === t.column_id)?.name ?? t.status
-  const daysIn = (iso: string) => Math.floor((Date.now() - new Date(iso).getTime()) / 864e5)
   const [tagIn, setTagIn] = useState("")
   const [depQ, setDepQ] = useState("")
   const panel = useRef<HTMLElement>(null)
@@ -131,23 +130,22 @@ export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOp
           </div>}
           <MentionChips text={`${t.title}\n${t.notes ?? ""}`} />
 
+          <textarea className="dr-notes" rows={3} value={notes} onChange={e => setNotes(e.target.value)} placeholder="Notes"
+            onBlur={() => { if (notes !== (t.notes ?? "")) save({ notes }) }} aria-label="Notes" />
+
           <dl className="dr-props">
             {fromBoard && <><dt>Column</dt>
             <dd><select className="in" value={col?.id ?? ""} onChange={e => onMove(e.target.value)} aria-label="Column">{cols.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}</select></dd></>}
-            <dt>Priority</dt>
-            <dd><div className="seg">{(Object.keys(PRI) as Priority[]).map(p => <button key={p} className={(t.priority ?? "normal") === p ? "on" : ""} onClick={() => save({ priority: p })}>{PRI[p].label}</button>)}</div></dd>
             <dt>Due</dt>
-            <dd><DateChip label="Due" value={t.due_date ?? null} onChange={d => save({ due_date: d })} /></dd>
+            <dd><DateChip bare label="Due" value={t.due_date ?? null} onChange={d => save({ due_date: d })} /></dd>
+            <dt>Area</dt>
+            <dd><select className="in" value={t.area_id ?? ""} onChange={e => save({ area_id: e.target.value || null })} aria-label="Area">
+              <option value="">No area</option>{data.areas.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}</select></dd>
             <dt>Project</dt>
             <dd><select className="in" value={t.project_id ?? ""} onChange={e => save({ project_id: e.target.value || null })} aria-label="Project">
               <option value="">No project</option>{projects.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}</select></dd>
           </dl>
 
-          <section className="dr-sec">
-            <h3>Description</h3>
-            <textarea className="in" rows={4} value={notes} onChange={e => setNotes(e.target.value)} placeholder="Details, links, @people, #projects"
-              onBlur={() => { if (notes !== (t.notes ?? "")) save({ notes }) }} aria-label="Description" />
-          </section>
 
           <section className="dr-sec">
             <h3>Checklist {checklist.length > 0 && <span className="meta">{checklist.filter(c => c.done).length}/{checklist.length}</span>}</h3>
@@ -163,12 +161,11 @@ export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOp
           <details className="dr-more" open={moreOpen} onToggle={e => setMoreOpen(e.currentTarget.open)}>
             <summary>More details</summary>
             <dl className="dr-props">
+            <dt>Priority</dt>
+            <dd><div className="seg">{(Object.keys(PRI) as Priority[]).map(p => <button key={p} className={(t.priority ?? "normal") === p ? "on" : ""} onClick={() => save({ priority: p })}>{PRI[p].label}</button>)}</div></dd>
             <dt>Repeat</dt>
             <dd><select className="in" value={t.repeat ?? ""} onChange={e => save({ repeat: (e.target.value || null) as BoardTask["repeat"] })} aria-label="Repeat">
               <option value="">Never</option>{REPEATS.map(r => <option key={r} value={r}>{REPEAT_LABEL[r]}</option>)}</select></dd>
-            <dt>Area</dt>
-            <dd><select className="in" value={t.area_id ?? ""} onChange={e => save({ area_id: e.target.value || null })} aria-label="Area">
-              <option value="">No area</option>{data.areas.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}</select></dd>
             <dt>Tags</dt>
             <dd className="chips">
               {(t.tags ?? []).map(x => <span key={x} className="chip on">#{x}<button aria-label={`Remove ${x}`} onClick={() => save({ tags: (t.tags ?? []).filter(y => y !== x) })}><Icon name="x" size={11} /></button></span>)}
@@ -178,14 +175,13 @@ export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOp
             </dd>
             </dl>
           <section className="dr-sec">
-            <h3>Waiting on</h3>
-            {blockedBy.length === 0 && <p className="meta">Nothing. Add a task this one can’t start without.</p>}
+            <h3>Waiting on{blockedBy.length === 0 && ": nothing"}</h3>
             <ul className="dr-links">{blockedBy.map(b => (
               <li key={b.id}><button className="lnk" onClick={() => onOpen(b.id)}><i className={`bd-kind k-${b.status}`} />{b.title}</button>
                 <button className="bd-icon" aria-label="Remove dependency" onClick={() => dep(b.id, false)}><Icon name="x" size={12} /></button></li>
             ))}</ul>
             <div className="bd-dep">
-              <input className="in" value={depQ} onChange={e => setDepQ(e.target.value)} placeholder="Search tasks to wait on" aria-label="Search tasks to wait on" onFocus={() => setDepOpen(true)} onBlur={() => setTimeout(() => setDepOpen(false), 150)}
+              <input className="in" value={depQ} onChange={e => setDepQ(e.target.value)} placeholder="Add a task to wait on" aria-label="Search tasks to wait on" onFocus={() => setDepOpen(true)} onBlur={() => setTimeout(() => setDepOpen(false), 150)}
                 onKeyDown={e => { if (e.key === "Enter" && depHits[0]) { e.preventDefault(); dep(depHits[0].id, true) } if (e.key === "Escape") setDepQ("") }} />
               {(depOpen || depQ) && depHits.length > 0 && <ul className="bd-dep-results" aria-label="Suggestions">{depGroups.map(g => <li key={g.h || "hits"}>{g.h && <span className="pk-h">{g.h}</span>}<ul>{g.items.map(h => <li key={h.id}><button onMouseDown={e => e.preventDefault()} onClick={() => dep(h.id, true)}>{h.title}</button></li>)}</ul></li>)}</ul>}
             </div>
@@ -217,9 +213,16 @@ export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOp
             onDeleted()
             undoable("Task deleted", async () => { const r = await bDelete(snap.id); if (!r.ok) throw new Error(r.error); router.refresh() }, () => onRestore?.(snap))
           }}><Icon name="trash" size={14} />Delete</button>
-          <span className="meta foot-note">{[t.created_at && `Added ${new Date(t.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}`, t.status !== "done" && t.status_changed_at && daysIn(t.status_changed_at) >= 1 && `In ${colName} for ${daysIn(t.status_changed_at)} ${daysIn(t.status_changed_at) === 1 ? "day" : "days"}`].filter(Boolean).join(" · ")}</span>
+          <span className="meta foot-note">{[t.created_at && `Added ${new Date(t.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}`, t.status !== "done" && t.status_changed_at && inFor(t.status_changed_at) && `In ${colName} for ${inFor(t.status_changed_at)}`].filter(Boolean).join(" · ")}</span>
         </footer>
       </aside>
     </div>
   )
+}
+
+function inFor(iso: string) {
+  const h = Math.floor((Date.now() - Date.parse(iso)) / 3600000)
+  if (h < 1) return ""
+  if (h < 24) return `${h} ${h === 1 ? "hour" : "hours"}`
+  const d = Math.floor(h / 24); return `${d} ${d === 1 ? "day" : "days"}`
 }

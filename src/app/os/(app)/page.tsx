@@ -29,7 +29,7 @@ export default async function Today() {
   const posting = drafts.filter(d => d.stage !== "published" && d.scheduled_for && ((d.scheduled_for as unknown) instanceof Date ? (d.scheduled_for as unknown as Date).toISOString() : String(d.scheduled_for)).slice(0, 10) === today)
   // One list: overdue + due today (+ done today). If nothing is dated, the next step per project/area instead.
   let tasks: Task[] = dayTasks
-  let listTitle = "Due today"
+  let listTitle = "Today"
   if (!dayTasks.some(t => t.status !== "done")) {
     const byKey = new Map<string, Task[]>()
     for (const t of allOpen) { const k = t.project_id ?? t.area_id ?? "-"; byKey.set(k, [...(byKey.get(k) ?? []), t]) }

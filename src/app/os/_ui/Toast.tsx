@@ -43,9 +43,9 @@ function AskHost() {
       <div className="asksheet" role="alertdialog" aria-label={q.title ?? q.message}>
         <div className="ask-g">
           <p className="ask-m">{q.title && <strong>{q.title}</strong>}{q.message}</p>
-          <button autoFocus className={`ask-b${q.danger === false ? "" : " red"}`} onClick={() => end(true)}>{q.confirm}</button>
+          <button className={`ask-b${q.danger === false ? "" : " red"}`} onClick={() => end(true)}>{q.confirm}</button>
         </div>
-        <button className="ask-b ask-c" onClick={() => end(false)}>Cancel</button>
+        <button autoFocus className="ask-b ask-c" onClick={() => end(false)}>Cancel</button>
       </div>
     </div>
   )

@@ -43,11 +43,16 @@ export default async function Settings() {
           {!pins.length && <li className="row meta">Pin a project deadline from Today to count down to it.</li>}
         </ul>
       </section>
+      <section className="grp" aria-label="Suggestions">
+        <div className="grp-h"><h2>Suggestions</h2></div>
+        <ul className="card grp-l">
+          <li className="row sw-row"><Icon name="sparkle" /><span className="tt">Suggestions<small className="sw-sub">Uses AI for names it can’t match</small></span><AiSwitch on={!off} /></li>
+        </ul>
+      </section>
       <section className="grp" aria-label="Connections">
         <div className="grp-h"><h2>Connections</h2></div>
         <ul className="card grp-l">
           <li className="row"><Icon name="xlogo" /><span className="tt">X<small className="sw-sub">{process.env.X_BEARER_TOKEN ? "Pasting links and topic search work" : "Pasting links works · Topic search not set up"}</small></span></li>
-          <li className="row sw-row"><Icon name="sparkle" /><span className="tt">Suggestions<small className="sw-sub">Uses AI for names it can’t match</small></span><AiSwitch on={!off} /></li>
         </ul>
       </section>
       <section className="grp" aria-label="Account">

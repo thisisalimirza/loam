@@ -611,7 +611,15 @@ export async function deleteLearn(id: string) {
 export async function captureHints() {
   await requireOwner()
   const sql = db()
-  const [docs, people] = await Promise.all([
+  const today = todayISO()
+  const [due, journal, docs, people] = await Promise.all([
+    sql<{ kind: string; id: string; title: string; due_date: string }[]>`
+      select 'task' as kind, id, title, due_date::text from loam_os.tasks
+      where status <> 'done' and due_date is not null and due_date <= ${today}
+      order by due_date, sort limit 2`,
+    sql<{ kind: string; id: string; title: string }[]>`
+      select 'journal' as kind, id, 'Today’s journal' as title from loam_os.journal_entries
+      where entry_date = ${today} and length(trim(body)) > 0 order by created_at desc limit 1`,
     sql<{ kind: string; id: string; title: string }[]>`
       (select 'note' as kind, id, coalesce(nullif(title, ''), 'Untitled') as title, updated_at from loam_os.notes where kind = 'note' order by updated_at desc limit 3)
       union all
@@ -622,7 +630,8 @@ export async function captureHints() {
       where exists (select 1 from loam_os.mentions m where m.person_id = p.id and m.created_at > now() - interval '7 days')
       order by (select max(m.created_at) from loam_os.mentions m where m.person_id = p.id) desc limit 3`,
   ])
-  return [...docs.map(d => ({ kind: d.kind, id: d.id, title: d.title })), ...people.map(p => ({ kind: p.kind, id: p.id, title: p.title }))]
+  return [...due.map(t => ({ kind: t.kind, id: t.id, title: t.title, sub: t.due_date < today ? "Overdue" : "Due today" })), ...journal.map(j => ({ kind: j.kind, id: j.id, title: j.title })),
+    ...docs.map(d => ({ kind: d.kind, id: d.id, title: d.title })), ...people.map(p => ({ kind: p.kind, id: p.id, title: p.title }))]
 }
 
 /** Settings → Suggestions switch (a cookie; no AI calls when off). */

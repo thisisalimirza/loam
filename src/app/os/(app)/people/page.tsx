@@ -17,21 +17,16 @@ export default async function People() {
   return (
     <>
       <PageHeader title="People"
-        actions={people.length > 0 && <Sheet label="Add person" icon="plus" iconOnly>
+        actions={<Sheet label="Add person" icon="plus" iconOnly>
           <form action={createPerson} className="form">
             <label className="fld"><span>Name</span><input className="in" name="name" required aria-label="Name" autoFocus /></label>
-            <label className="fld"><span>Who they are to you</span><input className="in" name="role" aria-label="Role" placeholder="Mentor, classmate, friend…" /></label>
-            <AreaSelect areas={areas} />
+            <label className="fld"><span>Role</span><input className="in" name="role" aria-label="Role" placeholder="Mentor, classmate, friend…" /></label>
+            <label className="fld"><span>Area</span><AreaSelect areas={areas} /></label>
             <div><button className="btn pri">Add</button></div>
           </form>
         </Sheet>} />
       <div className="stack">
-        {people.length === 0 ? <div className="quiet-line empty-one">No one yet. <Sheet label="Add person" icon="plus" primary><form action={createPerson} className="form">
-            <label className="fld"><span>Name</span><input className="in" name="name" required aria-label="Name" autoFocus /></label>
-            <label className="fld"><span>Who they are to you</span><input className="in" name="role" aria-label="Role" placeholder="Mentor, classmate, friend…" /></label>
-            <AreaSelect areas={areas} />
-            <div><button className="btn pri">Add</button></div>
-          </form></Sheet></div> : <Card title="Everyone">{(
+        {people.length === 0 ? <p className="quiet-line empty-one">No one yet.</p> : <Card title="Everyone">{(
             <ul>{people.map(p => {
               const due = p.follow_up && p.follow_up <= today
               return (

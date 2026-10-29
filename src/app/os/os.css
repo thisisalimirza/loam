@@ -713,3 +713,46 @@ background:var(--bg);font:400 var(--t-body)/1.34 var(--font);letter-spacing:-.01
 .os .sp-menu{position:absolute;right:0;top:calc(100% + 4px);z-index:20;background:var(--card,#fff);border:1px solid var(--line,#e5e5e5);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.12);padding:8px;display:grid;gap:6px;min-width:220px}
 .os .meta.fn{color:var(--mute,#8a8a8a);font-size:12px}
 .os .sec-h{font-size:var(--t-foot);font-weight:500;text-transform:none;letter-spacing:0;padding:0 16px;margin:0 0 6px}.os .sch-h{font-size:var(--t-foot);font-weight:500;text-transform:none;letter-spacing:0}
+/* D3/T3: task panel */
+.os .dr-sec h3,.os .sub-h{font-size:var(--t-foot);font-weight:500;text-transform:none;letter-spacing:0}
+.os .dr-notes{all:unset;box-sizing:border-box;display:block;width:100%;font:inherit;font-size:15px;line-height:1.45;color:var(--ink);padding:4px 0 8px;min-height:3em;white-space:pre-wrap;field-sizing:content}
+.os .dr-notes::placeholder{color:var(--mute)}
+/* D5: board fits wide screens, names on phones, project as grey text */
+@media (min-width:1024px){.os .bd:not(.lanes) .bd-cols{width:100%}.os .bd:not(.lanes) .bd-col{flex:1 1 0;width:auto;min-width:200px;max-width:320px}}
+@media (max-width:820px){.os .bd:not(.lanes) .bd-colh{justify-content:space-between;min-height:32px;padding:4px 4px 2px 8px}.os .bd:not(.lanes) .bd-colh .bd-grip{display:flex;align-items:center;gap:6px;font-weight:600}}
+.os .bd-proj{font-size:12px;color:var(--mute)}
+.os .bd-empty:empty{min-height:8px;padding:0;border:0}
+/* D9: site editor writes in the app font */
+.os .site-ed .sd-body .editor{font-family:inherit;font-size:17px;resize:none;border:0;box-shadow:none}
+@media (max-width:640px){.os .site-ed>.hd{position:relative;flex-wrap:nowrap}.os .site-ed>.hd .hd-actions{position:absolute;top:0;right:0;margin:0}.os .site-ed>.hd .hd-actions>.meta{display:none}.os .site-ed>.hd .title-in{margin-top:8px}}
+/* D1: one form style in sheets: grouped rows, label left, control right */
+.os .sheet-b .form{gap:0}
+.os .sheet-b :is(.form,.sheet-b)>:is(.fld,.sw-row){display:flex;flex-direction:row;align-items:center;gap:12px;padding:6px 14px;min-height:44px;margin:0;background:var(--card,#fff);border:1px solid var(--line);border-radius:0;font-size:14px;font-weight:400;color:var(--tx);flex-wrap:nowrap}
+.os .sheet-b :is(.form,.sheet-b)>:is(.fld,.sw-row):not(:is(.fld,.sw-row)+*){border-top-left-radius:12px;border-top-right-radius:12px;margin-top:12px}
+.os .sheet-b :is(.form,.sheet-b)>:is(.fld,.sw-row)+:is(.fld,.sw-row){border-top:0}
+.os .sheet-b :is(.form,.sheet-b)>:is(.fld,.sw-row):not(:has(+:is(.fld,.sw-row))){border-bottom-left-radius:12px;border-bottom-right-radius:12px}
+.os .sheet-b>.form:first-child>:is(.fld,.sw-row):first-of-type{margin-top:0}
+.os .sheet-b .form>.fld>span:first-child,.os .sheet-b>.sw-row>.tt,.os .sheet-b .form>.sw-row>.tt{width:84px;flex:none;color:var(--mute);font-size:14px;font-weight:400}
+.os .sheet-b .form>.fld>:is(.in,select,textarea,div){flex:1 1 auto;min-width:0;max-width:none;width:auto}
+.os .sheet-b .form>.fld .in{border:0;background:transparent;padding-left:0;box-shadow:none;font-size:15px}
+.os .sheet-b .form>.fld textarea.in{padding-top:6px}
+.os .sheet-b .form>.fld select.in{max-width:none;appearance:auto}
+.os .sheet-b .form>.sw-row>.seg,.os .sheet-b>.sw-row>.seg{margin-left:auto}
+.os .sheet-b .form>.sw-row>.switch,.os .sheet-b>.sw-row>.switch{margin-left:auto}
+.os .sheet-b .in:focus,.os .sheet-b .in:focus-visible{outline:0;box-shadow:none}
+.os .sheet-b :is(.fld,.sw-row):focus-within{box-shadow:inset 0 0 0 1px var(--acc)}
+.os .sheet-b .danger-zone{border:1px solid var(--line);border-radius:12px;margin-top:16px;padding:0;gap:0;flex-direction:column;background:var(--card,#fff);overflow:hidden}
+.os .sheet-b .danger-zone>*{display:block}
+.os .sheet-b .danger-zone :is(.btn,.dz-row){all:unset;box-sizing:border-box;display:flex;align-items:center;gap:8px;width:100%;min-height:44px;padding:0 14px;font-size:15px;cursor:pointer;color:var(--acc)}
+.os .sheet-b .danger-zone>*+*{border-top:1px solid var(--line)}
+.os .sheet-b .danger-zone .btn.danger{color:var(--red,#d9443b)}
+.os .sheet-b .danger-zone .btn svg{display:none}
+.os .sheet-b .danger-zone :is(.btn,.dz-row):focus-visible{box-shadow:inset 0 0 0 1px var(--acc)}
+.os .sheet-b .sw-fld .swatches{flex:1}
+.os .sheet-b .danger-zone .dz-row:disabled{color:var(--mute);cursor:default}
+/* D4: one content width; side context goes below until there is room for both */
+@media (min-width:1024px) and (max-width:1439px){.os .split{grid-template-columns:minmax(0,1fr)}.os .side-ctx{position:static}}
+.os .grp{max-width:none}
+.os .hd-actions .icon-btn:has(svg):not([aria-label="More"]):not([aria-label^="Edit"]){color:var(--acc)}
+/* D8: on phones, a page with a back link keeps its title on its own line; actions sit up by the back link */
+@media (max-width:640px){.os .hd:has(>div>.crumb){position:relative}.os .hd:has(>div>.crumb)>.hd-actions{position:absolute;top:-8px;right:0;margin:0;flex-wrap:nowrap}.os .hd:has(>div>.crumb)>div>.crumb{min-height:32px;display:inline-flex;align-items:center}.os .hd:has(>div>.crumb) .hd-actions .seg button{padding-inline:10px}}

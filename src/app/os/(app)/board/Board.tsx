@@ -263,7 +263,6 @@ export default function Board({ data, today, scope = {}, embedded }: { data: Boa
 
   const open = openId ? tasks.find(t => t.id === openId) ?? null : null
   const doneCount = scoped.filter(t => t.status === "done").length
-  const overdue = scoped.filter(t => t.status !== "done" && t.due_date && t.due_date < today).length
   const stale = scoped.filter(t => t.status === "doing" && ageDays(t.status_changed_at) > 7).length
 
   async function archiveDone() {
@@ -285,7 +284,7 @@ export default function Board({ data, today, scope = {}, embedded }: { data: Boa
         <label className="bd-search sfield"><Icon name="search" size={14} />
           <input ref={searchRef} value={q} onChange={e => setQ(e.target.value)} placeholder="Search tasks" aria-label="Search tasks"
             onKeyDown={e => { if (e.key === "Escape") { setQ(""); e.currentTarget.blur() } }} />
-          {!q && <kbd>/</kbd>}
+
         </label>
         <div className="bd-pop-wrap">
           <button className={`btn sm${nFilters ? " on" : ""}`} onClick={() => setPanel(p => p === "filter" ? null : "filter")} aria-expanded={panel === "filter"}>
@@ -297,7 +296,7 @@ export default function Board({ data, today, scope = {}, embedded }: { data: Boa
         <span className="bd-grow" />
         {!embedded && doneCount > 0 && <button className="btn sm ghost" onClick={archiveDone} title="Archive done tasks">Archive done</button>}
         {!embedded && archived > 0 && <button className="btn sm ghost" onClick={restore} title="Bring archived tasks back">Restore {archived}</button>}
-        <button className="btn sm ghost bd-help" onClick={() => setPanel(p => p === "help" ? null : "help")} aria-label="Keyboard shortcuts">?</button>
+
       </div>
 
       {(views.length > 0 || nFilters > 0) && (
@@ -313,7 +312,6 @@ export default function Board({ data, today, scope = {}, embedded }: { data: Boa
       )}
 
       <div className="bd-stats">
-                {overdue > 0 && <button className="warn" onClick={() => setFilters(f => ({ ...f, due: "overdue" }))}><b>{overdue}</b> overdue</button>}
         {stale > 0 && <span className="warn"><b>{stale}</b> in progress for over a week</span>}
         {nFilters > 0 || q ? <span>Showing {visible.length}</span> : null}
       </div>
@@ -341,7 +339,7 @@ export default function Board({ data, today, scope = {}, embedded }: { data: Boa
                           {list.map(t => <Card key={t.id} t={t} data={data} today={today} waiting={blockers.waiting.get(t.id) ?? 0} unblocks={blockers.unblocks.get(t.id) ?? 0}
                             kind={c.kind} onOpen={() => setOpenId(t.id)} hideArea={lanes || !!scope.areaId} hideProject={!!scope.projectId} />)}
                         </SortableContext>
-                        {list.length === 0 && <div className="bd-empty">{c.kind === "done" ? "Finished tasks land here" : "Drop tasks here"}</div>}
+                        {list.length === 0 && <div className="bd-empty">{""}</div>}
                       </Column>
                     )
                   })}
@@ -424,7 +422,7 @@ function Card({ t, data, today, waiting, unblocks, kind, onOpen, hideArea, hideP
   t: BoardTask; data: BoardData; today: string; waiting: number; unblocks: number; kind: TaskStatus; onOpen: () => void; hideArea?: boolean; hideProject?: boolean
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: t.id })
-  const area = !hideArea ? data.areas.find(a => a.id === t.area_id) : undefined
+  void hideArea
   const project = !hideProject ? data.projects.find(p => p.id === t.project_id) : undefined
   const due = t.due_date ? relDue(t.due_date, today) : null
   const cl = t.checklist ?? []
@@ -441,10 +439,9 @@ function Card({ t, data, today, waiting, unblocks, kind, onOpen, hideArea, hideP
         <span><Mentions text={t.title} plain /></span>
         {t.repeat && <span className="bd-rep" title={`Repeats ${t.repeat}`}>↻</span>}
       </div>
-      {(area || project || (t.tags?.length ?? 0) > 0) && (
+      {(project || (t.tags?.length ?? 0) > 0) && (
         <div className="bd-tags">
-          {area && <span className="pill" style={{ "--c": area.color } as CSSProperties}>{area.name}</span>}
-          {project && <span className="pill gray">{project.name}</span>}
+          {project && <span className="bd-proj">{project.name}</span>}
           {t.tags?.slice(0, 3).map(x => <span key={x} className="bd-tag">#{x}</span>)}
         </div>
       )}
@@ -453,7 +450,6 @@ function Card({ t, data, today, waiting, unblocks, kind, onOpen, hideArea, hideP
         {cl.length > 0 && <span className={cl.every(c => c.done) ? "ok" : ""}><Icon name="check" size={12} />{cl.filter(c => c.done).length}/{cl.length}</span>}
         {waiting > 0 && <span className="warn" title="Blocked by open tasks">Waiting on {waiting}</span>}
         {unblocks > 0 && kind !== "done" && <span title="Other tasks wait on this">Unblocks {unblocks}</span>}
-        <span className="bd-age" title="Time in this column"><Icon name="clock" size={12} />{age(t.status_changed_at)}</span>
       </div>
     </div>
   )
@@ -516,15 +512,15 @@ function ColumnEditor({ col, canDelete, index, count, onClose, onSave, onDelete,
   return (
     <SheetPanel open onClose={onClose} title={col ? "Edit column" : "New column"}>
       <form className="form cb" onSubmit={e => { e.preventDefault(); onSave({ name, kind, wip: wip ? Number(wip) : null }) }}>
-        <label className="lbl">Name<input className="in" value={name} onChange={e => setName(e.target.value)} required maxLength={40} /></label>
-        <div className="lbl">Counts as
-          <div className="seg">{(["todo", "doing", "done"] as const).map(k => <button type="button" key={k} className={kind === k ? "on" : ""} onClick={() => setKind(k)}>{KIND_LABEL[k]}</button>)}</div>
+        <label className="fld"><span>Name</span><input className="in" value={name} onChange={e => setName(e.target.value)} required maxLength={40} /></label>
+        <div className="sw-row"><span className="tt">Counts as</span>
+          <div className="seg" role="group" aria-label="Counts as">{(["todo", "doing", "done"] as const).map(k => <button type="button" key={k} className={kind === k ? "on" : ""} onClick={() => setKind(k)}>{KIND_LABEL[k]}</button>)}</div>
         </div>
-        <label className="lbl">Task limit<input className="in" type="number" min={0} max={99} inputMode="numeric" value={wip} onChange={e => setWip(e.target.value)} placeholder="No limit" /></label>
+        <label className="fld"><span>Task limit</span><input className="in" type="number" min={0} max={99} inputMode="numeric" value={wip} onChange={e => setWip(e.target.value)} placeholder="No limit" /></label>
         <div><button className="btn pri sm">Save</button></div>
-        {col && <div className="inline">
-          <button type="button" className="btn sm" disabled={index <= 0} onClick={() => onMove(-1)}>Move left</button>
-          <button type="button" className="btn sm" disabled={index >= count - 1} onClick={() => onMove(1)}>Move right</button>
+        {col && <div className="danger-zone">
+          <button type="button" className="dz-row" disabled={index <= 0} onClick={() => onMove(-1)}>Move left</button>
+          <button type="button" className="dz-row" disabled={index >= count - 1} onClick={() => onMove(1)}>Move right</button>
         </div>}
         {col && canDelete && <div className="danger-zone"><button type="button" className="btn sm danger" onClick={onDelete}><Icon name="trash" size={14} />Delete column</button></div>}
       </form>

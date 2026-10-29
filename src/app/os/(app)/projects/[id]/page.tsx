@@ -42,11 +42,11 @@ export default async function ProjectPage({ params, searchParams }: { params: Pr
               <div className="sw-row"><span className="tt">Due</span><DateChip bare label="Due" name="due_date" defaultValue={p.due_date} /></div>
               <div><button className="btn pri">Save</button></div>
             </form>
-            <div className="lbl">Status
+            <form className="sw-row"><span className="tt">Status</span>
               <div className="seg" role="group" aria-label="Status">{(["active", "paused", "done"] as const).map(s => (
-                <form key={s} action={setProjectStatus.bind(null, id, s)} style={{ display: "contents" }}><button className={p.status === s ? "on" : ""} aria-pressed={p.status === s}>{s === "active" ? "Active" : s === "paused" ? "Paused" : "Done"}</button></form>
+                <button key={s} formAction={setProjectStatus.bind(null, id, s)} className={p.status === s ? "on" : ""} aria-pressed={p.status === s}>{s === "active" ? "Active" : s === "paused" ? "Paused" : "Done"}</button>
               ))}</div>
-            </div>
+            </form>
             {p.due_date && p.due_date >= today && (
               <form action={pin ? async () => { "use server"; await deletePin(pin.id) } : async () => { "use server"; await pinDate(p.name, p.due_date!, p.area_id) }} className="sw-row">
                 <span className="tt">Countdown on Today</span>

@@ -65,7 +65,7 @@ export default async function Areas() {
         {loose.length > 0 && (
           <section className="quiet-sec">
             <h3>Projects without an area</h3>
-            <ul>{loose.map(p => <li key={p.id}><Link href={`/os/projects/${p.id}`} className="row"><span className="tt">{p.name}</span><span className="meta">{p.status}</span></Link></li>)}</ul>
+            <ul>{loose.map(p => <li key={p.id}><Link href={`/os/projects/${p.id}`} className="row"><span className="tt">{p.name}</span>{p.status === "paused" && <span className="pill gray">Paused</span>}</Link></li>)}</ul>
           </section>
         )}
         {archived.length > 0 && (

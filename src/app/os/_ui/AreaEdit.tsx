@@ -18,7 +18,7 @@ export default function AreaEdit({ area, asRow }: { area: Area; asRow?: boolean 
         <div><button className="btn pri">Save</button></div>
       </form>
       <div className="danger-zone">
-        <form action={archiveArea.bind(null, area.id, !area.archived)}><button className="btn sm">{area.archived ? "Restore area" : "Archive area"}</button></form>
+        <form action={archiveArea.bind(null, area.id, !area.archived)}><button className="dz-row">{area.archived ? "Restore area" : "Archive area"}</button></form>
         <Confirm action={deleteArea.bind(null, area.id)} label="Delete area" message="Delete this area? Its tasks, projects and people stay, but lose the link." />
       </div>
     </Sheet>

@@ -26,7 +26,7 @@ function DueLabel({ t, today, hideToday }: { t: Task; today: string; hideToday?:
   if (!d) return null
   const r = relDue(d, today)
   if (hideToday && r.label === "Today") return null
-  if (hideToday && r.warn) return <span className="due warn">Overdue</span>
+  if (hideToday && r.warn) return <span className="due warn">{r.label}</span>
   return <span className={`due${r.warn && t.status !== "done" ? " warn" : ""}`}>{t.due_date ? "" : "Planned "}{r.label}</span>
 }
 
@@ -130,7 +130,7 @@ export function AddTask({ areaId, projectId, areas, projects, status, placeholde
   )
 }
 
-export function TaskList({ tasks: all, areas, today, hideArea, hideToday, unfiledOnly, emptyTitle = "Nothing here", emptyText }: { tasks: Task[]; hideArea?: boolean; hideToday?: boolean; unfiledOnly?: boolean; emptyTitle?: string; emptyText?: string } & Ctx) {
+export function TaskList({ tasks: all, areas, today, hideArea, hideToday, unfiledOnly, emptyTitle = "Nothing here.", emptyText }: { tasks: Task[]; hideArea?: boolean; hideToday?: boolean; unfiledOnly?: boolean; emptyTitle?: string; emptyText?: string } & Ctx) {
   // In the inbox a task leaves the list the moment it gets an area or project.
   const tasks = unfiledOnly ? all.filter(t => !t.area_id && !t.project_id) : all
   if (tasks.length === 0) return <p className="quiet-line empty-line">{emptyTitle}{emptyText !== "" && <small className="tip"> {emptyText ?? "Tip: type “Call mom fri” to add one due Friday."}</small>}</p>

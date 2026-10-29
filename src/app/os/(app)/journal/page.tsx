@@ -26,8 +26,8 @@ export default async function Journal({ searchParams }: { searchParams: Promise<
   const today = todayISO()
   const [all, otd] = await Promise.all([getEntries(q), q ? Promise.resolve([]) : getOnThisDay(today)])
   const entries = all.filter(e => e.id !== sp.gone)
-  const write = <Link href="/os/journal/write" className="btn pri"><Icon name="pen" />Write</Link>
-  if (!q && entries.length === 0) return (<><WriteSwitch /><PageHeader title="Journal" /><p className="quiet-line empty-one">Nothing written yet. It stays private. {write}</p></>)
+  const write = <Link href="/os/journal/write" className="btn ghost icon-btn" aria-label="Write" title="Write"><Icon name="plus" /></Link>
+  if (!q && entries.length === 0) return (<><WriteSwitch /><PageHeader title="Journal" actions={write} /><p className="quiet-line empty-one">Nothing written yet. It stays private.</p></>)
   return (
     <>
       <WriteSwitch /><PageHeader title="Journal"
