@@ -2,6 +2,7 @@ import Link from "next/link"
 import { getMeta, listFiles, liveUrl } from "@/lib/os/site"
 import { Card, Empty, PageHeader, Pill } from "../../_ui/ui"
 import { Icon } from "../../_ui/icons"
+import SearchField from "../../_ui/SearchField"
 
 export const metadata = { title: "Site" }
 export const dynamic = "force-dynamic"
@@ -35,11 +36,7 @@ export default async function Site({ searchParams }: { searchParams: Promise<{ q
         <Link href={href({ s: "" })} className={s === "" ? "on" : ""}>All <span>{data.files.length}</span></Link>
         {sections.map(x => <Link key={x || "_pages"} href={href({ s: x || "_pages" })} className={s === (x || "_pages") ? "on" : ""}>{label(x)} <span>{counts[x]}</span></Link>)}
       </nav>
-      <form className="addrow" action="/os/site" style={{ marginBottom: 12 }}>
-        {s && <input type="hidden" name="s" value={s} />}
-        <input className="in" name="q" defaultValue={q} placeholder="Find a post by title or slug" aria-label="Search posts" />
-        <button className="btn sm"><Icon name="search" />Search</button>
-      </form>
+      <SearchField action="/os/site" q={q} label="Search posts" placeholder="Search posts" hidden={{ s }} />
       <Card meta={`${rows.length} ${rows.length === 1 ? "item" : "items"}${hidden ? ` · ${hidden} hidden` : ""}`} title={s ? label(s === "_pages" ? "" : s) : "All posts"} icon="pen">
         {rows.length === 0 ? <Empty icon="pen" title={needle ? "Nothing matches" : "Nothing here yet"}>{needle ? "Try another word." : "Write the first one."}</Empty> : (
           <ul>

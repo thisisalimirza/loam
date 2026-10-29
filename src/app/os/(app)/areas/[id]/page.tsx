@@ -82,11 +82,11 @@ export default async function AreaPage({ params, searchParams }: { params: Promi
           ))}
         </div>
       )}
-        {myPeople.length > 0 ? (
+        {myPeople.length > 0 && (
           <section className="quiet-sec"><h3>People</h3>
             <ul>{myPeople.map(p => <li key={p.id}><Link href={`/os/people/${p.id}`} className="row"><Avatar name={p.name} /><span className="tt">{p.name}</span><span className="due">{p.role}</span></Link></li>)}</ul>
           </section>
-        ) : <p className="quiet-line">No people linked. Set this area on someone’s page in <Link href="/os/people">People</Link>.</p>}
+        )}
         {myNotes.length > 0 && (
           <section className="quiet-sec"><h3>Notes</h3>
             <ul>{myNotes.map(n => <li key={n.id}><Link href={`/os/notes/${n.id}`} className="row"><span className="tt">{n.title}</span></Link></li>)}</ul>

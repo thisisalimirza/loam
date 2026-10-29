@@ -3,6 +3,7 @@ import { getEntries, getOnThisDay } from "@/lib/os/data"
 import { fmtDate, todayISO } from "@/lib/os/dates"
 import { Card, Empty, PageHeader } from "../../_ui/ui"
 import { Icon } from "../../_ui/icons"
+import SearchField from "../../_ui/SearchField"
 
 export const metadata = { title: "Journal" }
 
@@ -29,11 +30,7 @@ export default async function Journal({ searchParams }: { searchParams: Promise<
           <Link href="/os/journal/write" className="btn pri"><Icon name="pen" />Write</Link>
         </>} />
       <div className="stack">
-        <form className="inline" action="/os/journal">
-          <input className="in" name="q" defaultValue={q} placeholder="Search everything you’ve written" aria-label="Search journal" type="search" />
-          <button className="btn"><Icon name="search" />Search</button>
-          {q && <Link href="/os/journal" className="btn ghost">Clear</Link>}
-        </form>
+        <SearchField action="/os/journal" q={q} label="Search journal" placeholder="Search your journal" />
         {otd.length > 0 && (
           <Card title="On this day" icon="clock" className="recap">
             {otd.map(e => (

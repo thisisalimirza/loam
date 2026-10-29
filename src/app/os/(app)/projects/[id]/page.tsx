@@ -4,7 +4,7 @@ import { deletePin, deleteProject, pinDate, setProjectStatus, updateProject } fr
 import { nextUp } from "@/lib/os/focus"
 import Sheet from "../../../_ui/Sheet"
 import DateChip from "../../../_ui/DateChip"
-import { fmtDate, todayISO } from "@/lib/os/dates"
+import { daysBetween, fmtDate, todayISO } from "@/lib/os/dates"
 import { Card, PageHeader } from "../../../_ui/ui"
 import { AddTask, TaskList, ViewToggle } from "../../../_ui/Tasks"
 import Confirm from "../../../_ui/Confirm"
@@ -22,10 +22,11 @@ export default async function ProjectPage({ params, searchParams }: { params: Pr
   const pin = pins.find(x => x.pin_date >= today && (x.label.toLowerCase() === p.name.toLowerCase() || x.pin_date === p.due_date))
   const area = areas.find(a => a.id === p.area_id)
   const nx = nextUp(tasks)
+  const openN = tasks.filter(t => t.status !== "done").length
   return (
     <>
       <PageHeader back={area ? { href: `/os/areas/${area.id}`, label: area.name } : { href: "/os/areas", label: "Areas" }}
-        eyebrow="Project" title={p.name} sub={[p.status[0].toUpperCase() + p.status.slice(1), p.due_date && `due ${fmtDate(p.due_date)}`].filter(Boolean).join(" · ")}
+        title={p.name} sub={[p.status[0].toUpperCase() + p.status.slice(1), p.due_date && `due ${fmtDate(p.due_date)}`, p.due_date && p.due_date >= today && `${daysBetween(today, p.due_date)} days left`, openN > 0 && `${openN} open`].filter(Boolean).join(" · ")}
         actions={<><ViewToggle base={`/os/projects/${id}`} view={view} />
           <Sheet label="Edit project" title="Edit project" icon="more" iconOnly>
             <form action={updateProject} className="form">

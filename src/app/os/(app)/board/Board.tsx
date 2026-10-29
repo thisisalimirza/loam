@@ -281,7 +281,7 @@ export default function Board({ data, today, scope = {}, embedded }: { data: Boa
   return (
     <div className={`bd${embedded ? " embedded" : ""}`}>
       <div className="bd-bar">
-        <label className="bd-search"><Icon name="search" size={14} />
+        <label className="bd-search sfield"><Icon name="search" size={14} />
           <input ref={searchRef} value={q} onChange={e => setQ(e.target.value)} placeholder="Search cards" aria-label="Search cards"
             onKeyDown={e => { if (e.key === "Escape") { setQ(""); e.currentTarget.blur() } }} />
           {!q && <kbd>/</kbd>}
