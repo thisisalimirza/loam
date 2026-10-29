@@ -3,7 +3,7 @@ import { getDrafts } from "@/lib/os/data"
 import { scheduleDraft } from "@/lib/os/actions"
 import { CHANNELS } from "@/lib/os/types"
 import { addDays, daysBetween, fmtDate, todayISO } from "@/lib/os/dates"
-import { Card, PageHeader } from "../../../_ui/ui"
+import { Card, PageHeader } from "../../_ui/ui"
 
 export const metadata = { title: "Schedule" }
 

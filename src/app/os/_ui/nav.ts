@@ -8,7 +8,7 @@ export const NAV_GROUPS: [string, N[], boolean?][] = [
   ["Write", [
     { href: "/os/journal", label: "Journal", icon: "journal" },
     { href: "/os/notes", label: "Notes", icon: "notes" },
-    { href: "/os/drafts", label: "Drafts", icon: "drafts" },
+    { href: "/os/drafts", label: "Drafts", icon: "drafts", also: ["/os/schedule"] },
     { href: "/os/site", label: "Site", icon: "globe" },
   ]],
   ["Projects", [
@@ -23,7 +23,7 @@ export const NAV_GROUPS: [string, N[], boolean?][] = [
 export const TABS: N[] = [
   { href: "/os", label: "Today", icon: "today" },
   { href: "/os/tasks", label: "Tasks", icon: "tasks", also: ["/os/board"] },
-  { href: "/os/journal", label: "Write", icon: "pen", also: ["/os/notes", "/os/drafts", "/os/site"] },
+  { href: "/os/journal", label: "Write", icon: "pen", also: ["/os/notes", "/os/drafts", "/os/site", "/os/schedule"] },
   { href: "/os/areas", label: "Projects", icon: "areas", also: ["/os/projects"] },
   { href: "/os/more", label: "More", icon: "more", also: ["/os/people", "/os/review", "/os/settings", "/os/inbox"] },
 ]
