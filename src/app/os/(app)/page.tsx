@@ -1,6 +1,6 @@
 import Link from "next/link"
 import type { CSSProperties } from "react"
-import { getAreas, getEntryForDay, getFollowUps, getPins, getTasks, getTasksForDay } from "@/lib/os/data"
+import { getAreas, getDrafts, getEntryForDay, getFollowUps, getPins, getTasks, getTasksForDay } from "@/lib/os/data"
 import { ago, daysBetween, fmtDate, todayISO } from "@/lib/os/dates"
 import { nextUp } from "@/lib/os/focus"
 import type { Task } from "@/lib/os/types"
@@ -20,10 +20,11 @@ export const metadata = { title: "Today" }
  */
 export default async function Today() {
   const today = todayISO()
-  const [areas, dayTasks, pins, people, entry, sugg, motion, roll, allOpen] = await Promise.all([
+  const [areas, dayTasks, pins, people, entry, sugg, motion, roll, allOpen, drafts] = await Promise.all([
     getAreas(), getTasksForDay(today), getPins(), getFollowUps(today), getEntryForDay(today), getSuggestions().catch(() => []),
-    getInMotion().catch(() => []), getRollover().catch(() => []), getTasks({ openOnly: true }),
+    getInMotion().catch(() => []), getRollover().catch(() => []), getTasks({ openOnly: true }), getDrafts().catch(() => []),
   ])
+  const posting = drafts.filter(d => d.stage !== "published" && d.scheduled_for && ((d.scheduled_for as unknown) instanceof Date ? (d.scheduled_for as unknown as Date).toISOString() : String(d.scheduled_for)).slice(0, 10) === today)
   // One list: overdue + due today (+ done today). If nothing is dated, the next step per project/area instead.
   let tasks: Task[] = dayTasks
   let listTitle = "Due today"
@@ -52,6 +53,7 @@ export default async function Today() {
       <Card title={listTitle} className="today-list">
         {tasks.length > 0 && <TaskList tasks={tasks} areas={areas} today={today} />}
         <Link href="/os/journal/write" className="jrow"><Icon name="pen" /><span className="tt">Journal</span><span className="meta">{words ? `${words} words` : "Not started"}</span><Icon name="chev" className="i chev" /></Link>
+        {posting.map(d => <Link key={d.id} href={`/os/drafts/${d.id}`} className="jrow"><Icon name="send" /><span className="tt">{d.title || "Untitled"}</span><span className="meta">Goes out on {d.channel}</span><Icon name="chev" /></Link>)}
         {hour >= 17 && <RollOver items={roll} />}
       </Card>
       {strip.length > 0 && (
