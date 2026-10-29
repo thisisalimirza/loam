@@ -371,6 +371,13 @@ export async function deleteEntry(id: string) {
   back(); redirect("/os/journal")
 }
 
+/** Delete without navigating (used after the Undo toast runs out). */
+export async function deleteEntryNow(id: string) {
+  await requireOwner()
+  await db()`delete from loam_os.journal_entries where id = ${id}`
+  back()
+}
+
 // ---------- drafts ----------
 
 export async function promote(entryId: string | null, text: string, channel: Channel) {
@@ -616,4 +623,11 @@ export async function captureHints() {
       order by (select max(m.created_at) from loam_os.mentions m where m.person_id = p.id) desc limit 3`,
   ])
   return [...docs.map(d => ({ kind: d.kind, id: d.id, title: d.title })), ...people.map(p => ({ kind: p.kind, id: p.id, title: p.title }))]
+}
+
+/** Settings → Suggestions switch (a cookie; no AI calls when off). */
+export async function setAiOn(on: boolean) {
+  await requireOwner()
+  ;(await cookies()).set("loam_ai", on ? "on" : "off", { path: "/", maxAge: 60 * 60 * 24 * 400, sameSite: "lax", httpOnly: true, secure: true })
+  revalidatePath("/os/settings")
 }

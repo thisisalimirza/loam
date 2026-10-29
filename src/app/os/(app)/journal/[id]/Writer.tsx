@@ -1,7 +1,9 @@
 "use client"
 import Link from "next/link"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { deleteEntry, promote, saveEntry } from "@/lib/os/actions"
+import { deleteEntryNow, promote, saveEntry } from "@/lib/os/actions"
+import { useRouter } from "next/navigation"
+import { undoable } from "../../../_ui/Toast"
 import { fmtDate } from "@/lib/os/dates"
 import { CHANNELS, type Channel } from "@/lib/os/types"
 import { Icon } from "../../../_ui/icons"
@@ -23,6 +25,7 @@ export default function Writer({ entry, drafts: initialDrafts }: {
   const [menu, setMenu] = useState(false)
   const ta = useRef<HTMLTextAreaElement>(null)
   const dirty = useRef(false)
+  const router = useRouter()
 
   // A local copy survives a dropped connection; restore it if it's newer than the server's.
   useEffect(() => {
@@ -94,7 +97,8 @@ export default function Writer({ entry, drafts: initialDrafts }: {
             </div>
           )}
         </div>
-        <button className="btn ghost sm" aria-label="Delete entry" onClick={async () => { if (confirm("Delete this entry?")) { localStorage.removeItem(key); dirty.current = false; await deleteEntry(entry.id) } }}><Icon name="trash" size={14} /></button>
+        <button className="btn ghost sm" aria-label="Delete entry" onClick={() => { const id = entry.id; dirty.current = false; localStorage.removeItem(key); router.push(`/os/journal?gone=${id}`)
+          undoable("Entry deleted", async () => { await deleteEntryNow(id); router.refresh() }, () => router.push(`/os/journal/${id}`)) }}><Icon name="trash" size={14} /></button>
       </div>
       <div className="writer-date">{fmtDate(entry.date, { weekday: "long", month: "long", day: "numeric", year: "numeric" })}<MentionChips text={body} label="" /></div>
       <div className="writer-body">

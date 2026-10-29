@@ -39,16 +39,20 @@ export default async function ProjectPage({ params, searchParams }: { params: Pr
               <label className="fld"><span>Name</span><input className="in" name="name" defaultValue={p.name} required aria-label="Project name" /></label>
               <label className="fld"><span>Area</span><select className="in" name="area_id" defaultValue={p.area_id ?? ""} aria-label="Area"><option value="">No area</option>{areas.filter(a => !a.archived || a.id === p.area_id).map(a => <option key={a.id} value={a.id}>{a.name}</option>)}</select></label>
               <label className="fld"><span>Template</span><select className="in" name="kind" defaultValue={kind} aria-label="Template"><option value="general">Plain</option><option value="research">Research</option><option value="business">Business</option></select></label>
-              <DateChip label="Due" name="due_date" defaultValue={p.due_date} />
+              <div className="sw-row"><span className="tt">Due</span><DateChip bare label="Due" name="due_date" defaultValue={p.due_date} /></div>
               <div><button className="btn pri">Save</button></div>
             </form>
+            <div className="lbl">Status
+              <div className="seg" role="group" aria-label="Status">{(["active", "paused", "done"] as const).map(s => (
+                <form key={s} action={setProjectStatus.bind(null, id, s)} style={{ display: "contents" }}><button className={p.status === s ? "on" : ""} aria-pressed={p.status === s}>{s === "active" ? "Active" : s === "paused" ? "Paused" : "Done"}</button></form>
+              ))}</div>
+            </div>
+            {p.due_date && p.due_date >= today && (
+              <form action={pin ? async () => { "use server"; await deletePin(pin.id) } : async () => { "use server"; await pinDate(p.name, p.due_date!, p.area_id) }} className="sw-row">
+                <span className="tt">Countdown on Today</span>
+                <button role="switch" aria-checked={!!pin} aria-label="Countdown on Today" className="switch"><i /></button>
+              </form>)}
             <div className="danger-zone">
-              {p.due_date && p.due_date >= today && (pin
-                ? <form action={async () => { "use server"; await deletePin(pin.id) }}><button className="btn sm">Unpin countdown</button></form>
-                : <form action={async () => { "use server"; await pinDate(p.name, p.due_date!, p.area_id) }}><button className="btn sm">Pin countdown</button></form>)}
-              {(["active", "paused", "done"] as const).filter(s => s !== p.status).map(s => (
-                <form key={s} action={setProjectStatus.bind(null, id, s)}><button className="btn sm">{s === "active" ? "Reopen" : s === "paused" ? "Pause" : "Mark done"}</button></form>
-              ))}
               <Confirm action={deleteProject.bind(null, id)} label="Delete project" message="Delete this project? Its tasks stay in the area." />
             </div>
           </Sheet>
@@ -80,11 +84,11 @@ export default async function ProjectPage({ params, searchParams }: { params: Pr
           </form>
         </section>
       )}
-      {view === "board" && !nx && p.status === "active" && <p className="quiet-line" style={{ marginBottom: 12 }}>No next step yet. What’s the very next physical action? Add it below.</p>}
+      {view === "board" && !nx && p.status === "active" && <p className="quiet-line" style={{ marginBottom: 12 }}>No next step yet.</p>}
       {view === "board" ? <div className="in-project"><Board data={await getBoard()} today={today} scope={{ projectId: id }} embedded /></div> : (
         <Card title="Tasks" icon="tasks">
-          <AddTask projectId={id} areaId={p.area_id ?? undefined} placeholder="Add a step. Try “… by friday”" />
-          {tasks.length > 0 && <TaskList tasks={tasks} areas={areas} today={today} hideArea />}
+          <TaskList tasks={tasks} areas={areas} today={today} hideArea emptyTitle="No next step yet." />
+          <AddTask projectId={id} areaId={p.area_id ?? undefined} />
         </Card>
       )}
       <div style={{ marginTop: 16 }}><Related kind="project" id={id} /></div>

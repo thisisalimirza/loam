@@ -1,10 +1,10 @@
-import Link from "next/link"
-import type { CSSProperties } from "react"
 import { getAreas, getPins, getProjects } from "@/lib/os/data"
 import { pinName } from "@/lib/os/pinname"
 import { createArea, deletePin, logout } from "@/lib/os/actions"
 import { fmtDate } from "@/lib/os/dates"
-import { aiStatus } from "@/lib/os/ai"
+import { aiOff } from "@/lib/os/ai"
+import AiSwitch from "../../_ui/AiSwitch"
+import AreaEdit from "../../_ui/AreaEdit"
 import { PageHeader } from "../../_ui/ui"
 import { Icon } from "../../_ui/icons"
 import Sheet from "../../_ui/Sheet"
@@ -14,19 +14,14 @@ export const metadata = { title: "Settings" }
 export const dynamic = "force-dynamic"
 
 export default async function Settings() {
-  const [areas, pins, ai, projects] = await Promise.all([getAreas(true), getPins(), aiStatus(), getProjects()])
+  const [areas, pins, off, projects] = await Promise.all([getAreas(true), getPins(), aiOff(), getProjects()])
   return (
     <>
       <PageHeader title="Settings" />
       <section className="grp" aria-label="Areas">
         <div className="grp-h"><h2>Areas</h2></div>
         <ul className="card grp-l">
-          {areas.map(a => (
-            <li key={a.id}><Link href={`/os/areas/${a.id}`} className="row">
-              <span className="dot" style={{ "--c": a.color } as CSSProperties} /><span className="tt">{a.name}</span>
-              {a.archived && <small className="meta">Archived</small>}<Icon name="arrow" />
-            </Link></li>
-          ))}
+          {areas.map(a => <li key={a.id}><AreaEdit area={a} asRow /></li>)}
           <li><Sheet label="Add area…" title="New area" row={<><Icon name="plus" /><span className="tt" style={{ color: "var(--acc)" }}>Add area…</span></>}>
             <form action={createArea} className="form">
               <label className="fld"><span>Name</span><input className="in" name="name" placeholder="e.g. Health" required aria-label="Area name" /></label>
@@ -35,7 +30,6 @@ export default async function Settings() {
             </form>
           </Sheet></li>
         </ul>
-        <p className="grp-f">Rename, recolor or archive an area from its page.</p>
       </section>
       <section className="grp" aria-label="Pinned dates">
         <div className="grp-h"><h2>Pinned dates</h2></div>
@@ -52,12 +46,9 @@ export default async function Settings() {
       <section className="grp" aria-label="Connections">
         <div className="grp-h"><h2>Connections</h2></div>
         <ul className="card grp-l">
-          <li><Link href="/os/site" className="row"><Icon name="globe" /><span className="tt">Website</span><Icon name="arrow" /></Link></li>
-          <li className="row"><Icon name="calendar" /><span className="tt">Google Calendar</span><small className="meta">Not connected</small></li>
-          <li className="row"><Icon name="xlogo" /><span className="tt">X</span><small className="meta">{process.env.X_BEARER_TOKEN ? "Connected" : "Not connected"}</small></li>
-          <li className="row" data-ai={ai.ok ? "ok" : "off"}><Icon name="sparkle" /><span className="tt">Suggestions</span><small className="meta">On</small></li>
+          <li className="row"><Icon name="xlogo" /><span className="tt">X<small className="sw-sub">{process.env.X_BEARER_TOKEN ? "Pasting links and topic search work" : "Pasting links works · Topic search not set up"}</small></span></li>
+          <li className="row sw-row"><Icon name="sparkle" /><span className="tt">Suggestions<small className="sw-sub">Uses AI for names it can’t match</small></span><AiSwitch on={!off} /></li>
         </ul>
-        <p className="grp-f">{ai.ok ? "Uses AI for names it can’t match." : "Finds people and dates in what you write."} X: pasted post links work now; searching by topic needs an X read key.</p>
       </section>
       <section className="grp" aria-label="Account">
         <ul className="card grp-l">

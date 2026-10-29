@@ -11,7 +11,6 @@ import { Suspense } from "react"
 import { todayISO } from "@/lib/os/dates"
 import { ToastHost } from "./Toast"
 import { MentionProvider, type MIndex } from "./Mentions"
-import { logout } from "@/lib/os/actions"
 
 export function isOn(path: string, href: string) {
   return href === "/os" ? path === "/os" : path === href || path.startsWith(href + "/")
@@ -37,11 +36,6 @@ export default function Shell({ mentions, children }: { mentions: MIndex; childr
             ))}
           </div>
         ))}
-        <div className="me">
-          <span className="av">A</span>
-          <div><strong>Ali</strong><small>Signed in</small></div>
-          <form action={logout}><button className="btn ghost sm" title="Sign out" aria-label="Sign out"><Icon name="logout" /></button></form>
-        </div>
       </aside>
       <div className="m">{children}</div>
       <Capture />

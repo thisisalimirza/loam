@@ -31,7 +31,7 @@ export default async function Review() {
         {w.done.length > 0 && <Card title="Done this week" icon="check">
           <ul>{w.done.slice(0, 12).map(t => <li key={t.id}><Link href={`/os/review?task=${t.id}`} scroll={false} className="row"><span className="tt struck">{t.title}</span></Link></li>)}</ul>
         </Card>}
-        {w.quiet.length > 0 && <Card title="Haven’t talked in a while" icon="chat" meta={w.quiet.length}>
+        {w.quiet.length > 0 && <Card title="Haven’t talked in a while" icon="chat">
           <ul>{w.quiet.map(p => <li key={p.id}><Link href={`/os/people/${p.id}`} className="row"><span className="tt">{p.name}</span><span className="due">{p.last_on ? fmtDate(p.last_on) : "Never logged"}</span></Link></li>)}</ul>
         </Card>}
         {w.words.n > 0 && <p className="quiet-line"><Link href="/os/journal">Read back this week’s journal</Link></p>}

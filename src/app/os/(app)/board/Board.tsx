@@ -15,7 +15,8 @@ import { relDue } from "@/lib/os/dates"
 import ColJump from "../../_ui/ColJump"
 import { Icon } from "../../_ui/icons"
 import { Mentions } from "../../_ui/Mentions"
-import { toast } from "../../_ui/Toast"
+import { ask, toast, undoable } from "../../_ui/Toast"
+import { SheetPanel } from "../../_ui/Sheet"
 import PanelBoundary from "../../_ui/PanelBoundary"
 import Drawer from "./Drawer"
 
@@ -266,7 +267,7 @@ export default function Board({ data, today, scope = {}, embedded }: { data: Boa
   const stale = scoped.filter(t => t.status === "doing" && ageDays(t.status_changed_at) > 7).length
 
   async function archiveDone() {
-    if (!doneCount || !window.confirm(`Archive ${doneCount} done ${doneCount === 1 ? "card" : "cards"}? You can bring them back later.`)) return
+    if (!doneCount) return
     const r = await bArchiveDone()
     if (!r.ok) return fail(r.error)
     setTasks(ts => ts.filter(t => !r.data.includes(t.id))); setArchived(a => a + r.data.length)
@@ -282,7 +283,7 @@ export default function Board({ data, today, scope = {}, embedded }: { data: Boa
     <div className={`bd${embedded ? " embedded" : ""}${lanes ? " lanes" : ""}`}>
       <div className="bd-bar">
         <label className="bd-search sfield"><Icon name="search" size={14} />
-          <input ref={searchRef} value={q} onChange={e => setQ(e.target.value)} placeholder="Search cards" aria-label="Search cards"
+          <input ref={searchRef} value={q} onChange={e => setQ(e.target.value)} placeholder="Search tasks" aria-label="Search tasks"
             onKeyDown={e => { if (e.key === "Escape") { setQ(""); e.currentTarget.blur() } }} />
           {!q && <kbd>/</kbd>}
         </label>
@@ -294,8 +295,8 @@ export default function Board({ data, today, scope = {}, embedded }: { data: Boa
             onSave={async name => { const r = await bViewSave(name, filters); if (!r.ok) return fail(r.error); setViews(v => [...v, r.data]); toast(`Saved “${r.data.name}”`) }} />}
         </div>
         <span className="bd-grow" />
-        {!embedded && doneCount > 0 && <button className="btn sm ghost" onClick={archiveDone} title="Archive done cards">Archive done</button>}
-        {!embedded && archived > 0 && <button className="btn sm ghost" onClick={restore} title="Bring archived cards back">Restore {archived}</button>}
+        {!embedded && doneCount > 0 && <button className="btn sm ghost" onClick={archiveDone} title="Archive done tasks">Archive done</button>}
+        {!embedded && archived > 0 && <button className="btn sm ghost" onClick={restore} title="Bring archived tasks back">Restore {archived}</button>}
         <button className="btn sm ghost bd-help" onClick={() => setPanel(p => p === "help" ? null : "help")} aria-label="Keyboard shortcuts">?</button>
       </div>
 
@@ -305,7 +306,7 @@ export default function Board({ data, today, scope = {}, embedded }: { data: Boa
           {views.map(v => (
             <span key={v.id} className={`chip${JSON.stringify(v.filters) === JSON.stringify(clean(filters)) ? " on" : ""}`}>
               <button onClick={() => setFilters({ due: "", ...v.filters })}>{v.name}</button>
-              <button aria-label={`Delete view ${v.name}`} onClick={async () => { if (!window.confirm(`Delete the view “${v.name}”?`)) return; const r = await bViewDelete(v.id); if (r.ok) setViews(vs => vs.filter(x => x.id !== v.id)); else fail(r.error) }}><Icon name="x" size={11} /></button>
+              <button aria-label={`Delete view ${v.name}`} onClick={() => { const i = views.findIndex(x => x.id === v.id); setViews(vs => vs.filter(x => x.id !== v.id)); undoable(`View “${v.name}” deleted`, async () => { const r = await bViewDelete(v.id); if (!r.ok) throw new Error(r.error) }, () => setViews(vs => [...vs.slice(0, i), v, ...vs.slice(i)])) }}><Icon name="x" size={11} /></button>
             </span>
           ))}
         </div>
@@ -335,12 +336,12 @@ export default function Board({ data, today, scope = {}, embedded }: { data: Boa
                         onEdit={() => setColEdit(c.id)} dragDisabled={lanes}
                         footer={adding === `${lane.id}:${c.id}` || (adding === c.id && lane === laneList[0])
                           ? <QuickAdd onAdd={v => quickAdd(c.id, v, lanes ? lane.id : undefined)} onClose={() => setAdding(null)} />
-                          : <button className="bd-add" onClick={() => setAdding(`${lane.id}:${c.id}`)}><Icon name="plus" size={14} />Add card</button>}>
+                          : <button className="bd-add" onClick={() => setAdding(`${lane.id}:${c.id}`)}><Icon name="plus" size={14} />Add task</button>}>
                         <SortableContext items={list.map(t => t.id)} strategy={verticalListSortingStrategy}>
                           {list.map(t => <Card key={t.id} t={t} data={data} today={today} waiting={blockers.waiting.get(t.id) ?? 0} unblocks={blockers.unblocks.get(t.id) ?? 0}
                             kind={c.kind} onOpen={() => setOpenId(t.id)} hideArea={lanes || !!scope.areaId} hideProject={!!scope.projectId} />)}
                         </SortableContext>
-                        {list.length === 0 && <div className="bd-empty">{c.kind === "done" ? "Finished cards land here" : "Drop cards here"}</div>}
+                        {list.length === 0 && <div className="bd-empty">{c.kind === "done" ? "Finished tasks land here" : "Drop tasks here"}</div>}
                       </Column>
                     )
                   })}
@@ -371,7 +372,7 @@ export default function Board({ data, today, scope = {}, embedded }: { data: Boa
         onDelete={async () => {
           const c = cols.find(x => x.id === colEdit)!
           const n = tasks.filter(t => colOf(t).id === c.id).length
-          if (!window.confirm(n ? `Delete “${c.name}”? Its ${n} ${n === 1 ? "card moves" : "cards move"} to the next column of the same type.` : `Delete “${c.name}”?`)) return
+          if (!await ask({ title: `Delete “${c.name}”?`, message: n ? `Its ${n} ${n === 1 ? "task moves" : "tasks move"} to the next column of the same type.` : "This can’t be undone.", confirm: "Delete column" })) return
           const r = await bColumnDelete(c.id)
           if (!r.ok) return fail(r.error)
           setColEdit(null); router.refresh()
@@ -381,7 +382,7 @@ export default function Board({ data, today, scope = {}, embedded }: { data: Boa
         onClose={() => setOpenId(null)} onOpen={setOpenId}
         onChange={patchLocal} onDeps={setDeps}
         onMove={colId => { const top = cell("all", colId)[0]; return moveTo(open.id, colId, top ? top.sort - 1 : Date.now() / 1000) }}
-        onDeleted={() => { setTasks(ts => ts.filter(t => t.id !== open.id)); setOpenId(null) }} /></PanelBoundary>}
+        onDeleted={() => { setTasks(ts => ts.filter(t => t.id !== open.id)); setOpenId(null) }} onRestore={t => setTasks(ts => [...ts, t])} /></PanelBoundary>}
     </div>
   )
 }
@@ -450,8 +451,8 @@ function Card({ t, data, today, waiting, unblocks, kind, onOpen, hideArea, hideP
       <div className="bd-meta">
         {due && <span className={due.warn && kind !== "done" ? "warn" : ""}><Icon name="calendar" size={12} />{due.label}</span>}
         {cl.length > 0 && <span className={cl.every(c => c.done) ? "ok" : ""}><Icon name="check" size={12} />{cl.filter(c => c.done).length}/{cl.length}</span>}
-        {waiting > 0 && <span className="warn" title="Blocked by open cards">Waiting on {waiting}</span>}
-        {unblocks > 0 && kind !== "done" && <span title="Other cards wait on this">Unblocks {unblocks}</span>}
+        {waiting > 0 && <span className="warn" title="Blocked by open tasks">Waiting on {waiting}</span>}
+        {unblocks > 0 && kind !== "done" && <span title="Other tasks wait on this">Unblocks {unblocks}</span>}
         <span className="bd-age" title="Time in this column"><Icon name="clock" size={12} />{age(t.status_changed_at)}</span>
       </div>
     </div>
@@ -463,7 +464,7 @@ function QuickAdd({ onAdd, onClose }: { onAdd: (v: SmartValue) => Promise<void> 
   const go = async () => { const v = si.current?.value(); if (!v?.title) return; si.current?.clear(); await onAdd(v) }
   return (
     <form className="bd-quick" onSubmit={e => { e.preventDefault(); go() }}>
-      <SmartInput ref={si} autoFocus placeholder="Card title. Try “fri”, @person, #project" aria-label="New card title"
+      <SmartInput ref={si} autoFocus placeholder="Task title. Try “fri”, @person, #project" aria-label="New task title"
         onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); go() } if (e.key === "Escape") onClose() }}
         onBlur={e => { if (!e.currentTarget.value.trim() && !e.currentTarget.closest("form")?.contains(e.relatedTarget as Node)) onClose() }} />
       <div className="inline"><button className="btn pri sm">Add</button><button type="button" className="btn ghost sm" onClick={onClose}>Cancel</button></div>
@@ -512,31 +513,27 @@ function ColumnEditor({ col, canDelete, index, count, onClose, onSave, onDelete,
   const [name, setName] = useState(col?.name ?? "")
   const [kind, setKind] = useState<TaskStatus>(col?.kind ?? "doing")
   const [wip, setWip] = useState(col?.wip ? String(col.wip) : "")
-  useEffect(() => { const k = (e: KeyboardEvent) => { if (e.key === "Escape") onClose() }; window.addEventListener("keydown", k); return () => window.removeEventListener("keydown", k) }, [onClose])
   return (
-    <div className="modal-bg" onMouseDown={e => { if (e.target === e.currentTarget) onClose() }}>
-      <form className="modal sheet" onSubmit={e => { e.preventDefault(); onSave({ name, kind, wip: wip ? Number(wip) : null }) }}>
-        <div className="sheet-h"><h2>{col ? "Edit column" : "New column"}</h2><button type="button" className="btn ghost sm" onClick={onClose} aria-label="Close"><Icon name="x" size={14} /></button></div>
-        <div className="form cb">
-          <label className="lbl">Name<input className="in" autoFocus value={name} onChange={e => setName(e.target.value)} required maxLength={40} /></label>
-          <div className="lbl">Counts as
-            <div className="seg">{(["todo", "doing", "done"] as const).map(k => <button type="button" key={k} className={kind === k ? "on" : ""} onClick={() => setKind(k)}>{KIND_LABEL[k]}</button>)}</div>
-          </div>
-          <label className="lbl">Card limit<input className="in" type="number" min={0} max={99} inputMode="numeric" value={wip} onChange={e => setWip(e.target.value)} placeholder="No limit" /></label>
-          <div className="inline">
-            <button className="btn pri sm">Save</button>
-            {col && <><button type="button" className="btn sm" disabled={index <= 0} onClick={() => onMove(-1)}>Move left</button>
-              <button type="button" className="btn sm" disabled={index >= count - 1} onClick={() => onMove(1)}>Move right</button></>}
-            {col && canDelete && <button type="button" className="btn sm danger" onClick={onDelete}><Icon name="trash" size={14} />Delete</button>}
-          </div>
+    <SheetPanel open onClose={onClose} title={col ? "Edit column" : "New column"}>
+      <form className="form cb" onSubmit={e => { e.preventDefault(); onSave({ name, kind, wip: wip ? Number(wip) : null }) }}>
+        <label className="lbl">Name<input className="in" value={name} onChange={e => setName(e.target.value)} required maxLength={40} /></label>
+        <div className="lbl">Counts as
+          <div className="seg">{(["todo", "doing", "done"] as const).map(k => <button type="button" key={k} className={kind === k ? "on" : ""} onClick={() => setKind(k)}>{KIND_LABEL[k]}</button>)}</div>
         </div>
+        <label className="lbl">Task limit<input className="in" type="number" min={0} max={99} inputMode="numeric" value={wip} onChange={e => setWip(e.target.value)} placeholder="No limit" /></label>
+        <div><button className="btn pri sm">Save</button></div>
+        {col && <div className="inline">
+          <button type="button" className="btn sm" disabled={index <= 0} onClick={() => onMove(-1)}>Move left</button>
+          <button type="button" className="btn sm" disabled={index >= count - 1} onClick={() => onMove(1)}>Move right</button>
+        </div>}
+        {col && canDelete && <div className="danger-zone"><button type="button" className="btn sm danger" onClick={onDelete}><Icon name="trash" size={14} />Delete column</button></div>}
       </form>
-    </div>
+    </SheetPanel>
   )
 }
 
 function Help({ onClose }: { onClose: () => void }) {
-  const rows: [string, string][] = [["n", "New card"], ["/", "Search"], ["f", "Filters"], ["g", "Group by area"], ["j / k", "Next / previous card"], ["Enter", "Open card"], ["[ / ]", "Move card left / right"], ["Space", "Pick up, arrows to move, Space to drop"], ["Esc", "Close"]]
+  const rows: [string, string][] = [["n", "New task"], ["/", "Search"], ["f", "Filters"], ["g", "Group by area"], ["j / k", "Next / previous task"], ["Enter", "Open task"], ["[ / ]", "Move task left / right"], ["Space", "Pick up, arrows to move, Space to drop"], ["Esc", "Close"]]
   return (
     <div className="bd-help-panel" role="dialog" aria-label="Keyboard shortcuts">
       <div className="ch"><h2>Shortcuts</h2><button className="btn ghost sm" onClick={onClose} aria-label="Close"><Icon name="x" size={14} /></button></div>

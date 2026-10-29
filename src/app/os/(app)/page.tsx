@@ -52,8 +52,8 @@ export default async function Today() {
 
   const leads: Lead[] = [
     ...(showHero ? [{ key: "focus", href: `/os?task=${hero.next!.id}`, text: hero.next!.title, sub: `${hero.name}${hero.risk ? ` · ${hero.risk}` : ""}`, icon: "flag" as const, cta: { label: "Start", href: `/os?task=${hero.next!.id}` } }] : []),
-    ...([0, 1].includes(new Date(today + "T12:00:00").getDay()) ? [{ key: "review", href: "/os/review", text: "Weekly review", sub: "Look back at the week and pick what’s next.", icon: "calendar" as const }] : []),
-    ...nudges.map(n => ({ key: n.key, href: n.href, text: n.text, icon: n.icon })),
+    ...([0, 1].includes(new Date(today + "T12:00:00").getDay()) ? [{ key: "review", href: "/os/review", text: "Weekly review", sub: "Look back at the week and pick what’s next.", icon: "review" as const }] : []),
+    ...nudges.map(n => ({ key: n.key, href: n.href, text: n.text, icon: n.icon, ...(n.cta ? { cta: { label: n.cta, href: n.href } } : {}) })),
   ]
 
   return (
@@ -77,15 +77,16 @@ export default async function Today() {
       )}
       {people.length > 0 && (
         <Card title="Follow up" icon="chat">
-          <ul className="pgrid">
+          <ul>
             {people.map(p => (
               <li key={p.id}>
-                <Link href={`/os/people/${p.id}`} className="person">
+                <Link href={`/os/people/${p.id}`} className="row hov">
                   <Avatar name={p.name} />
-                  <div className="pb">
-                    <div className="pn"><strong>{p.name}</strong><small>{p.role}</small>{p.last_on && <span className="ago">{ago(p.last_on, today)}</span>}</div>
-                    <p>{p.last_summary || p.last_update || "No conversations logged yet."}</p>
+                  <div className="grow" style={{ minWidth: 0 }}>
+                    <div className="tt ell">{p.name}</div>
+                    <div className="meta ell">{[p.last_on && ago(p.last_on, today), p.last_summary || p.last_update].filter(Boolean).join(" · ") || "No conversations logged yet"}</div>
                   </div>
+                  <Icon name="chev" size={14} className="muted" />
                 </Link>
               </li>
             ))}

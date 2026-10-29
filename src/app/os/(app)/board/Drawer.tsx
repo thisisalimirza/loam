@@ -2,40 +2,42 @@
 import Link from "next/link"
 import { useEffect, useMemo, useRef, useState } from "react"
 import type { BoardData, BoardTask } from "@/lib/os/board"
-import type { Activity, BoardColumn, CheckItem, Priority } from "@/lib/os/types"
+import type { BoardColumn, CheckItem, Priority } from "@/lib/os/types"
 import Checklist from "./Checklist"
 import { frequent, recent, remember } from "../../_ui/recent"
-import { bCreate, bEditComment, bComment, bDelete, bDeleteComment, bDep, bDetail, bLink, bUpdate, type Patch } from "@/lib/os/boardActions"
+import { bCreate, bDelete, bDep, bDetail, bLink, bUpdate, type Patch } from "@/lib/os/boardActions"
 import { REPEATS, REPEAT_LABEL } from "@/lib/os/dates"
 import { Icon } from "../../_ui/icons"
-import { MentionChips, Mentions } from "../../_ui/Mentions"
-import { toast } from "../../_ui/Toast"
+import { MentionChips } from "../../_ui/Mentions"
+import { toast, undoable } from "../../_ui/Toast"
+import { useRouter } from "next/navigation"
 import DateChip from "../../_ui/DateChip"
 import { dueText } from "../../_ui/SmartInput"
 import { parseTask } from "@/lib/os/parse"
-import { PRI, age } from "./Board"
+import { PRI } from "./Board"
 
 type Dep = { task_id: string; blocked_by: string }
 
-export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOpen, onChange, onDeps, onMove, onDeleted, fromBoard }: {
+export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOpen, onChange, onDeps, onMove, onDeleted, onRestore, fromBoard }: {
   task: BoardTask; data: BoardData; cols: BoardColumn[]; tasks: BoardTask[]; deps: Dep[]; today: string
   onClose: () => void; onOpen: (id: string) => void; onChange: (t: BoardTask) => void; onDeps: (d: Dep[]) => void
-  onMove: (colId: string) => Promise<void>; onDeleted: () => void; fromBoard?: boolean
+  onMove: (colId: string) => Promise<void>; onDeleted: () => void; onRestore?: (t: BoardTask) => void; fromBoard?: boolean
 }) {
   const [moreOpen, setMoreOpen] = useState(() => !!(t.repeat || t.area_id && !t.project_id || (t.tags ?? []).length || deps.some(d => d.task_id === t.id || d.blocked_by === t.id)))
-  const [activity, setActivity] = useState<Activity[] | null>(null)
   const [links, setLinks] = useState<{ kind: "person" | "note"; ref_id: string }[]>([])
   const [title, setTitle] = useState(t.title)
   const tp = useMemo(() => title === t.title ? { title, due: null, repeat: null, spans: [] } : parseTask(title.trim()), [title, t.title])
   const [notes, setNotes] = useState(t.notes ?? "")
-  const [comment, setComment] = useState("")
+  const router = useRouter()
+  const colName = cols.find(c => c.id === t.column_id)?.name ?? t.status
+  const daysIn = (iso: string) => Math.floor((Date.now() - new Date(iso).getTime()) / 864e5)
   const [tagIn, setTagIn] = useState("")
   const [depQ, setDepQ] = useState("")
   const panel = useRef<HTMLElement>(null)
 
   useEffect(() => {
     let live = true
-    bDetail(t.id).then(r => { if (live && r.ok) { setActivity(r.data.activity); setLinks(r.data.links) } })
+    bDetail(t.id).then(r => { if (live && r.ok) setLinks(r.data.links) })
     return () => { live = false }
   }, [t.id])
   useEffect(() => {
@@ -49,14 +51,13 @@ export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOp
   }, [onClose])
 
   const seq = useRef(0)
-  async function save(p: Patch, quiet = false) {
+  async function save(p: Patch, _quiet = false) { void _quiet
     const before = t, n = ++seq.current
     if (p.checklist !== undefined || p.priority !== undefined) onChange({ ...t, ...p } as BoardTask)
     const r = await bUpdate(t.id, p)
     if (!r.ok) { if (n === seq.current) onChange(before); toast({ text: r.error, tone: "err" }); return }
     // A newer edit is already on screen; an older reply must not roll it back.
     if (n === seq.current) onChange(r.data)
-    if (!quiet) setActivity(a => a && [...a, { id: "local" + Date.now(), task_id: t.id, kind: "edit", body: Object.keys(p).join(", "), created_at: new Date().toISOString() }])
   }
   const col = cols.find(c => c.id === t.column_id && c.kind === t.status) ?? cols.find(c => c.kind === t.status)
   const projects = data.projects.filter(p => p.status !== "done" && (!t.area_id || !p.area_id || p.area_id === t.area_id))
@@ -178,13 +179,13 @@ export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOp
             </dl>
           <section className="dr-sec">
             <h3>Waiting on</h3>
-            {blockedBy.length === 0 && <p className="meta">Nothing. Add a card this one can’t start without.</p>}
+            {blockedBy.length === 0 && <p className="meta">Nothing. Add a task this one can’t start without.</p>}
             <ul className="dr-links">{blockedBy.map(b => (
               <li key={b.id}><button className="lnk" onClick={() => onOpen(b.id)}><i className={`bd-kind k-${b.status}`} />{b.title}</button>
                 <button className="bd-icon" aria-label="Remove dependency" onClick={() => dep(b.id, false)}><Icon name="x" size={12} /></button></li>
             ))}</ul>
             <div className="bd-dep">
-              <input className="in" value={depQ} onChange={e => setDepQ(e.target.value)} placeholder="Search cards to wait on" aria-label="Search cards to wait on" onFocus={() => setDepOpen(true)} onBlur={() => setTimeout(() => setDepOpen(false), 150)}
+              <input className="in" value={depQ} onChange={e => setDepQ(e.target.value)} placeholder="Search tasks to wait on" aria-label="Search tasks to wait on" onFocus={() => setDepOpen(true)} onBlur={() => setTimeout(() => setDepOpen(false), 150)}
                 onKeyDown={e => { if (e.key === "Enter" && depHits[0]) { e.preventDefault(); dep(depHits[0].id, true) } if (e.key === "Escape") setDepQ("") }} />
               {(depOpen || depQ) && depHits.length > 0 && <ul className="bd-dep-results" aria-label="Suggestions">{depGroups.map(g => <li key={g.h || "hits"}>{g.h && <span className="pk-h">{g.h}</span>}<ul>{g.items.map(h => <li key={h.id}><button onMouseDown={e => e.preventDefault()} onClick={() => dep(h.id, true)}>{h.title}</button></li>)}</ul></li>)}</ul>}
             </div>
@@ -208,38 +209,15 @@ export default function Drawer({ task: t, data, cols, tasks, deps, onClose, onOp
             </div>
           </section>
 
-          <section className="dr-sec">
-            <h3>Activity</h3>
-            {activity === null ? <p className="meta">Loading…</p> : (
-              <ul className="dr-act">
-                {activity.map(a => (
-                  <li key={a.id} className={a.kind === "comment" ? "cmt" : ""}>
-                    {a.kind === "comment" ? <><p><Mentions text={a.body} /></p><span className="meta">{age(a.created_at)} ago
-                      <button className="lnk" onClick={async () => { const v = window.prompt("Edit comment", a.body); if (v == null || !v.trim() || v === a.body) return; const r = await bEditComment(a.id, v); if (r.ok) setActivity(x => x!.map(y => y.id === a.id ? { ...y, body: v.trim() } : y)) }}>Edit</button> <button className="lnk" onClick={async () => { const r = await bDeleteComment(a.id); if (r.ok) setActivity(x => x!.filter(y => y.id !== a.id)) }}>Delete</button></span></>
-                      : <span className="meta">{a.kind === "created" ? `Created${a.body ? " " + a.body : ""}` : a.kind === "move" ? `Moved to ${a.body}` : `Edited ${a.body}`} · {age(a.created_at)} ago</span>}
-                  </li>
-                ))}
-              </ul>
-            )}
-            <form className="dr-cmt" onSubmit={async e => {
-              e.preventDefault(); if (!comment.trim()) return
-              const r = await bComment(t.id, comment)
-              if (!r.ok) return toast({ text: r.error, tone: "err" })
-              setActivity(a => [...(a ?? []), r.data]); setComment("")
-            }}>
-              <textarea className="in" rows={2} value={comment} onChange={e => setComment(e.target.value)} placeholder="Add a comment" aria-label="Comment"
-                onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) e.currentTarget.form?.requestSubmit() }} />
-              <button className="btn sm" disabled={!comment.trim()}>Comment</button>
-            </form>
-          </section>
           </details>
         </div>
         <footer className="drawer-f">
-          <button className="btn sm danger" onClick={async () => {
-            if (!window.confirm("Delete this card? This can’t be undone.")) return
-            const r = await bDelete(t.id); if (r.ok) { onDeleted(); toast("Card deleted") } else toast({ text: r.error, tone: "err" })
+          <button className="btn sm danger" onClick={() => {
+            const snap = t
+            onDeleted()
+            undoable("Task deleted", async () => { const r = await bDelete(snap.id); if (!r.ok) throw new Error(r.error); router.refresh() }, () => onRestore?.(snap))
           }}><Icon name="trash" size={14} />Delete</button>
-          <span className="meta">Created {t.created_at ? age(t.created_at) + " ago" : ""}</span>
+          <span className="meta foot-note">{[t.created_at && `Added ${new Date(t.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}`, t.status !== "done" && t.status_changed_at && daysIn(t.status_changed_at) >= 1 && `In ${colName} for ${daysIn(t.status_changed_at)} ${daysIn(t.status_changed_at) === 1 ? "day" : "days"}`].filter(Boolean).join(" · ")}</span>
         </footer>
       </aside>
     </div>

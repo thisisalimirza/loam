@@ -2,7 +2,7 @@ import WriteSwitch from "../../_ui/WriteSwitch"
 import Link from "next/link"
 import { getEntries, getOnThisDay } from "@/lib/os/data"
 import { fmtDate, todayISO } from "@/lib/os/dates"
-import { Card, Empty, PageHeader } from "../../_ui/ui"
+import { Card, PageHeader } from "../../_ui/ui"
 import { Icon } from "../../_ui/icons"
 import SearchField from "../../_ui/SearchField"
 
@@ -20,16 +20,18 @@ function Hl({ text, q }: { text: string; q?: string }) {
   return <>{parts.map((p, i) => i % 2 ? <mark key={i}>{p}</mark> : p)}</>
 }
 
-export default async function Journal({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
-  const q = (await searchParams).q?.trim() || undefined
+export default async function Journal({ searchParams }: { searchParams: Promise<{ q?: string; gone?: string }> }) {
+  const sp = await searchParams
+  const q = sp.q?.trim() || undefined
   const today = todayISO()
-  const [entries, otd] = await Promise.all([getEntries(q), q ? Promise.resolve([]) : getOnThisDay(today)])
+  const [all, otd] = await Promise.all([getEntries(q), q ? Promise.resolve([]) : getOnThisDay(today)])
+  const entries = all.filter(e => e.id !== sp.gone)
+  const write = <Link href="/os/journal/write" className="btn pri"><Icon name="pen" />Write</Link>
+  if (!q && entries.length === 0) return (<><WriteSwitch /><PageHeader title="Journal" /><p className="quiet-line empty-one">Nothing written yet. It stays private. {write}</p></>)
   return (
     <>
-      <WriteSwitch /><PageHeader title="Journal" sub="Private. Most of it goes nowhere, and that’s fine."
-        actions={<>
-          <Link href="/os/journal/write" className="btn pri"><Icon name="pen" />Write</Link>
-        </>} />
+      <WriteSwitch /><PageHeader title="Journal"
+        actions={write} />
       <div className="stack">
         <SearchField action="/os/journal" q={q} label="Search journal" placeholder="Search your journal" />
         {otd.length > 0 && (
@@ -42,11 +44,8 @@ export default async function Journal({ searchParams }: { searchParams: Promise<
             ))}
           </Card>
         )}
-        <Card title={q ? `Results for “${q}”` : "Entries"} icon="journal" meta={entries.length || undefined}>
-          {entries.length === 0 ? (
-            q ? <Empty icon="search" title="Nothing matched">Try a different word.</Empty>
-              : <Empty icon="journal" title="Nothing written yet">Press ⌘J from anywhere to open today’s page.</Empty>
-          ) : entries.map(e => (
+        <Card>
+          {entries.length === 0 ? <p className="quiet-line empty-line">Nothing matched. Try a different word.</p> : entries.map(e => (
             <Link key={e.id} href={`/os/journal/${e.id}`} className="entry">
               <div className="d">{fmtDate(e.entry_date, { weekday: "long", month: "long", day: "numeric", year: e.entry_date.slice(0, 4) === today.slice(0, 4) ? undefined : "numeric" })}</div>
               <p><Hl text={snippet(e.body, q)} q={q} /></p>

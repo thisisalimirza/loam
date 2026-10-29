@@ -4,6 +4,8 @@ import { scheduleDraft } from "@/lib/os/actions"
 import { CHANNELS } from "@/lib/os/types"
 import { addDays, daysBetween, fmtDate, todayISO } from "@/lib/os/dates"
 import { Card, PageHeader } from "../../_ui/ui"
+import Sheet from "../../_ui/Sheet"
+import { Icon } from "../../_ui/icons"
 
 export const metadata = { title: "Schedule" }
 
@@ -30,15 +32,7 @@ export default async function Schedule() {
         {gaps.length > 0 && <p className="quiet-line">{gaps.join(" · ")}</p>}
         {ready.length > 0 && (
           <Card title="Ready to go out">
-            <ul>{ready.map(d => (
-              <li key={d.id} className="row sch-row">
-                <Link href={`/os/drafts/${d.id}`} className="tt">{d.title || "Untitled"}</Link>
-                <span className="pill gray">{d.channel}</span>
-                <form action={async (f: FormData) => { "use server"; await scheduleDraft(d.id, String(f.get("day") || "")) }} className="inline">
-                  <input className="in" type="date" name="day" min={today} defaultValue={addDays(today, 1)} aria-label={`Day for ${d.title}`} />
-                  <button className="btn sm">Schedule</button>
-                </form>
-              </li>))}</ul>
+            <ul>{ready.map(d => <li key={d.id}><Row d={d} today={today} /></li>)}</ul>
           </Card>
         )}
         <Card title="Next two weeks">
@@ -46,16 +40,24 @@ export default async function Schedule() {
             <ul>{busy.map(day => (
               <li key={day} className="sch-day">
                 <h3 className="sch-h">{day === today ? "Today" : day === addDays(today, 1) ? "Tomorrow" : fmtDate(day, { weekday: "short", month: "short", day: "numeric" })}</h3>
-                <ul>{on(day).map(d => (
-                  <li key={d.id} className="row sch-row">
-                    <Link href={`/os/drafts/${d.id}`} className="tt">{d.title || "Untitled"}</Link>
-                    <span className="pill gray">{d.channel}</span>
-                    <form action={async () => { "use server"; await scheduleDraft(d.id, null) }}><button className="btn ghost sm" aria-label={`Unschedule ${d.title}`}>Unschedule</button></form>
-                  </li>))}</ul>
+                <ul>{on(day).map(d => <li key={d.id}><Row d={d} today={today} day={day} /></li>)}</ul>
               </li>))}</ul>
           )}
         </Card>
       </div>
     </>
+  )
+}
+
+function Row({ d, today, day }: { d: { id: string; title: string | null; channel: string }; today: string; day?: string }) {
+  const title = d.title || "Untitled"
+  return (
+    <Sheet label={title} title={title} row={<><div style={{ flex: 1, minWidth: 0 }}><div className="tt">{title}</div><div className="meta fn">{d.channel}</div></div><Icon name="chev" size={16} /></>}>
+      <form action={async (f: FormData) => { "use server"; await scheduleDraft(d.id, String(f.get("day") || "")) }} className="form">
+        <label className="fld"><span>Day</span><input className="in" type="date" name="day" min={today} defaultValue={day ?? addDays(today, 1)} aria-label={`Day for ${title}`} /></label>
+        <div className="inline"><button className="btn sm">Schedule</button><Link href={`/os/drafts/${d.id}`} className="btn sm ghost">Open draft</Link></div>
+      </form>
+      {day && <form action={async () => { "use server"; await scheduleDraft(d.id, null) }}><button className="btn ghost sm">Unschedule</button></form>}
+    </Sheet>
   )
 }

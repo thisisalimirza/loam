@@ -16,7 +16,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
       <div className="card">
         <div className="brand" style={{ padding: "0 0 18px" }}>
           <span className="logo">L</span>
-          <div><strong>Loam OS</strong><small>Sign in</small></div>
+          <div><strong>Loam OS</strong></div>
         </div>
         {out && <p className="meta" style={{ marginBottom: 12 }}>You’re signed out.</p>}
         <LoginForm next={dest} />

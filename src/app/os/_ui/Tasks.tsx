@@ -8,7 +8,7 @@ import Kanban from "./Kanban"
 import { createTask, deleteTask, moveTask, renameTask, toggleTask } from "@/lib/os/actions"
 import { relDue, REPEATS, REPEAT_LABEL } from "@/lib/os/dates"
 import DateChip from "./DateChip"
-import { toast } from "./Toast"
+import { toast, undoable } from "./Toast"
 import { Mentions } from "./Mentions"
 import { TASK_COLS, type Task, type TaskStatus } from "@/lib/os/types"
 
@@ -45,6 +45,10 @@ export function TaskRow({ t, areas, today, hideArea, hideToday }: { t: Task; are
   const [, start] = useTransition()
   const [title, setTitle] = useOptimistic(t.title)
   const [editing, setEditing] = useState(false)
+  const [gone, setGone] = useState(false)
+  const [dx, setDx] = useState(0)
+  const sw = useRef<{ x: number; y: number; on: boolean } | null>(null)
+  const remove = () => { setGone(true); setDx(0); undoable("Task deleted", () => deleteTask(t.id), () => setGone(false)) }
   const open = (id: string) => { const u = new URL(location.href); u.searchParams.set("task", id); window.history.pushState(null, "", u.pathname + u.search) } // shallow: no server round trip, and it can't get stuck behind a pending refresh
   const save = (v: string) => {
     setEditing(false)
@@ -52,7 +56,12 @@ export function TaskRow({ t, areas, today, hideArea, hideToday }: { t: Task; are
     if (n && n !== t.title) start(async () => { setTitle(n); await renameTask(t.id, n) })
   }
   return (
-    <li className={`row hov trow${done ? " done" : ""}`} onContextMenu={e => { if (!matchMedia("(pointer: coarse)").matches) return; e.preventDefault(); if (window.confirm(`Delete “${title}”?`)) start(() => deleteTask(t.id)) }}>
+    <li className={`row hov trow${done ? " done" : ""}${dx ? " swiping" : ""}`} hidden={gone} style={dx ? { transform: `translateX(${dx}px)` } : undefined}
+      onTouchStart={e => { const p = e.touches[0]; sw.current = { x: p.clientX, y: p.clientY, on: false } }}
+      onTouchMove={e => { const s0 = sw.current; if (!s0) return; const p = e.touches[0], ddx = p.clientX - s0.x, ddy = p.clientY - s0.y
+        if (!s0.on && Math.abs(ddx) > 12 && Math.abs(ddx) > Math.abs(ddy) * 1.5) s0.on = true
+        if (s0.on) setDx(Math.min(0, ddx)) }}
+      onTouchEnd={() => { const on = sw.current?.on; sw.current = null; if (on && dx < -90) remove(); else setDx(0) }}>
       <button className="chk" aria-label={done ? "Mark not done" : "Mark done"} onClick={() => start(async () => {
         setDone(!done)
         const next = await toggleTask(t.id, !done)
@@ -64,12 +73,12 @@ export function TaskRow({ t, areas, today, hideArea, hideToday }: { t: Task; are
             onKeyDown={e => { if (e.key === "Enter") e.currentTarget.blur(); if (e.key === "Escape") setEditing(false) }} />
         : <button type="button" className="tt" aria-label={`Open ${title}`} onClick={() => open(t.id)} onDoubleClick={() => setEditing(true)}><Mentions text={title} />{t.repeat && <span className="rep" title={`Repeats ${t.repeat}`}> ↻</span>}<Quiet t={t} /></button>}
       <span className="rmeta"><Quiet t={t} />{!hideArea && <AreaPill id={t.area_id} areas={areas} />}<DueLabel t={t} today={today} hideToday={hideToday} /></span>
-      <button className="x" aria-label="Delete task" onClick={() => start(() => deleteTask(t.id))}><Icon name="x" size={14} /></button>
+      <button className="x" aria-label="Delete task" onClick={remove}><Icon name="x" size={14} /></button>
     </li>
   )
 }
 
-export function AddTask({ areaId, projectId, areas, projects, status, placeholder = "Add a task. Try “Call mom fri” or “Gym every mon”" }: { areaId?: string; projectId?: string; status?: TaskStatus; placeholder?: string } & Partial<Ctx>) {
+export function AddTask({ areaId, projectId, areas, projects, status, placeholder = "Add a task" }: { areaId?: string; projectId?: string; status?: TaskStatus; placeholder?: string } & Partial<Ctx>) {
   const [open, setOpen] = useState(false)
   const [v, setV] = useState<SmartValue | null>(null)
   const box = useRef<HTMLFormElement>(null)
@@ -121,10 +130,10 @@ export function AddTask({ areaId, projectId, areas, projects, status, placeholde
   )
 }
 
-export function TaskList({ tasks: all, areas, today, hideArea, hideToday, unfiledOnly, emptyTitle = "Nothing here" }: { tasks: Task[]; hideArea?: boolean; hideToday?: boolean; unfiledOnly?: boolean; emptyTitle?: string; emptyText?: string } & Ctx) {
+export function TaskList({ tasks: all, areas, today, hideArea, hideToday, unfiledOnly, emptyTitle = "Nothing here", emptyText }: { tasks: Task[]; hideArea?: boolean; hideToday?: boolean; unfiledOnly?: boolean; emptyTitle?: string; emptyText?: string } & Ctx) {
   // In the inbox a task leaves the list the moment it gets an area or project.
   const tasks = unfiledOnly ? all.filter(t => !t.area_id && !t.project_id) : all
-  if (tasks.length === 0) return <p className="quiet-line empty-line">{emptyTitle}</p>
+  if (tasks.length === 0) return <p className="quiet-line empty-line">{emptyTitle}{emptyText !== "" && <small className="tip"> {emptyText ?? "Tip: type “Call mom fri” to add one due Friday."}</small>}</p>
   return <ul>{tasks.map(t => <TaskRow key={t.id} t={t} areas={areas} today={today} hideArea={hideArea} hideToday={hideToday} />)}</ul>
 }
 

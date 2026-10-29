@@ -17,7 +17,7 @@ export const NAV_GROUPS: [string, N[], boolean?][] = [
   ]],
   ["", [
     { href: "/os/people", label: "People", icon: "people" },
-    { href: "/os/review", label: "Weekly review", icon: "calendar" },
+    { href: "/os/review", label: "Weekly review", icon: "review" },
     { href: "/os/settings", label: "Settings", icon: "gear" },
   ], true],
 ]

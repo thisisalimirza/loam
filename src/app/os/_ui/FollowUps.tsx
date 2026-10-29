@@ -14,9 +14,9 @@ export default function FollowUps({ personId, convoId, items, title = "Suggested
   if (!left.length) return null
   const hide = (i: string) => { const n = [...gone, i]; setGone(n); try { localStorage.setItem(key, JSON.stringify(n)) } catch {} }
   return (
-    <section className="card">
-      <div className="ch"><h2><Icon name="sparkle" />{title}</h2><button className="btn ghost sm" onClick={() => { left.forEach(hide) }}>Dismiss all</button></div>
-      <ul className="sugg" style={{ padding: 6 }}>
+    <section className="cgrp" aria-label={title}>
+      <div className="cgrp-h"><h2>{title}</h2><div className="ch-act"><button className="btn ghost sm" onClick={() => { left.forEach(hide) }}>Dismiss all</button></div></div>
+      <div className="card"><ul className="sugg" style={{ padding: 6 }}>
         {left.map(i => (
           <li key={i}>
             <span className="sg-ic acc"><Icon name="check" size={14} /></span>
@@ -30,7 +30,7 @@ export default function FollowUps({ personId, convoId, items, title = "Suggested
             </div>
           </li>
         ))}
-      </ul>
+      </ul></div>
     </section>
   )
 }

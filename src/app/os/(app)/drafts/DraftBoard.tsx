@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation"
 import Kanban from "../../_ui/Kanban"
 import { moveDraft } from "@/lib/os/actions"
+import { toast } from "../../_ui/Toast"
 import type { Stage } from "@/lib/os/types"
 
 type D = { id: string; col: string; sort: number; title: string; body: string; channel: string; url: string | null }
@@ -14,9 +15,8 @@ export default function DraftBoard({ drafts }: { drafts: D[] }) {
       onOpen={d => router.push(`/os/drafts/${d.id}`)}
       onMove={(id, col, sort) => {
         const d = drafts.find(x => x.id === id)
-        let url: string | null = null
-        if (col === "published" && d && !d.url) url = window.prompt("Where did it go live? Paste the URL (optional)")?.trim() || null
-        moveDraft(id, col as Stage, sort, url)
+        moveDraft(id, col as Stage, sort, null)
+        if (col === "published" && d && !d.url) toast({ text: "Published. Add the link?", href: `/os/drafts/${id}`, cta: "Add link" })
       }}
       render={d => (
         <>

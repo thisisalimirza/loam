@@ -27,7 +27,7 @@ export default async function TasksPage({ searchParams }: { searchParams: Promis
   return (
     <>
       <PageHeader title="Tasks" actions={<ViewToggle base={base} view={view} />} />
-      {areas.length > 0 && <div style={{ marginBottom: 14 }}><Seg items={filters} active={sp.area ?? "all"} /></div>}
+      {(areas.length >= 2 || unsorted > 0 || sp.area) && <div style={{ marginBottom: 14 }}><Seg items={filters} active={sp.area ?? "all"} /></div>}
       {view === "board" ? (
         <TaskBoard tasks={tasks} areas={areas} today={today} areaId={area} />
       ) : (

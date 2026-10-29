@@ -34,18 +34,18 @@ export default function Suggestions({ items, lead = [], limit = 3 }: { items: Su
   if (!leads.length && !shown.length) return null
   const dismiss = (k: string) => { const n = { ...hidden, [k]: Date.now() }; setHidden(n); try { localStorage.setItem(KEY, JSON.stringify(n)) } catch {} }
   return (
-    <section className="card sugg-card" aria-label="Suggested">
-      <h2 className="sec-h sg-h">Suggested</h2>
-      <ul className="sugg" style={{ padding: 6 }}>
+    <section className="cgrp sugg-wrap" aria-label="Suggested">
+      <h2 className="sg-h">Suggested</h2>
+      <div className="card sugg-card"><ul className="sugg" style={{ padding: 6 }}>
         {leads.map(l => (
           <li key={l.key} data-lead={l.key}>
             <span className="sg-ic acc"><Icon name={l.icon} size={14} /></span>
             <div className="sg-t"><Link href={l.href}>{l.text}</Link>{l.sub && <small>{l.sub}</small>}</div>
-            {l.cta && <div className="sg-act"><Link href={l.cta.href} className="btn pri sm">{l.cta.label}</Link></div>}
+            {l.cta && <div className="sg-act"><Link href={l.cta.href} className={`btn sm${l.key === "focus" ? " pri" : ""}`}>{l.cta.label}</Link></div>}
           </li>
         ))}
         {shown.map(s => <Row key={s.key} s={s} onDismiss={() => dismiss(s.key)} />)}
-      </ul>
+      </ul></div>
     </section>
   )
 }

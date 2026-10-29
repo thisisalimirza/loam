@@ -3,6 +3,7 @@ import { getDue, getLearn, type LearnItem } from "@/lib/os/learn"
 import { addEdge, addEvidence, deleteLearn, reviewLearn, toggleTopic } from "@/lib/os/actions"
 import { getReading } from "@/lib/os/data"
 import Sheet from "../../_ui/Sheet"
+import UndoDelete from "../../_ui/UndoDelete"
 import Reading, { AddReading } from "./Reading"
 import { fmtDate } from "@/lib/os/dates"
 import { PageHeader } from "../../_ui/ui"
@@ -17,7 +18,7 @@ function Item({ it, review }: { it: LearnItem; review?: boolean }) {
     <li className="lrn" aria-label={it.title}>
       <div className="lrn-h">
         <h3>{it.url ? <a href={it.url} target="_blank" rel="noreferrer">{it.title}</a> : it.title}</h3>
-        {!review && <form action={deleteLearn.bind(null, it.id)}><button className="btn ghost sm" aria-label={`Delete ${it.title}`}>×</button></form>}
+        {!review && <UndoDelete action={deleteLearn.bind(null, it.id)} label={`Delete ${it.title}`} toast="Deleted" />}
       </div>
       {it.kind === "evidence" && it.summary && <p className="sum">{it.summary}</p>}
       {points.length > 0 && <ul className="pts">{points.map((p, i) => <li key={i}>{p.c} {p.n.map(n => it.sources[n - 1] && <a key={n} className="cite" href={it.sources[n - 1].url} target="_blank" rel="noreferrer">[{n}]</a>)}</li>)}</ul>}
@@ -27,7 +28,7 @@ function Item({ it, review }: { it: LearnItem; review?: boolean }) {
           <ol>{it.sources.map((s, i) => <li key={i}><a href={s.url} target="_blank" rel="noreferrer">{s.author ? s.author + ": " : ""}{s.title}</a></li>)}</ol>
         </details>
       )}
-      <p className="meta">{[it.source, fmtDate(new Date(it.created_at).toISOString().slice(0, 10)), !review && it.review_due && `review ${fmtDate(it.review_due)}`].filter(Boolean).join(" · ")}</p>
+      <p className="meta">{[it.source, fmtDate(new Date(it.created_at).toISOString().slice(0, 10)), !review && it.review_due && `Review ${fmtDate(it.review_due)}`].filter(Boolean).map(x => String(x).charAt(0).toUpperCase() + String(x).slice(1)).join(" · ")}</p>
       {review && (
         <div className="rv-btns">
           <form action={reviewLearn.bind(null, it.id, false)}><button className="btn sm">Again tomorrow</button></form>
@@ -47,7 +48,7 @@ export default async function Learn({ searchParams }: { searchParams: Promise<{ 
   const kept = tab === "edges" ? (await getLearn("topic")).map(t => t.title) : []
   const topics = [...kept.filter(t => !SUGGESTED.includes(t)), ...SUGGESTED]
   const add = tab === "evidence" ? (
-    <Sheet label="Add" title="Add evidence" primary>
+    <Sheet label="Add evidence" icon="plus" iconOnly>
       <form action={addEvidence} className="form">
         <label className="fld"><span>Link</span><input className="in" name="url" type="url" placeholder="Paper or article (optional)" aria-label="Link" /></label>
         <label className="fld"><span>What you learned</span><textarea className="in" name="note" rows={3} aria-label="What you learned" /></label>
@@ -55,7 +56,7 @@ export default async function Learn({ searchParams }: { searchParams: Promise<{ 
       </form>
     </Sheet>
   ) : tab === "edges" ? (
-    <Sheet label="Add" title="New debate" primary>
+    <Sheet label="New debate" icon="plus" iconOnly>
       <form action={addEdge} className="form">
         <label className="fld"><span>Topic</span><input className="in" name="topic" list="kept-topics" placeholder="e.g. residency interviews" aria-label="Topic" /></label>
         <datalist id="kept-topics">{kept.map(t => <option key={t} value={t} />)}</datalist>
@@ -64,7 +65,7 @@ export default async function Learn({ searchParams }: { searchParams: Promise<{ 
         <div><button className="btn pri sm">Summarize</button></div>
       </form>
     </Sheet>
-  ) : tab === "reading" ? <Sheet label="Add" title="Add to reading" primary><AddReading /></Sheet> : null
+  ) : tab === "reading" ? <Sheet label="Add to reading" icon="plus" iconOnly><AddReading /></Sheet> : null
   return (
     <>
       <PageHeader title="Learn" actions={add} />

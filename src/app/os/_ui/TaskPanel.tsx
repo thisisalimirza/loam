@@ -37,6 +37,6 @@ export default function TaskPanel({ today }: { today: string }) {
       onClose={() => setId(null)} onOpen={setId}
       onChange={n => { edited.current.set(n.id, n); setTasks(ts => ts.map(x => x.id === n.id ? n : x)) }} onDeps={setDeps}
       onMove={async colId => { await bMove(t.id, colId, Date.now() / -1000); setTasks(ts => ts.map(x => x.id === t.id ? { ...x, column_id: colId } : x)) }}
-      onDeleted={() => { setTasks(ts => ts.filter(x => x.id !== t.id)); setId(null) }} /></PanelBoundary>
+      onDeleted={() => { setTasks(ts => ts.filter(x => x.id !== t.id)); setId(null) }} onRestore={x => setTasks(ts => [...ts, x])} /></PanelBoundary>
   )
 }

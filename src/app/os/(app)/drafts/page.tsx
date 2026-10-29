@@ -22,11 +22,6 @@ export default async function Drafts() {
   return (
     <>
       <WriteSwitch /><PageHeader title="Drafts" actions={drafts.some(d => d.scheduled_for) ? <Link href="/os/schedule" className="quiet-link">Schedule</Link> : undefined} />
-      <form action={createDraft} className="dr-new">
-        <input className="in" name="title" placeholder="New idea" aria-label="Draft title" />
-        <select name="channel" aria-label="Channel" defaultValue={usual}>{[...CHANNELS].sort((a, b) => (use[b] ?? 0) - (use[a] ?? 0)).map(c => <option key={c}>{c}</option>)}</select>
-        <button className="btn pri sm">Add</button>
-      </form>
       {seeds.length > 0 && (
         <section className="quiet-sec seeds" aria-label="From your journal">
           <h2 className="sec-h">From your journal</h2>
@@ -37,7 +32,13 @@ export default async function Drafts() {
             </li>))}</ul>
         </section>
       )}
-      {drafts.length === 0 ? <p className="quiet-line">No drafts yet.</p> : <div className="drafts-kb"><DraftBoard drafts={drafts.map(d => ({ id: d.id, col: d.stage, sort: Number(d.sort), title: d.title, body: (d.body ?? "").slice(0, 160), channel: d.channel, url: d.url }))} /></div>}
+      {drafts.length === 0 && <p className="quiet-line">No drafts yet.</p>}
+      <form action={createDraft} className="dr-new">
+        <input className="in" name="title" placeholder="Add a draft" aria-label="Draft title" />
+        <select name="channel" aria-label="Channel" defaultValue={usual}>{[...CHANNELS].sort((a, b) => (use[b] ?? 0) - (use[a] ?? 0)).map(c => <option key={c}>{c}</option>)}</select>
+        <button className="btn pri sm">Add</button>
+      </form>
+      {drafts.length > 0 && <div className="drafts-kb"><DraftBoard drafts={drafts.map(d => ({ id: d.id, col: d.stage, sort: Number(d.sort), title: d.title, body: (d.body ?? "").slice(0, 160), channel: d.channel, url: d.url }))} /></div>}
     </>
   )
 }

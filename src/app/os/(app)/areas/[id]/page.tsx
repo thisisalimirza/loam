@@ -1,15 +1,13 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { getArea, getAreas, getNotes, getPeople, getProjects, getTasks } from "@/lib/os/data"
-import { archiveArea, deleteArea, updateArea } from "@/lib/os/actions"
 import { todayISO, leftLabel } from "@/lib/os/dates"
 import { nextUp } from "@/lib/os/focus"
 import ProjectForm from "../../../_ui/ProjectForm"
 import Sheet from "../../../_ui/Sheet"
 import { Avatar, Card, PageHeader, Pill } from "../../../_ui/ui"
-import { Swatches } from "../../../_ui/AreaForm"
+import AreaEdit from "../../../_ui/AreaEdit"
 import { AddTask, TaskList, ViewToggle } from "../../../_ui/Tasks"
-import Confirm from "../../../_ui/Confirm"
 import Related from "../../../_ui/Related"
 import Board from "../../board/Board"
 import { getBoard } from "@/lib/os/board"
@@ -24,22 +22,9 @@ export default async function AreaPage({ params, searchParams }: { params: Promi
   const open = tasks.filter(t => t.status !== "done")
   const myPeople = people.filter(p => p.area_id === id)
   const myNotes = notes.filter(n => n.area_id === id)
-  const edit = (
-    <Sheet label="Edit area" title="Edit area" icon="more" iconOnly>
-      <form action={updateArea} className="form">
-        <input type="hidden" name="id" value={id} />
-        <label className="fld"><span>Name</span><input className="in" name="name" defaultValue={area.name} required aria-label="Area name" /></label>
-        <Swatches value={area.color} />
-        <div><button className="btn pri">Save</button></div>
-      </form>
-      <div className="danger-zone">
-        <form action={archiveArea.bind(null, id, !area.archived)}><button className="btn sm">{area.archived ? "Restore area" : "Archive area"}</button></form>
-        <Confirm action={deleteArea.bind(null, id)} label="Delete area" message="Delete this area? Its tasks, projects and people stay, but lose the link." />
-      </div>
-    </Sheet>
-  )
+  const edit = <AreaEdit area={area} />
   const newProject = (
-    <Sheet label="New project" icon="flag">
+    <Sheet label="New project" icon="plus" iconOnly>
       <ProjectForm areaId={id} />
     </Sheet>
   )
@@ -52,8 +37,8 @@ export default async function AreaPage({ params, searchParams }: { params: Promi
       <div className={view === "board" ? "stack" : "split"}><div className="stack">
         {view === "board" ? <Board data={await getBoard()} today={today} scope={{ areaId: id }} embedded /> : (
           <Card title="Tasks" icon="tasks">
-            <AddTask areaId={id} projects={projects.filter(p => p.status === "active")} placeholder={`Add to ${area.name}. Try “… fri”`} />
-            {open.length > 0 && <TaskList tasks={open} areas={areas} today={today} hideArea />}
+            <TaskList tasks={open} areas={areas} today={today} hideArea emptyTitle="No open tasks." />
+            <AddTask areaId={id} projects={projects.filter(p => p.status === "active")} />
           </Card>
         )}
         <Card title="Projects" icon="flag" actions={newProject}>

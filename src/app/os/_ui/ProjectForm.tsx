@@ -21,7 +21,7 @@ export default function ProjectForm({ areas, areaId }: { areas?: { id: string; n
         {areaId ? <input type="hidden" name="area_id" value={areaId} /> : areas && (
           <label className="pf-r"><span>Area</span><select className="in" name="area_id" aria-label="Area">{areas.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}</select></label>
         )}
-        <div className="pf-r"><span>Due</span><DateChip label="Due" name="due_date" /></div>
+        <div className="pf-r"><span>Due</span><DateChip label="Due" name="due_date" bare /></div>
       </div>
       <div><button className="btn pri">Create project</button></div>
     </form>

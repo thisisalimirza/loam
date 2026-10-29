@@ -7,9 +7,9 @@ import { Icon } from "./icons"
  * A labeled date button ("Due", "Deadline", …) that opens a small picker with quick picks and
  * a type-a-date field. Works inside plain forms through a hidden input, or controlled via onChange.
  */
-export default function DateChip({ label = "Due", name, value: controlled, defaultValue = null, onChange, required, clearable = true, quick, size = "sm" }: {
+export default function DateChip({ label = "Due", name, value: controlled, defaultValue = null, onChange, required, clearable = true, quick, size = "sm", bare }: {
   label?: string; name?: string; value?: string | null; defaultValue?: string | null; onChange?: (v: string | null) => void
-  required?: boolean; clearable?: boolean; quick?: [string, number][]; size?: "sm" | "md"
+  required?: boolean; clearable?: boolean; quick?: [string, number][]; size?: "sm" | "md"; bare?: boolean
 }) {
   const [inner, setInner] = useState<string | null>(defaultValue)
   const v = controlled !== undefined ? controlled : inner
@@ -39,9 +39,9 @@ export default function DateChip({ label = "Due", name, value: controlled, defau
     <span className={`dchip-wrap${size === "md" ? " md" : ""}`} ref={box}>
       {name && <input type="hidden" name={name} value={v ?? ""} />}
       {required && !v && <input tabIndex={-1} aria-hidden className="dchip-req" required value="" onChange={() => {}} onFocus={() => setOpen(true)} />}
-      <button type="button" className={`dchip${v ? " set" : ""}`} onClick={() => setOpen(o => !o)} aria-haspopup="dialog" aria-expanded={open}
+      <button type="button" className={`dchip${v ? " set" : ""}${bare ? " bare" : ""}`} onClick={() => setOpen(o => !o)} aria-haspopup="dialog" aria-expanded={open}
         aria-label={v ? `${label}: ${fmtDate(v, { weekday: "long", month: "long", day: "numeric" })}. Change` : `Set ${label.toLowerCase()} date`}>
-        <Icon name="calendar" size={14} /><span className="dchip-l">{label}</span>{shown && <b>{shown}</b>}
+        {bare ? (shown ? <b>{shown}</b> : <span className="dchip-none">None</span>) : <><Icon name="calendar" size={14} /><span className="dchip-l">{label}</span>{shown && <b>{shown}</b>}</>}
       </button>
       {open && (
         <div className="dpop" role="dialog" aria-label={`${label} date`}>

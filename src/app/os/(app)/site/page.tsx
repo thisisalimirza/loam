@@ -3,6 +3,7 @@ import Link from "next/link"
 import { getMeta, listFiles } from "@/lib/os/site"
 import { Card, Empty, PageHeader } from "../../_ui/ui"
 import { Icon } from "../../_ui/icons"
+import SearchField from "../../_ui/SearchField"
 
 export const metadata = { title: "Site" }
 export const dynamic = "force-dynamic"
@@ -34,8 +35,9 @@ export default async function Site({ searchParams }: { searchParams: Promise<{ q
         <Link href={href({ s: "" })} className={s === "" ? "on" : ""}>All <span>{data.files.length}</span></Link>
         {sections.map(x => <Link key={x || "_pages"} href={href({ s: x || "_pages" })} className={s === (x || "_pages") ? "on" : ""}>{label(x)} <span>{counts[x]}</span></Link>)}
       </nav>
+      <SearchField action="/os/site" q={q} label="Search posts" placeholder="Search posts" hidden={{ s }} />
       <Card>
-        {rows.length === 0 ? <p className="quiet-line empty-line">Nothing here yet.</p> : (
+        {rows.length === 0 ? <p className="quiet-line empty-line">{needle ? "No posts match." : "Nothing here yet."}</p> : (
           <ul>
             {rows.map(r => (
               <li key={r.path} className="row hov site-row">

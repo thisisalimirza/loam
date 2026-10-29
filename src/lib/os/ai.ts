@@ -1,6 +1,10 @@
 import "server-only"
 import { generateObject, generateText } from "ai"
 import type { z } from "zod"
+import { cookies } from "next/headers"
+
+/** Settings → Suggestions switch. Off means no AI calls at all. */
+export async function aiOff() { try { return (await cookies()).get("loam_ai")?.value === "off" } catch { return false } }
 
 /**
  * One door to the AI Gateway (auth via Vercel OIDC in prod). Every caller must
@@ -10,7 +14,7 @@ const MODEL = "openai/gpt-4.1-mini"
 const enabled = () => !!(process.env.VERCEL_OIDC_TOKEN || process.env.AI_GATEWAY_API_KEY || process.env.VERCEL)
 
 export async function aiObject<T>(schema: z.ZodType<T>, system: string, prompt: string, ms = 8000): Promise<T | null> {
-  if (!enabled()) return null
+  if (!enabled() || await aiOff()) return null
   try {
     const r = await generateObject({ model: MODEL, schema, system, prompt, abortSignal: AbortSignal.timeout(ms) })
     return r.object
@@ -18,7 +22,7 @@ export async function aiObject<T>(schema: z.ZodType<T>, system: string, prompt: 
 }
 
 export async function aiText(system: string, prompt: string, ms = 6000): Promise<string | null> {
-  if (!enabled()) return null
+  if (!enabled() || await aiOff()) return null
   try {
     const r = await generateText({ model: MODEL, system, prompt, abortSignal: AbortSignal.timeout(ms) })
     return r.text.trim() || null

@@ -17,7 +17,7 @@ export default async function Areas() {
   const live = areas.filter(a => !a.archived), archived = areas.filter(a => a.archived)
   const loose = projects.filter(p => p.status !== "done" && (!p.area_id || !areas.some(a => a.id === p.area_id)))
   const newProject = live.length > 0 && (
-    <Sheet label="New project" icon="flag">
+    <Sheet label="New project" icon="plus" iconOnly>
       <ProjectForm areas={live} />
     </Sheet>
   )

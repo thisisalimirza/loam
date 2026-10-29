@@ -6,6 +6,7 @@ import { deleteSitePost, saveSitePost, type SaveState } from "@/lib/os/siteActio
 import { Icon } from "../../_ui/icons"
 import DateChip from "../../_ui/DateChip"
 import Confirm from "../../_ui/Confirm"
+import { SheetPanel } from "../../_ui/Sheet"
 
 marked.setOptions({ gfm: true, breaks: false })
 const esc = (s: string) => s.replace(/</g, "&lt;")
@@ -22,8 +23,9 @@ export default function SiteEditor({ post, sections, defaultSection, created }: 
   const [section, setSection] = useState(defaultSection ?? post.section)
   const [published, setPublished] = useState(post.published)
   const [dirty, setDirty] = useState(false)
-  const [details, setDetails] = useState(isNew)
+  const [details, setDetails] = useState(false)
   const form = useRef<HTMLFormElement>(null)
+  const more = useRef<HTMLElement>(null)
 
   useEffect(() => { if (state?.sha) { setSha(state.sha); setDirty(false) } }, [state])
   useEffect(() => {
@@ -46,7 +48,7 @@ export default function SiteEditor({ post, sections, defaultSection, created }: 
         <div className="hd-actions">
           <span className="meta">{pending ? "Saving…" : dirty ? "Unsaved changes" : ""}</span>
           <details className="sd-menu">
-            <summary className="btn ghost sm" aria-label="More"><Icon name="more" size={16} /></summary>
+            <summary ref={more} className="btn ghost sm" aria-label="More"><Icon name="more" size={16} /></summary>
             <div className="sd-pop" role="menu">
               <button type="button" role="menuitem" onClick={e => { (e.currentTarget.closest("details") as HTMLDetailsElement).open = false; setDetails(true) }}>Details</button>
               {!isNew && <div className="sd-path meta ell">{post.url}</div>}
@@ -72,9 +74,8 @@ export default function SiteEditor({ post, sections, defaultSection, created }: 
             : <p className="muted">Nothing to preview yet.</p>)}
           <span className="meta">{words} {words === 1 ? "word" : "words"} · about {Math.max(1, Math.round(words / 230))} min read</span>
         </section>
-        <div className="sd-scrim" hidden={!details} onClick={() => setDetails(false)} />
-        <aside className="sd-sheet form" hidden={!details} role="dialog" aria-label="Details">
-          <div className="sheet-h"><strong>Details</strong><button type="button" className="btn ghost sm done" onClick={() => setDetails(false)}>Done</button></div>
+        <SheetPanel open={details} onClose={() => setDetails(false)} title="Details" keepMounted opener={more}>
+          <div className="form">
           {isNew && (<>
             <label className="f">Section
               <select className="in" name="section" value={section} onChange={e => setSection(e.target.value)}>
@@ -90,7 +91,8 @@ export default function SiteEditor({ post, sections, defaultSection, created }: 
           <label className="f">Summary<textarea className="in" name="summary" rows={3} defaultValue={post.summary} placeholder="One line for lists and link previews" /></label>
           <label className="f">Tags<input className="in" name="tags" defaultValue={post.tags.join(", ")} placeholder="comma, separated" /></label>
           <label className="check"><input type="checkbox" name="published" checked={published} onChange={e => setPublished(e.target.checked)} />Visible on the site</label>
-        </aside>
+          </div>
+        </SheetPanel>
       </div>
     </form>
   )

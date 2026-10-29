@@ -18,18 +18,18 @@ export function PageHeader({ eyebrow, title, sub, actions, back }: {
   )
 }
 
-export function Card({ title, icon, meta, actions, children, className = "", style }: {
+/** A section: small grey heading above a white grouped card (no icons; a count only where it's the only place that number shows). */
+export function Card({ title, meta, actions, children, className = "", style }: {
   title?: ReactNode; icon?: IconName; meta?: ReactNode; actions?: ReactNode; children: ReactNode; className?: string; style?: CSSProperties
 }) {
+  if (!title) return <section className={`card ${className}`} style={style}>{children}</section>
   return (
-    <section className={`card ${className}`} style={style}>
-      {title && (
-        <div className="ch">
-          <h2>{icon && <Icon name={icon} />}{title}{meta !== undefined && meta !== null && meta !== false && <span className="meta">{meta}</span>}</h2>
-          {actions && <div className="ch-act">{actions}</div>}
-        </div>
-      )}
-      {children}
+    <section className="cgrp" style={style} aria-label={typeof title === "string" ? title : undefined}>
+      <div className="cgrp-h">
+        <h2>{title}{meta !== undefined && meta !== null && meta !== false && <span className="meta">{meta}</span>}</h2>
+        {actions && <div className="ch-act">{actions}</div>}
+      </div>
+      <div className={`card ${className}`}>{children}</div>
     </section>
   )
 }
