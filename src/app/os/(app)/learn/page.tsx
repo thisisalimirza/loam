@@ -17,7 +17,7 @@ function Item({ it, review }: { it: LearnItem; review?: boolean }) {
       </div>
       {it.kind === "evidence" && it.summary && <p className="sum">{it.summary}</p>}
       {points.length > 0 && <ul className="pts">{points.map((p, i) => <li key={i}>{p.c} {p.n.map(n => it.sources[n - 1] && <a key={n} className="cite" href={it.sources[n - 1].url} target="_blank" rel="noreferrer">[{n}]</a>)}</li>)}</ul>}
-      {it.takeaway && <p className="take"><b>Keep:</b> {it.takeaway}</p>}
+      {it.takeaway && it.takeaway !== it.title && <p className="take"><b>Keep:</b> {it.takeaway}</p>}
       {it.kind === "edge" && (
         <details className="srcs"><summary>{it.sources.length} {it.sources.length === 1 ? "post" : "posts"}</summary>
           <ol>{it.sources.map((s, i) => <li key={i}><a href={s.url} target="_blank" rel="noreferrer">{s.author ? s.author + ": " : ""}{s.title}</a></li>)}</ol>
